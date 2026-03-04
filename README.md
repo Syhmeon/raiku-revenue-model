@@ -50,6 +50,13 @@ Trillium provides **141 fields per epoch** for free, no auth — including MEV b
 
 **Dune remains essential** for per-program fee/CU data and daily granularity — data Trillium doesn't provide.
 
+### Reserved for later (if needed)
+
+| Source | Use case | Why deferred |
+|--------|----------|--------------|
+| **Token Terminal for Sheets** | Protocol revenues (Jito DAO fees, Jupiter fees, etc.) | Not needed for core revenue model. Useful later for competitive benchmarking. |
+| **BigQuery × Token Terminal** | Transaction-level deep dive (decoded Solana instructions) | Heavy setup (GCP). Only needed for granular customer archetype sizing. |
+
 ## Project Structure
 
 ```

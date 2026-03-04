@@ -106,6 +106,11 @@ API Key in `config.py`: `DUNE_API_KEY`
 Free API (365-day limit). Used for FDV and SOL price backup.
 Partially replaced by Trillium `sol_price_usd` for epoch-level data.
 
+### Reserved for later (NOT active — do not implement unless asked)
+
+4. **Token Terminal for Sheets** — Protocol revenues (Jito DAO, Jupiter, Raydium fees). Google Sheets add-on: `=TT("JTO","fees")`. Useful for competitive benchmarking.
+5. **BigQuery × Token Terminal** — Transaction-level decoded Solana data (Pump.fun, Jito, Jupiter, etc.). GCP project `canary-430908`. Heavy setup, only needed for granular archetype sizing.
+
 ---
 
 ## Source Priority Matrix
