@@ -1,0 +1,14 @@
+Existing: 382 rows, epochs 553-934
+To fetch: 157 epochs (396-552)
+  [25/157] +22 new, 3 errors (13s)
+  [50/157] +47 new, 3 errors (26s)
+  [75/157] +72 new, 3 errors (39s)
+  [100/157] +97 new, 3 errors (52s)
+  [125/157] +122 new, 3 errors (65s)
+  [150/157] +146 new, 4 errors (78s)
+  [157/157] +153 new, 4 errors (81s)
+
+Total: 535 rows (was 382, +153 new)
+Errors: 4 — [396, 406, 416, 528]
+Time: 82s
+FINISHED

@@ -26,15 +26,15 @@ COINGECKO_API_KEY = os.environ.get("COINGECKO_API_KEY", "")
 
 # ── Trillium API (free, no auth) ──────────────────────
 TRILLIUM_BASE_URL = "https://api.trillium.so"
-TRILLIUM_FIRST_EPOCH = 553  # Earliest available epoch (~Dec 2023)
+TRILLIUM_FIRST_EPOCH = 552  # Earliest available epoch (tested: 551=404, 552=OK)
 
 # ── Solana Compass API (free, no auth) ──────────────────
 SOLANA_COMPASS_BASE_URL = "https://solanacompass.com/api"
-SOLANA_COMPASS_FIRST_EPOCH = 553  # Same as Trillium for consistency
+SOLANA_COMPASS_FIRST_EPOCH = 800  # SC data starts at epoch 800 (tested: 799=422, 800=OK)
 
 # ── Jito Foundation MEV API (free, no auth) ─────────────
 JITO_MEV_API_URL = "https://kobe.mainnet.jito.network/api/v1/mev_rewards"
-JITO_MEV_FIRST_EPOCH = 553  # Earliest epoch to attempt
+JITO_MEV_FIRST_EPOCH = 396  # Jito data starts ~epoch 400 (tested: 350=500err, 400=OK)
 
 # ── Dune Query IDs ─────────────────────────────────────
 DUNE_QUERIES = {

@@ -62,26 +62,33 @@ COLUMNS = [
 ]
 
 
-def fetch_epoch(epoch: int) -> list | None:
-    """Fetch per-validator performance data for a single epoch."""
-    url = f"{SOLANA_COMPASS_BASE_URL}/epoch-performance/{epoch}"
-    try:
-        req = urllib.request.Request(url, headers=HTTP_HEADERS)
-        with urllib.request.urlopen(req, timeout=30) as resp:
-            data = json.loads(resp.read().decode())
-            # API returns {"data": [...validators...], "meta": {...}}
-            if isinstance(data, dict) and "data" in data:
-                return data["data"]
-            # Or it might return a list directly
-            if isinstance(data, list):
-                return data
-            return None
-    except urllib.error.HTTPError as e:
-        if e.code == 404:
-            return None
-        raise
-    except urllib.error.URLError:
-        return None
+def fetch_epoch(epoch: int, max_retries: int = 3) -> list | None:
+    """Fetch per-validator performance data for a single epoch.
+
+    Retries on timeout/5xx errors. Returns None for 422 (not available).
+    """
+    for attempt in range(max_retries):
+        try:
+            url = f"{SOLANA_COMPASS_BASE_URL}/epoch-performance/{epoch}"
+            req = urllib.request.Request(url, headers=HTTP_HEADERS)
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                data = json.loads(resp.read().decode())
+                # API returns {"data": [...validators...], "meta": {...}}
+                if isinstance(data, dict) and "data" in data:
+                    return data["data"]
+                # Or it might return a list directly
+                if isinstance(data, list):
+                    return data
+                return None
+        except urllib.error.HTTPError as e:
+            if e.code in (404, 422):
+                return None  # Epoch not available
+            if attempt < max_retries - 1:
+                time.sleep(2)
+        except (urllib.error.URLError, TimeoutError):
+            if attempt < max_retries - 1:
+                time.sleep(2)
+    return None
 
 
 def aggregate_validators(validators: list) -> dict:
@@ -156,15 +163,20 @@ def _int(val) -> int:
 
 
 def get_current_epoch() -> int:
-    """Detect the latest available epoch by testing recent epochs."""
-    test_epoch = 950
-    while True:
-        validators = fetch_epoch(test_epoch)
+    """Detect the latest available epoch by binary search."""
+    # Start from a known-good recent epoch and go up
+    low, high = 930, 960
+    best = low
+    while low <= high:
+        mid = (low + high) // 2
+        validators = fetch_epoch(mid, max_retries=1)
         if validators is not None and len(validators) > 0:
-            test_epoch += 1
-            time.sleep(0.3)
+            best = mid
+            low = mid + 1
         else:
-            return test_epoch - 1
+            high = mid - 1
+        time.sleep(0.3)
+    return best
 
 
 def load_existing_epochs() -> set:
@@ -239,8 +251,8 @@ def extract(full: bool = False):
             pct = (i + 1) / len(epochs_to_fetch) * 100
             print(f"    [{i+1}/{len(epochs_to_fetch)}] {pct:.0f}% — last: epoch {epoch}")
 
-        # Rate limit: 0.5s between requests (larger responses, be polite)
-        time.sleep(0.5)
+        # Rate limit: 1.0s between requests (large per-validator responses)
+        time.sleep(1.0)
 
     print(f"  Fetched: {len(new_rows)} epochs OK, {len(errors)} errors")
     if errors:
