@@ -1,0 +1,169 @@
+RAIKU PROTOCOL — Private & Confidential | Q1 2026
+Quantifying the Opportunity Cost of Raiku AOT vs. Standard Execution
+A rigorous per-use-case analysis for PropAMMs, Perps, CEX-DEX Arb, HFT, Market Makers & Protocol Crankers
+
+
+Section 1 — Economic Framework
+1.1  The Three Execution Paths
+P(Inclusion) = P(Delivery) × P(Scheduling) × P(Execution) × P(Finality). Source: empirical bot tx failure rates ~58% (arXiv:2504.18055), corroborated by Dune analytics Jan 2026.
+
+1.2  Core Equation
+For a single targeted-slot objective, the expected economic cost is:
+
+  E  =  p_include × F  +  (1 − p_target) × L
+
+Where:
+F = total fees paid if the transaction is included on-chain (base fee + priority/tip/AOT bid). Key: Solana charges fees on inclusion, not on drop — you pay F only if p_include fires.
+L = economic loss if the transaction misses the targeted slot (adverse selection, liquidation penalty, missed arb, etc.)
+p_target = probability of execution in the specific targeted slot
+p_include = probability of inclusion on-chain at all (may land late → missed target but no loss L, or may never land)
+
+1.3  Multi-Attempt Correction (Retry Cost)
+A critical flaw in naive models: in practice, traders retry failed transactions. Each retry incurs fees (if included) and burns latency. The real cost is not E_single but:
+
+  E_retry(n)  =  F × E[# included attempts]  +  P(miss after n tries) × L
+
+For n retries at constant p_include:
+  E[# included attempts]  =  (1 − (1−p)^n) / p  × 1   [expected fees paid]
+  P(total miss)  =  (1−p_include)^n
+
+Example: 3 retries at p_include = 0.394 (Direct TPU):
+E[fees paid] ≈ 2.1× single fee (you expect to pay for 2 included-but-failed attempts before success)
+P(total miss after 3 tries) = (1-0.394)³ = 22.3%
+AOT eliminates retries almost entirely: P(total miss AOT) = (1-0.893)¹ = 10.7% → single attempt sufficient.
+
+1.4  Comparing Standard vs. AOT
+  E_std  =  p_include_std × F_std × n_retries  +  (1−p_target_std)^n × L
+  E_AOT  =  p_include_AOT × F_AOT  +  (1−p_target_AOT) × L
+
+Opportunity cost avoided by AOT  =  E_std − E_AOT
+
+1.5  Break-Even Loss L*
+AOT is economically justified when E_AOT < E_std, which requires L > L*:
+
+  L*  =  (p_include_AOT × F_AOT − p_include_std × F_std × n)  /  (p_target_std − p_target_AOT) [negative!]
+
+If L* < 0 (i.e. AOT fee < standard fee), AOT is always justified regardless of L. If L* > 0, the missed-slot loss needs to exceed L* for AOT to make sense.
+
+1.6  AOT Fee Model — Corrected
+The original draft modelled AOT fee as a fixed lamport amount. This is incorrect. AOT is priced as a sealed-bid per compute unit:
+
+  F_AOT  =  CU_reserved  ×  fee_per_CU (lamports)  ÷  1,000,000,000  ×  SOL_price ($)
+
+1 SOL = $100; 1 SOL = 1,000,000,000 lamports. CU profiles from Solscan on-chain data (Jan–Feb 2026). Fee/CU = indicative AOT bid, calibrated to empirical fee/CU ranges.
+
+1.7  Standard Execution Fee Baseline
+For comparison, standard path fees for the same transactions:
+
+For Jito JIT path: fee = base + priority fee, paid only if bundle lands (conditional). Effective F_Jito ≈ F_std but at higher inclusion probability.
+
+Section 2 — Use Case 1: PropAMM Oracle / Quote Update
+2.1  What is at stake
+A PropAMM must submit oracle price updates to keep on-chain quotes aligned with CEX reference prices. Missing the target slot means the AMM's pricing curve is stale for at least one full slot (0.4 seconds), during which informed traders can extract value via adverse selection.
+
+The adverse selection loss is not hypothetical — it is the direct mechanism behind HumidiFi's collapse from 26% to <1% market share in 10 weeks (Oct 2025 – Jan 2026).
+
+2.2  Loss function L — Adverse Selection
+  L  =  Volume_in_stale_window  ×  Markout (bps)
+  Volume_in_stale_window  =  Daily_volume  ×  (slot_duration / 86,400s)
+  slot_duration  =  0.4 seconds
+
+Empirical volume inputs (SolanaFloor, Jan 2026):
+Markout = adverse selection cost per unit notional traded against stale quotes. 1bp conservative; 4bp stress (consistent with Blockworks validator-client markout analysis, Dec 2025–Jan 2026).
+
+2.3  Expected Cost Comparison
+Probability assumptions: Single attempt for AOT (no retry needed). Standard path: assume 2 retries on congestion.
+
+E_TPU / E_Jito / E_AOT = expected total economic cost per targeted-slot attempt. Saving vs Jito = E_Jito − E_AOT. F_AOT = $0.0035 (1.4M CU × 0.025L). F_Jito = $0.0027. p_target_AOT = 0.893.
+
+2.4  Break-Even Analysis
+
+2.5  Annual Impact — Extrapolating to Full Year
+Assuming the PropAMM runs oracle updates approximately every 2 slots on average, and Raiku covers 10% of total slots:
+
+Annual saving = opportunity cost per slot × number of Raiku-covered updates per year. 10% Raiku slot coverage. This is economic value to the PropAMM, not revenue to Raiku.
+
+Section 3 — Use Case 2: Perpetuals Liquidation Defense
+3.1  What is at stake
+A perpetuals trader must submit a collateral top-up or position-reduction transaction before their margin ratio crosses the liquidation threshold. Missing the target slot = forced liquidation. The loss is not just the liquidation fee but the full collateral forfeit.
+
+Jupiter Perps liquidation mechanics (source: Jupiter documentation):
+When a position is liquidated, the protocol closes it at the oracle price and collects a liquidation fee
+Remaining collateral is returned to the user; however if PnL exceeds collateral, the user loses everything
+Liquidation can be triggered by any liquidation keeper once margin < maintenance margin
+The liquidation process is competitive — multiple keepers race to liquidate, meaning slot priority matters
+
+3.2  Loss function L — Liquidation Penalty
+  L  =  Collateral_at_risk  ×  P(liquidation | miss)  ×  liquidation_penalty_rate
+
+In practice, for a critical margin call scenario, P(liquidation | miss target slot) ≈ 1.0 — the position is already at the margin trigger, so missing even one slot is decisive.
+
+Representative L ranges (grounded by Jupiter example: $10K collateral → $1K remaining after liquidation):
+
+3.3  Expected Cost Comparison
+F_AOT = $0.002 (200K CU × 0.10 L). F_Jito = $0.006. F_TPU = $0.005. All L scenarios above $100 show strong positive saving vs. both Jito and TPU.
+
+
+3.4  The Retry Multiplier for Perps
+Under congestion (volatility spike = exactly when liquidations cluster), retry dynamics make the standard path significantly worse:
+
+E_retry(n) models n independent TPU attempts. Each included-but-failed tx still costs fees. Under congestion, 3 retries at 39.4% inclusion rate = ~22% chance of total miss AND paying 3× fees on landed-but-late txs.
+
+Section 4 — Use Case 3: CEX-DEX Arbitrage
+4.1  The Asymmetry Problem
+CEX-DEX arb has an inherent execution asymmetry: the CEX leg fills in <5ms with near-100% certainty (centralised exchange), while the DEX leg on Solana has ~40% inclusion probability. Once the CEX leg is filled, the firm holds an unhedged directional position until the DEX leg lands.
+
+
+4.2  Loss function L
+  L  =  Spread  +  Unwind_cost × P(adverse_move | DEX_leg_fails)
+
+If the DEX leg fails: the firm must unwind the CEX position. The original arb spread is lost. Typically the market has moved against them by retry time. Practical L estimate:
+  L ≈ position_size × (original_spread + expected_adverse_move_per_retry)
+
+
+4.3  Expected Cost Comparison
+F_AOT = $0.0045 (300K CU × 0.15L). Jito JIT tip ~$0.012. CEX-DEX arb requires deeper slot pools (6+ slots queued) — AOT Reservation Scheduler maintained continuously.
+
+
+Section 5 — Use Cases 4–6: HFT, Market Maker Operational, Protocol Cranker
+5.1  HFT / Quant Desk — Small Arb at High Frequency
+HFT desks run hundreds of small arb opportunities per day. Individual L is small, but frequency means aggregate impact is large. The key benefit of AOT is risk model improvement: P(inclusion) rising from 0.394 to 0.893 allows position sizing to scale.
+
+Average Solana arb profit $1.58 (Helius MEV report Jan 2025, confirmed Extropy Dec 2025). At 100 trades/day, even $0.01 saving/trade = $1/day = $365/yr per strategy.
+
+Kelly criterion multiplier: Moving from 63.7% to 89.3% P(success) changes the Kelly fraction from f=0.274 to f=0.561 for a binary 1:1 bet. This allows 2× position sizing for the same risk budget — the true economic value of AOT for HFT.
+
+5.2  Market Maker — Operational Transactions
+Market makers submit non-trade operational transactions that must land reliably: margin top-ups, collateral rebalances, position rollovers. These are not profit-generating but catastrophic if missed (forced liquidation = realised loss).
+
+The insurance math is straightforward:
+  ROI_AOT  =  P(catastrophic_event)  ×  L_event  /  AOT_reservation_cost
+
+AOT cost/tx = 50K CU × 0.10 L = $0.0005. Break-even frequency = AOT_cost / (P(miss_standard) × L) -- for critical txs this is orders of magnitude smaller than any realistic usage frequency.
+
+5.3  Protocol Cranker/Keeper
+Protocol crankers submit periodic state-update transactions (fund settlement, rebalancing, governance execution). They fail most often during volatility — exactly when they matter most (correlation between congestion and crank urgency).
+
+Crankers use the Cadence-Aware Scheduler: reservations aligned to crank epoch boundaries. No-op optimization: unreserved slots released to secondary market.
+
+Section 6 — Summary & Decision Framework
+6.1  Opportunity Cost Summary Table
+Under consistent probability assumptions (P_inc_TPU=0.394, P_inc_Jito=0.637, P_inc_AOT=0.893):
+
+L* = minimum L for AOT to be economically justified vs Jito JIT. All displayed use cases exceed L* by at least 10×.
+
+6.2  AOT Justified Decision Matrix
+
+6.3  Key Corrections vs. Prior Draft
+
+6.4  What This Note Does NOT Model
+Capital opportunity cost of the AOT SOL deposit requirement
+Slot-fill rate (what fraction of reserved capacity is actually used)
+Gas wars with non-AOT participants for the remaining 90% of block capacity
+Alpenglow finality improvement (150ms → reduces risk window between reservation and execution)
+Multi-leg atomicity beyond single tx (Jito bundle equivalence for AOT)
+Secondary market for unused reserved CUs
+
+References: arXiv:2504.18055 (bot tx failure rates); Helius MEV Report Jan 2025 (avg arb $1.58); SolanaFloor Jan 2026 (PropAMM volumes); Jupiter documentation (liquidation mechanics); Blockworks validator-client markout analysis Dec 2025–Jan 2026; Solana fee documentation; Jito bundle documentation; Dune Analytics Jan 2026 (CU consumption profiles).
+
+Disclaimer: All figures are for internal planning purposes. Probability estimates are calibrated to publicly available data as of February 2026. Raiku-specific parameters (F_AOT, p_target_AOT) are working assumptions pending mainnet data.

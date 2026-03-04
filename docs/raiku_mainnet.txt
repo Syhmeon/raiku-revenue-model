@@ -1,0 +1,73 @@
+Raiku Private Mainnet Introduction
+Executive Summary
+Solana processes billions in trading volume daily, yet transaction inclusion remains fundamentally probabilistic. Bot transactions experience ~58% failure rates under normal conditions. During high contention, failure rates exceed 75%. For professional traders, this is a systematic drag on P&L.
+The cost of unreliable execution compounds: infrastructure spend on retries, wasted priority fees, stale quotes leading to adverse selection, and conservative position sizing because you don't know if your hedge will land. When HumidiFi's execution reliability degraded, their PropAMM market share collapsed from 26% to <1% in just 10 weeks. The market is unforgiving.
+Raiku exists to make execution on Solana predictable under real economic load. For professional traders, the dominant failure mode on Solana isn't latency or TPS, but uncertainty around transaction inclusion and ordering.
+Why Existing TX Delivery is Unreliable
+The hidden cost: Not just failed transactions, but everything spent overcoming uncertainty e.g. redundant RPCs, co-located infrastructure, retry logic and processes, network spam from concurrent attempts, and conservative position sizing because you don't know if your hedge will land.
+Raiku's Solution
+Raiku's value isn't about being cheaper or faster than Jito bundles. It's about removing inclusion uncertainty so that your existing speed advantages actually convert to wins.
+Current solutions optimize how you compete in real-time auctions. Raiku lets you exit the auction entirely and reserve capacity ahead of time. The competition shifts from "Who can get included first" to "Who can detect and build the transaction first"; a race sophisticated traders consistently win.
+AOT Auction (Ahead-of-Time)
+Today, decision-making and execution are coupled. When you detect an opportunity, you build the transaction and submit; then hope it lands. If the network is congested at the exact moment you need to act, you're exposed. Your edge in detection means nothing if you lose the inclusion lottery.
+AOT decouples decision-making from execution risk. You reserve blockspace before you know what you'll need it for. When an opportunity appears, you already have guaranteed capacity waiting. You're not racing for inclusion; you're racing to detect and build fastest.
+This mirrors how execution works in TradFi. Prime brokerage relationships, co-location, guaranteed clearing; the infrastructure is pre-arranged. You're not scrambling for access when you want to trade. AOT brings that model to Solana.
+How It Works
+For every slot where a Raiku validator is leader, compute units (CUs) are sold ahead of time via sealed-bid auction. Bids remain private until settlement. Winners receive guaranteed blockspace reservation in future slots.
+Auction Mechanics
+Auctions open ~1 hour before the target slot (configurable)
+Bidding closes a few slots before execution
+Winners notified before the slot begins
+Requires SOL deposit to participate
+Execution Guarantees
+Early submission → guaranteed top-of-block position
+Late submission → included as soon as possible
+AOT transactions land before all external transactions
+Predictable, forecastable costs with no real-time tip competition
+Important Limitations
+AOT Guarantees:
+Slot-level inclusion commitment for reserved CUs
+Top-of-block positioning for early submissions
+Predictable, projectable costs
+Elimination of real-time priority competition
+AOT Does Not Guarantee:
+Transaction profitability: your transaction can still fail if built against stale state or with insufficient slippage tolerance
+Zero breach risk: leader breaches are penalized but not prevented
+Execution success: P(Execution) remains ~0.95, dependent on transaction validity
+Important: "Guaranteed inclusion" means slot-level inclusion commitment, not guaranteed profit. Sophisticated traders should model AOT as dramatically improved P(Delivery) and P(Scheduling), with P(Execution) unchanged.
+The Probabilistic Nature of Transaction Inclusion
+Raiku's Ahead-of-Time (AOT) blockspace reservation fundamentally changes the inclusion equation. The table above shows the compounded impact of these probabilities in practice.
+AOT improves composite inclusion probability from 0.40 to 0.89; a 2.2x improvement over direct submission. The race shifts from "who gets included?" to "who detects and builds fastest?" AOT doesn't make you faster. It ensures your speed advantages actually convert to wins.
+Raiku introduces execution guarantees at the validator layer so strategies can be sized, priced and risk-managed with confidence. We are launching our Private Mainnet to enable controlled validation of our blockspace reservation products with select partners before broader public release later in 2026.
+The Private Mainnet operates on Solana mainnet with a curated set of validators running the Raiku client and invite-only access to the blockspace marketplace.
+JIT Auction (Just-in-Time)
+Permissionless transaction submission for immediate inclusion. This is a complementary, however secondary, product that Raiku will offer alongside AOT blockspace auctions and will simply serve as a potential revenue stream for validators, and another transaction inclusion method.
+No deposit or staking required
+Submit transactions/bundles for immediate slot inclusion
+Target Users: Trading bots, MEV searchers, high-frequency traders
+Why Join Private Mainnet
+Early participants are not beta testers. The private mainnet is a closed, execution-controlled environment built for co-design with trusted partners. Participants gain first access to Raiku's technology and directly shape the market they will later compete in. This phase validates real demand for guaranteed blockspace and informs public mainnet parameters, pricing, and the path to TGE. All participants benefit in the following ways:
+What Private Mainnet Enables
+Deterministic placement of control flows: Oracle updates, hedges, and rebalances land when intended
+No tip-per-CU competition at execution: Costs become predictable and projectable
+Reduced execution noise: Limited participant set during refinement phase
+Execution latency becomes predictable: Strategies can be sized with confidence
+How Different Participants Benefit
+Quant / HFT Traders
+Market Makers
+PropAMMs
+Architecture
+The Raiku protocol consists of the following components:
+User Flow
+AOT Users:
+Deposit SOL to AOT smart contract
+Submit bids via Raiku SDK → Marketplace (buyCUs)
+Receive bid confirmation and position if won
+Submit transactions via Raiku SDK → Engine (submitBundles)
+JIT Users:
+Connect to Raiku Engine via gRPC
+Submit transactions/bundles directly
+Timeline
+Solana Protocol Compatibility & Future Developments
+Raiku fully aligns with Solana's protocol roadmap. The developments below are compatible with, and enhance, Raiku's AOT model. These upgrades compound. A 100M CU block running P-Token has dramatically more effective capacity than today's 60M CU block.
+As block capacity grows and per tx costs shrink, the value of guaranteed inclusion increases; more competition for the same slots means AOT reservations become more valuable, not less.

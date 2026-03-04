@@ -1,0 +1,75 @@
+1.   PropAMMs
+Prop AMM — AOT Integration Architecture
+
+
+
+The core problem here is the adverse selection death spiral: when your quotes are stale because update txs fail, informed traders pick you off. You widen spreads to compensate, which kills volume, which kills fees, which makes you uncompetitive.
+The key insight is that the pricing engine doesn't change at all. The AMM's existing oracle ingestion, volatility modeling, inventory management, and spread calculation all stay the same. What changes is the submission infrastructure, you add a Raiku layer between "I've built a quote-update tx" and "I'm sending it to the network."
+The Reservation Scheduler is a new service that runs continuously. It watches the Solana leader schedule, identifies which upcoming slots are Raiku validator slots, and pre-bids in AOT auctions. This gives the AMM a rolling pool of reserved blockspace. The cost model here matters: the AMM is paying for guaranteed capacity the same way a market maker on a traditional exchange pays for colocation - it's infrastructure cost that enables tighter pricing.
+The Submission Router is the decision point. When a quote-update tx is ready, the router checks: "Is the next available slot a Raiku slot with reserved capacity?" If yes, submit into the reserved slot with guaranteed top-of-block positioning. If no, fall back to the legacy path (Jito bundles, priority fees). Over time, as Raiku's validator share grows, more slots become reserved-path slots and the fallback fires less often.
+2.   Quant Trading Desk Trading Desk — Before & After AOT Integration
+
+
+The critical design principle here is additive, not replacement. No quant desk is going to rip out their Jito pipeline and bet everything on a new system. AOT layers upstream of the existing execution path as a parallel channel.
+Integration steps in practice:
+Deploy the AOT Scheduler: This is a standalone service. It needs: Raiku API credentials, the Solana leader schedule (public), and a budget parameter for how much to spend on reservations per hour. It runs asynchronously and maintains a pool of upcoming reserved slots. Think of it as a cron job that tops up your "slot inventory."
+Add the routing decision: Between your tx builder and your Jito submission, insert a check: "Do I have a reserved Raiku slot available in the next N milliseconds?" If yes, route there. If not, the existing pipeline. This is a simple if/else in your execution path.
+Instrument and measure: Run both paths in parallel. Compare: inclusion rate, latency to confirmation, cost per landed tx (reserved slot cost vs. Jito tip + retry costs + failed tx compute costs).
+Risk model update: This is where the real economic value unlocks. Your risk system currently models execution probability at e.g. 40%. For transactions routed through reserved Raiku slots, you can model at 95%+. This higher confidence means your Kelly criterion or equivalent position-sizing framework allows larger positions for the same risk budget. More size with the same edge = more P&L.
+3.   Market Maker Operational Transactions
+Market Maker — Operational Tx Protection via AOT
+Critical non-trade txs that MUST land, especially during volatility spikes
+
+
+The MM sets up a maintenance scheduler that pre-reserves a small CU allocation every N slots (say, every 10 Raiku slots). This isn't for trading, it's for housekeeping. The reservation pattern is different from a trading desk: instead of "I need a big slot when my signal fires," it's "I need a small guaranteed slot on a regular cadence."
+The tx priority classification matters here. The MM categorizes operational txs into tiers: CRITICAL (margin top-up, collateral rebalance - catastrophic if missed), IMPORTANT (position rollovers, PnL settlement - financial drag), and ROUTINE (key rotation, account cleanup - no priority necessary). Only CRITICAL txs get routed through AOT reserved slots. IMPORTANT txs use AOT when available, Jito as fallback. ROUTINE txs just use standard submission.
+The insurance math is compelling: if your operational slot reservations cost $500/day and a single prevented forced liquidation saves you $2M, you need one save every ~4,000 days to break even. In practice, during high-vol periods (which happen multiple times a year), the system earns back months of reservation costs in a single event.
+
+4.   DEX-Dex Arbitrage
+
+
+
+The before pipeline is a long chain where everything after "Tx Builder" is just fighting for inclusion, Jito bundles, priority fee escalation, RPC spray across 3-5 nodes, retry loops. That's 4 components all dedicated to "please let my tx land." The retry loop arrow shows how the system cycles back to Jito submission when attempts fail, burning tips and compute each time.
+The after pipeline separates concerns cleanly. The AOT layer runs asynchronously, it's not in the hot path at all. The Reservation Scheduler is constantly topping up the slot pool in the background, completely decoupled from your detection logic. When a signal fires, the only new decision point is the router diamond: "Is there a Raiku slot available?" Yes → submit to your pre-reserved slot (no race, no tip escalation, top-of-block). No → fall through to the legacy Jito path, which still exists as a fallback but is no longer your primary execution channel.
+The dotted "pulls from pool" arrow is important - it shows the reserved slot pool is a shared resource between the async scheduler that fills it and the execution path that consumes it. The pool acts as a buffer: even if your scheduler hiccups, you have slots queued ahead.
+
+5.   Protocol Cranker/Keeper
+
+
+
+What cranking is: Solana protocols need periodic state transitions that don't happen automatically. Someone has to submit a transaction to "crank" the protocol e.g. settle funding rates, execute scheduled swaps, rebalance vaults, compound yield. These are the plumbing transactions that keep DeFi working. Nobody notices them when they succeed; everyone notices when they fail.
+The problem today: Cranks compete for blockspace with trading transactions. During a volatility spike, traders are willing to pay massive priority fees to land their trades. Keeper bots running cranks at modest priority fees get pushed to the back of the queue or dropped entirely. This creates a nasty correlation: cranks fail most often during exactly the market conditions where they matter most.
+Downstream consequences when cranks miss:
+Drift funding rate settlement: Stale funding rates mean perp traders are paying/receiving the wrong rates. Compounds into material P&L drift over hours.
+Jupiter DCA execution: A user set up a daily DCA buy of SOL. The crank tx fails during congestion → their scheduled buy doesn't execute → they miss the price they wanted. Bad user experience, support tickets, churn.
+Kamino vault rebalance: Vault strategy says "rebalance when price moves 2% from center." Price moves 5% during congestion, rebalance crank fails → the vault is sitting in an out-of-range position leaking yield. Every minute of delay costs LPs real money.
+Marinade stake rebalancing: Stake pool needs to redistribute across validators for decentralization and yield optimization. Missed rebalances reduce APY and concentrate stake.
+Governance execution: A proposal passes with a time-locked execution window. The crank to execute it fails. If the window expires, the entire governance process needs to restart.
+
+The key difference from trading use cases is that cranks are periodic and predictable, not reactive to market signals. You know Drift needs to settle funding every epoch. You know Jupiter DCA needs to execute swaps at user-specified intervals. This means the AOT Scheduler can be cadence-aware - it doesn't just maintain a generic pool of reserved slots, it specifically aligns reservations to match the protocol's crank schedule.
+The Cadence-Aware Scheduler takes three inputs: the protocol's crank frequency (e.g., every 100 slots), the Raiku leader schedule, and the AOT auction interface. It finds the Raiku validator slot closest to each crank boundary and pre-reserves it. The result is a timeline where every scheduled crank has a reserved slot waiting for it.
+No-op optimization: If the cron timer fires, the keeper reads on-chain state, and determines no crank is needed (the state is already current), the reserved slot simply isn't consumed and can be sold on secondaries or simply burnt. This keeps costs low during quiet periods, you're only paying for slots you actually use for cranks.
+The router decision is slightly different here too. Instead of "Raiku slot available?", it's "Raiku slot aligned to this crank window?" The scheduler has already done the work of matching reservations to cadence, so the router is really just confirming the slot is there and submitting.
+
+6.   CEX-DEX Arbitrage
+
+
+
+Why this is fundamentally different from DEX-DEX: In DEX-DEX arb, both legs execute on Solana, if your tx fails, you just missed the opportunity, no harm done. In CEX-DEX arb, one leg executes on a centralized exchange (Binance, Bybit, OKX) with near-100% fill rates in under 5ms, and the other leg executes on Solana with ~40% landing rates and 400ms+ latency. The moment your CEX leg fills, you're holding an unhedged directional position until your DEX leg lands. If the DEX leg fails, you're stuck.
+The asymmetry problem in detail:
+You spot SOL trading at $150.00 on Binance and $150.50 on Orca. The $0.50 spread is your arb. You simultaneously:
+Buy on Binance: Order fills in 3ms, 100% certainty. You now own SOL on Binance.
+Sell on Orca: Build Solana tx, submit via Jito bundle, wait...
+
+If the Orca tx lands, great, you captured the $0.50 spread. If it doesn't land, you're holding a naked long SOL position on Binance that you didn't want. You can retry the DEX leg, but the spread has likely closed by retry #2. You either unwind the CEX position at a loss or hold it and take on market risk you never intended to take.
+How firms mitigate this today:
+Widen arb threshold: Only pursue spreads large enough to absorb the expected cost of failed DEX legs. A $0.50 spread that would be profitable with reliable execution becomes untouchable when you factor in the ~60% chance your DEX leg fails and you eat a loss unwinding the CEX position.
+Reduce position sizes: Cap the exposure per arb so that a failed DEX leg doesn't blow up your daily P&L. This directly limits upside.
+Build complex hedging logic: If DEX leg fails, immediately place a hedge on CEX to limit directional exposure. Adds latency, complexity, and cost.
+Multiple RPC endpoints + aggressive retries: Spray the DEX tx across 3-5 RPCs, escalate priority fees on retries. Burns money on every attempt, win or lose.
+
+The net result is that CEX-DEX arb firms are running at a fraction of their theoretical capacity. They can see opportunities they can't pursue.
+The Reservation Scheduler bids aggressively for AOT slots and maintains deeper slot pools (6+ slots queued vs 2-4 for lower-frequency use cases). The goal is continuous Raiku slot coverage so that whenever an arb signal fires, there's a reserved slot available immediately.
+When a dislocation is detected, both legs fire simultaneously:
+CEX leg: unchanged, fills in <5ms
+DEX leg: submit to reserved Raiku slot → top-of-block positioning → almost guaranteed

@@ -1,0 +1,108 @@
+RAIKU PROTOCOL — Private & Confidential | Draft Q1 2026
+Revenue Estimation Note
+JIT & AOT Stream Analysis — Methodology & Projections
+
+Document structure:
+Section 1 — JIT Revenue: Jito market benchmarks & Raiku projections
+Section 2 — AOT Revenue: 3-dimensional framework (stake × CU% × fee/CU)
+Section 3 — Micro analysis by program/customer type
+Section 4 — Combined P&L view & key assumptions
+Appendix A — Solana validator stake distribution
+Appendix B — Illustrative customer cohort simulation
+
+Section 1 — JIT Revenue
+1.1  Market Reference: Jito MEV Ecosystem (2025)
+Jito is the dominant MEV infrastructure on Solana. Its 2025 data provides the most credible proxy for the addressable JIT market.
+
+Total Jito tips (2025) — cross-source validation
+Sources consistent within <1%. Artemis outlier excluded from DAO revenue consensus.
+
+Jito DAO TipRouter effective take rate (2025)
+Key insight: Despite a nominal 6% fee, Jito DAO captures only ~1–2% of total tip volume effectively. Q4-2025 tips (~$25M) = only 5.5% of Q1-2025 ($445M) — significant post-bull contraction.
+
+1.2  Raiku JIT Projections
+Conservative base: Q4-2025 annualised (~$100M). Sensitivity shows recovery to 2025 average ($720M).
+
+Base market: $100M/yr. Green = base scenario at 4% fee ($400K/yr treasury). Sensitivity at $720M market: multiply all by 7.2×.
+
+Section 2 — AOT Revenue: 3-Dimensional Framework
+2.1  The Three Variables
+AOT revenue depends on exactly three independent variables:
+
+
+
+Why stake % is the critical scaling variable:
+Solana assigns leader slots proportionally to stake weight
+788 active validators, median stake 150K SOL, total stake 424.2M SOL
+A validator with 1% of stake leads ~784K slots/yr; at 10% stake → 7.84M slots/yr
+This is why growing the Raiku validator network (and their stake) directly multiplies AOT revenue
+
+2.2  Stake % Reference — Solana Validator Landscape
+As of February 2026 (Solscan export, 788 active validators):
+
+Two-thirds of validators (501/788) operate with active stake between 50K and 500K SOL. Cohort simulations use 3 tiers: Small ~75K (P25), Mid ~150K (P50), Large ~300K (P75).
+
+2.3  Matrix 1 — Annual Gross Revenue by Stake% × Fee/CU
+Fixed: CU reservation = 10% of block (6M CU/slot). SOL = $100.
+Each cell = annual gross revenue to Raiku validators (before 5% protocol fee).
+
+Yellow rows = 5% stake (conservative base). Blue column = 0.10 L/CU. Green = intersection (base case). 10% CU reserved, $100 SOL.
+
+2.4  Matrix 2 — Protocol Treasury Capture (5% fee)
+Same grid, after applying 5% protocol fee.
+
+Base case (5% stake, 0.10 L/CU, 10% CU reserved) → ~$590/yr treasury. At 0.50 L/CU → ~$2,950/yr. Scale matters: 20% stake at 1.00 L/CU → $470K/yr.
+
+2.5  Matrix 3 — Impact of CU Reservation % (fixed: 5% stake, 0.10 L/CU)
+Shows how varying the CU reservation % (dimension 1) changes revenue — at fixed stake and fee.
+
+Gross revenue (before 5% protocol fee). Fixed: 5% stake, $100 SOL. CU% reserved is a product parameter (max 10% initially).
+
+Section 3 — Micro Analysis by Program/Customer Type
+3.1  Empirical Fee/CU Data (Solscan / Dune, Jan–Feb 2026)
+Observed CU consumption and fee/CU by program type, from on-chain data samples:
+
+Fee/CU range: 0.005 L (Phoenix) to 13.3 L (Axiom). PropAMMs cluster at 0.016–0.027 L. Arb bots at 0.087 L. AOT price discovery will reveal willingness-to-pay per archetype.
+
+3.2  Per-Customer AOT Willingness-to-Pay
+
+3.3  Block Fill Scenario — 10% AOT capacity (6M CU/slot)
+USD/yr = USD/slot × 78.4M × 5% stake. Protocol treasury at 5%: divide by 20. Green = base case.
+
+Section 4 — Combined Revenue View & Key Assumptions
+4.1  JIT + AOT Combined Annual Protocol Treasury (5% fee)
+
+All figures: annual treasury at 5% protocol fee. Validators keep 95%. AOT validator gross is 20× treasury figures.
+
+4.2  Key Assumptions & Risk Factors
+
+4.3  Revenue Scaling Roadmap (Indicative)
+Assumes JIT market at $100M base, AOT at 0.10–0.50 L/CU, 5% protocol fee. Figures are indicative working assumptions.
+
+Appendix A — Solana Validator Stake Distribution
+A.1  Overview (February 2026)
+
+Two-thirds of validators (501/788) operate with active stake between 50K and 500K SOL. Cohort simulations use 3 representative tiers:
+Small ~75K SOL (P25): P(leader) = 0.018%/slot → 14,090 leader slots/yr
+Mid ~150K SOL (P50, median): P(leader) = 0.035%/slot → 27,440 leader slots/yr
+Large ~300K SOL (P75): P(leader) = 0.071%/slot → 55,600 leader slots/yr
+
+A.2  Leader Slots per Validator Tier (Annual)
+Formula: leader_slots/yr = (validator_stake / 424,200,000) × 78,408,000. Revenue @0.10L, 10%CU = leader_slots × 6M × 0.10 / 1B × $100.
+
+Appendix B — Illustrative Customer Cohort Simulation
+The following simulation uses a hypothetical private mainnet cohort to compare revenue scenarios. CU consumption and fee profiles are calibrated against on-chain data from existing Solana programs (source: Solscan, February 2026).
+
+B.1  Reference: Observed Fee/CU Rates on Solana Mainnet
+Key insight: PropAMMs (HumidiFi, BisonFi) have lowest fee/CU (0.016–0.027 L) but high CU volume. Raydium and Pump have 100× higher fee/CU. AOT price discovery will capture premium WTP.
+
+B.2  Cohort Simulation — 3 Validator Tiers × Customer Mix
+For each validator tier, we simulate a realistic AOT customer mix and estimate annual revenue contribution.
+
+Scenario: 5 customers per validator, mix of PropAMM + HFT + Arb
+Mid-validator (150K SOL stake): 27,440 leader slots/yr. $797/yr gross per validator from this customer mix. Protocol treasury @5% = $40/yr per validator.
+
+B.3  Network-Level Revenue — Validator Count Scenarios
+Assumptions: avg validator stake 150K SOL, 10% CU reserved at 0.10 L/CU avg, customer mix from B.2. Gross = all fees collected. Treasury = 5% of gross.
+
+Disclaimer: All figures are working assumptions for internal planning purposes. Market conditions and adoption may differ materially from projections.

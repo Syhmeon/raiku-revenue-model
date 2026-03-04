@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Processed data (re-generated from raw)
+data/processed/
+
+# Output files (re-generated)
+output/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Virtual env
+venv/
+.venv/
+env/

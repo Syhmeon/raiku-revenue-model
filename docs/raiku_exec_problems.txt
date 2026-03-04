@@ -1,0 +1,178 @@
+Solana Execution Problems & How Raiku Solves Them
+For Market Makers, PropAMMs & Quantitative Traders
+Private & Confidential | January 2026
+Executive Summary
+The Problem: Probabilistic Inclusion
+Transaction inclusion on Solana is inherently probabilistic. When you submit a transaction, multiple factors determine whether it lands: network delivery, leader scheduling, execution validity, and finality. Under contention, the composite probability of successful inclusion drops significantly.
+Empirical evidence:
+Bot transactions experience ~58% failure rates vs ~6% for human users during normal conditions [1]
+During high contention, failure rates can exceed 75% [2]
+For PropAMMs, failed oracle updates lead to stale quotes, adverse selection, and lost market share
+
+Real-world impact: HumidiFi, once commanding 26% of PropAMM market share, dropped to <1% in 10 weeks when execution reliability degraded. The market is unforgiving.
+
+The Stakes: $287B Market at Risk
+The cost of unreliable execution compounds: infrastructure spend on retries, wasted priority fees, stale quotes leading to adverse selection, and ultimately lost market share to more reliable competitors.
+
+
+The Solution: Raiku's AOT Model
+Raiku's Ahead-of-Time (AOT) blockspace reservation fundamentally changes the inclusion equation.
+
+
+Key insight: AOT dramatically improves Delivery and Scheduling by eliminating real-time priority competition. You reserve capacity for a specific future slot, then submit when ready. The race shifts from "who gets included?" to "who detects and builds fastest?"—a race sophisticated traders can win consistently.
+
+Key Takeaways
+Inclusion is probabilistic, not guaranteed. P(Inclusion) ≈ 0.40 under direct submission; Raiku AOT improves this to ≈ 0.89.
+CU efficiency determines competitive position. HumidiFi pays ~7,400 lamports/tx; ZeroFi pays ~104,000 lamports—14x more for the same priority level.
+Market share follows execution quality. When updates fail, aggregators route elsewhere. HumidiFi's 26% → <1% collapse demonstrates this.
+AOT complements, not replaces, JIT. Use AOT for predictable, scheduled updates; use Jito/Harmonic for opportunistic flow.
+The stakes are real. With $287B in PropAMM volume, even 1% improvement in fill rates represents $163M+ in additional executed flow at peak.
+
+Section 1: The Problem
+1.1 The Probabilistic Nature of Transaction Inclusion
+Transaction inclusion on Solana depends on four independent factors:
+P(Inclusion) = P(Delivery) × P(Scheduling) × P(Execution) × P(Finality)
+P(Delivery): The probability your transaction reaches the target leader.
+Affected by: Stake-Weighted QoS (SWQoS) rate limits, network latency, leader rotation timing
+Without stake-backed routes, packets can be dropped before reaching the leader [3]
+
+P(Scheduling): Given delivery, the probability of being scheduled for execution.
+Leaders maintain finite buffers (TOTAL_BUFFERED_PACKETS = 100,000 in Agave) [4]
+Transactions compete on priority: Priority = (Fee + Base) / (1 + CU + Signature CUs + Write Lock CUs) [5]
+Account contention (AccountInUse) causes deferals
+
+P(Execution): Given scheduling, the probability of successful execution.
+Depends on transaction validity: slippage tolerances, state freshness, blockhash validity
+This factor is largely independent of submission method
+
+P(Finality): Given execution, the probability of achieving desired commitment.
+processed → confirmed → finalized progression
+Rollback risk exists until finalized (~12.8s currently; ~150ms post-Alpenglow) [6]
+
+Empirical Baseline
+Under contention with direct TPU submission:
+P(Delivery) ≈ 0.70 — SWQoS and timing reduce delivery
+P(Scheduling) ≈ 0.60 — Priority competition and buffer limits
+P(Execution) ≈ 0.95 — Most valid transactions execute
+P(Finality) ≈ 0.99 — Rollbacks are rare
+
+Composite: P(Inclusion) ≈ 0.40
+
+This aligns with empirical data showing ~58% bot transaction failure rates [1].
+1.2 Why This Matters for PropAMMs
+PropAMMs rely on frequent oracle updates to keep on-chain prices aligned with market prices. When updates fail:
+Quotes go stale — The pricing curve drifts from true market price
+Adverse selection increases — Informed traders pick off stale quotes
+Aggregators route elsewhere — Jupiter and other routers prefer fresh quotes
+Market share erodes — Volume flows to more reliable competitors
+
+Adverse Selection Cost Framework
+Adverse Selection Cost = Position Size × Price Move × P(Stale) × P(Fill|Stale)
+This framework derives from market microstructure theory [7]. The key insight: failure probability clusters during volatility—exactly when price moves are largest and adverse selection is most costly.
+
+
+Per incident. Multiply by incidents per day.
+
+1.3 CU Efficiency: The Arms Race
+In Jito's block engine, bundles are ordered by tip per CU [8]. Lower compute makes a fixed tip more effective, improving inclusion odds and block position.
+Below are the empirical CU efficiency rankings based on Dune Analytics data from January 2026.
+
+
+Key insight: The gap between best (HumidiFi) and worst (ZeroFi) is 14x. This engineering moat means less-optimized PropAMMs pay dramatically more for equivalent positioning.
+1.4 Market Share Follows Execution Quality
+Case Study: HumidiFi (Oct 2025 – Jan 2026)
+HumidiFi's market share collapsed from 26% to <1% in ~10 weeks. When oracle updates become less reliable, aggregators route flow elsewhere. The correlation between execution quality and market share is direct.
+
+
+Section 2: The Raiku Solution
+2.1 Core Value Proposition
+Raiku's value is not about being faster than direct TPU. It's about materially improving P(Inclusion) so your speed advantages convert to wins.
+With AOT blockspace reservations:
+P(Delivery) improves: siQoS path delivers directly to target leader
+P(Scheduling) improves: Pre-reserved CUs eliminate priority competition
+
+The race shifts from "who gets included first?" to "who detects and builds the transaction first?"—reflecting TradFi execution dynamics where infrastructure and strategy differentiate winners.
+2.2 Ahead-of-Time (AOT) Execution
+AOT turns blockspace into a schedulable resource. You pre-purchase slot-level inclusion commitments for a specific future slot, then submit through Raiku when needed.
+Mechanics:
+Bid for future-slot compute (CUs) at a price per CU via SubmitAotBid [I1]
+Auction allocates by price_per_cu until CU cap reached [I3]
+On submission, siQoS path routes to target leader's Sidecar [I10]
+Optimistic failure mode: breaches are penalized [I7]
+
+Important limitation: "Guaranteed inclusion" means slot-level inclusion commitment, not profit. Transactions can still fail if invalid or built against stale state.
+2.3 P(Inclusion) Comparison
+
+2.4 What This Enables
+For a PropAMM routing updates through Raiku AOT:
+More reliable oracle updates → fresher quotes → less adverse selection
+Predictable costs → no over-tipping or retry waste
+Engineering focus shifts from inclusion optimization to pricing strategy
+Tighter spreads become viable on more pairs
+
+Quantified impact: At HumidiFi's peak weekly volume ($16.3B), a 1% improvement in fill rates represents $163M in additional executed flow.
+
+Section 3: Competitive Landscape
+3.1 Comparison Matrix
+
+Key insight: Jito and Harmonic optimize how you compete in real-time auctions. Raiku lets you exit the auction for reserved capacity.
+3.2 Jito
+Dominant MEV infrastructure on Solana. Launched Block Assembly Marketplace (BAM) in September 2025, introducing PBS with TEE-based ordering.
+The Block Engine runs parallel auctions at 50ms ticks. Bundles with intersecting locking patterns (write-write, read-write, write-read) compete in a single auction, while non-intersecting bundles run separately. Within each auction, bundles are ordered by tip-per-CU efficiency—not absolute tip—so compute-efficient transactions gain priority at lower cost. The engine simulates bundles to determine profitable combinations and submits the highest-paying set to validators up to a CU limit [11].
+BAM introduces Proposer-Builder Separation (PBS) to Solana. BAM Nodes ingest transactions in Trusted Execution Environments (TEEs), sequence according to programmatic rules, and send to BAM Validators for execution. This architecture enables custom scheduling logic through Plugins—interfaces that allow applications to implement features like speed bumps or priority ordering without modifying consensus. Validators retain the option to use Agave, Firedancer, or other clients—BAM is opt-in [12].
+Strengths: Network effects, established tip economy, institutional backing ($50M A16z, Oct 2025 [9])
+Limitation: JIT-only—you still compete in real-time tip-per-CU auctions.
+
+3.3 Harmonic
+Block-building aggregation layer backed by Paradigm ($6M seed, Nov 2025 [10]). Operated by Temporal, parent of HumidiFi.
+Harmonic creates an open marketplace where validators source blocks from multiple competing builders (Jito, Temporal, BAM, Paladin, etc.) rather than accepting a single "all-or-nothing" block. The system consists of: (1) TPU Relayers that aggregate transactions, (2) Block Builders that independently construct candidate blocks using their own strategies, (3) an Auction Engine that aggregates, verifies, normalizes, and scores builder blocks, and (4) Validators that apply configurable preferences (max revenue, compliance rules, anti-sandwich) to select blocks each slot [13].
+Harmonic's thesis is that "fast and fair markets outperform fast-but-closed systems." By enabling builder competition, the system pushes value to validators and the network rather than a single intermediary. Validators can configure "preference presets" to defend users from toxic MEV flows while keeping markets efficient. Builder diversity also reduces correlated failures and lock-in risk—if one builder goes down, validators seamlessly receive blocks from others.
+Strengths: Deep packing optimization, HumidiFi operational experience, multi-builder competition
+Limitation: Still JIT competition, no scheduled blockspace
+
+Section 4: Solana Protocol Evolution
+4.1 Alpenglow (Expected Early-Mid 2026)
+Replaces PoH + Tower BFT with Votor (consensus) and Rotor (propagation).
+Key change: Finality drops from ~12.8s to 100–150ms [6]
+Implication for Raiku: The gap between "scheduled" and "finalized" shrinks dramatically. AOT commitments become near-instant settlement.
+4.2 Future Developments
+Multiple Concurrent Leaders (MCL): Parallel block production for non-conflicting transactions
+Asynchronous Execution: Ordering separated from execution
+
+Both developments are compatible with—and potentially enhance—the AOT model.
+Section 5: Data Visualizations
+[CU Efficiency Rankings]
+[CU Efficiency Boxplot]
+[Market Share]
+[P(Inclusion) Comparison]
+[Summary Dashboard]
+
+References
+Primary Sources
+[1] arXiv:2504.18055 — "Empirical Analysis of Transaction Success Rates on Solana" (Apr 2025). Bot failure rate ~58% vs ~6% for human users.
+[2] Blockworks — "Solana Congestion Analysis" (2025). Derived from network monitoring; precise methodology varies by measurement.
+[3] Solana Documentation — Stake-Weighted QoS Guide. https://solana.com/developers/guides/advanced/stake-weighted-qos
+[4] Agave Source — banking_stage.rs:L107. TOTAL_BUFFERED_PACKETS = 100,000. https://github.com/anza-xyz/agave
+[5] Solana Documentation — Transaction Fees. https://solana.com/docs/core/fees
+[6] Helius — "Alpenglow Deep Dive" (May 2025). Finality target 100–150ms, as reported by Helius based on Solana Labs communications. https://www.helius.dev/blog/alpenglow
+[7] Kyle, A.S. (1— "Continuous Auctions and Insider Trading." Econometrica. Foundation for adverse selection framework.
+[8] Jito Documentation — "Low-Latency Transaction Send." Bundles ordered by tip per CU. https://docs.jito.wtf/lowlatencytxnsend/
+[9] Fortune, CoinDesk, TheBlock — Jito A16z $50M investment (Oct 2025). Multiple news sources.
+[10] TheBlock — "Paradigm backs Harmonic with $6M seed" (Nov 2025). https://www.theblock.co/post/377791
+[11] Jito Documentation — Block Engine auction mechanics. 50ms ticks, tip-per-CU ordering. https://docs.jito.wtf/lowlatencytxnsend/
+[12] BAM Documentation — System architecture. TEE-based PBS, BAM Node/Validator separation. https://bam.dev/docs/
+[13] Harmonic Documentation — Open block building system. Multi-builder aggregation. https://docs.harmonic.gg/
+
+Internal Sources
+[I1] raiku-protocol/raiku-sdk: crates/grpc/proto/marketplace.proto
+[I3] raiku-protocol/ackermann: crates/marketplace/src/auction_hub/order_book.rs
+[I7] raiku-protocol/ackermann: docs/public/devnet/ackermann-v1/architecture.md
+[I10] raiku-protocol/ackermann: docs/private/product-specs/ackermann-v1/slot-inclusion-qos-siqos.md
+
+Data Sources
+[D1] Dune Analytics — PropAMM volume/trade data from dex_solana.trades (Oct 2025 – Jan 2026)
+[D2] Dune Analytics — Transaction fee data from solana.transactions (Jan 2026)
+[D3] Dune Analytics — Market share calculations: PropAMM volume / Total DEX volume per week
+
+Claim Verification Summary
+

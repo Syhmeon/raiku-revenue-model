@@ -1,0 +1,215 @@
+Quantifying the opportunity cost of Raiku Ahead‑of‑Time auctions versus standard priority fees
+Purpose
+This internal note provides a quantitative way to estimate the expected economic cost of executing a transaction in a targeted Solana slot using:
+the standard path: regular transaction + priority fees, versus
+Raiku’s product: Ahead‑of‑Time auctions (AOT
+The output we care about is a single number per use case:
+Expected cost without AOT
+Expected cost with AOT
+Opportunity cost avoided by using AOT = difference between the two
+The note uses three representative, well-known “targeted-slot” client archetypes:
+Jito-style Just‑in‑Time bundling for arbitrage as the baseline intuition
+Prop AMM oracle/quote updates
+Perpetual liquidation defense
+All numeric inputs are sourced where possible; anything that is Raiku‑internal (auction success probability, bid levels) is labeled as such.
+Raiku Ahead‑of‑Time auctions in one paragraph
+Raiku Ahead‑of‑Time auctions let a user bid 40–45 seconds before a future slot in a closed auction. Bids are expressed as price per compute unit. The highest bid gets preferential placement for the targeted slot, typically near the start of the block. This is designed to make target-slot inclusion much more reliable than standard priority fees under congestion.
+This mechanism is economically analogous to Jito bundles in one key way: the user is paying for execution certainty in a specific slot, not eventual inclusion.
+Economic model
+Definitions
+E: expected economic cost to the user for a single targeted-slot action
+F: total on-chain fees paid if the transaction is executed on-chain
+includes base fee and prioritization fee for normal transactions
+includes the AOT payment if the AOT path is used
+L: economic loss if the transaction misses the targeted slot
+scenario-specific: adverse selection loss, liquidation loss, missed profit
+p_target: probability the transaction is executed in the targeted slot
+p_include: probability the transaction is executed on-chain at all
+may be larger than p_target, because transactions can execute late
+Fee accounting rules that make p_include necessary
+Solana fees are charged in a way that matters for modeling:
+Total fee is computed as base fee + prioritization fee, and is charged whether the transaction succeeds or fails. [1]
+The fee is deducted before execution begins and still charged if the transaction fails. [2]
+If a transaction is dropped before execution, then no fees are collected (documented explicitly for nonce transactions failing validation). [3]
+These rules justify modeling fees as proportional to p_include: you pay fees when the transaction gets executed on-chain; if it never lands, the chain never collected the fee.
+Core equation
+For a “one-shot targeted slot” objective:
+E = (p_include × F) + ((1 − p_target) × L)
+Interpretation:
+p_include × F is the expected fee spend (fees only if executed on-chain)
+(1 − p_target) × L is expected economic loss from missing the targeted slot
+this applies whether you land late or never land
+Comparing standard priority fees versus Haiku AOT
+Let:
+E_regular = (p_include_regular × F_regular) + ((1 − p_target_regular) × L)
+E_AOT = (p_include_AOT × F_AOT) + ((1 − p_target_AOT) × L)
+The number we want:
+Opportunity cost avoided by AOT = E_regular − E_AOT
+Break-even loss
+AOT is economically justified when E_AOT < E_regular, which occurs when:
+L > L_star
+Where:
+L_star = (p_include_AOT × F_AOT − p_include_regular × F_regular) / (p_target_AOT − p_target_regular)
+This gives a clean decision boundary: how big does the “missed target slot” loss need to be before paying the AOT premium is rational.
+Baseline intuition from Jito Just‑in‑Time bundles
+This section is not about Haiku AOT directly. It is included because it clearly illustrates the “pay conditional on landing” structure that makes target-slot markets work.
+What Jito bundles guarantee
+Jito bundles are executed atomically and all-or-nothing:
+up to 5 transactions, sequential, same slot
+if any transaction fails, none of the transactions are committed [4]
+Tips in Jito bundles are:
+a SOL transfer instruction included in the last transaction of the bundle [4]
+required for the bundle to be considered; if the tip is too low, the bundle might not be selected during the auction [5]
+This is the key economic property:
+If the bundle is not selected or does not land, the on-chain tip transfer never executes, so the user does not pay the tip on-chain (because nothing is committed). [4]
+Numeric example
+Use case: arbitrage, where the loss from missing the target slot is missed profit.
+Sourced profitability benchmark:
+Helius reports average arbitrage profit $1.58 per arbitrage and max single arbitrage $3.7M (Jan 2025 report). [6]
+Extropy cross-chain analysis also cites $1.58 average profit for Solana arbitrage (Dec 2025). [7]
+Define:
+L = missed arbitrage profit
+Example L = 1.58 USD
+For Jito bundles, a good first-order approximation for this specific problem is:
+p_include = p_target = probability your bundle wins the auction and lands in the targeted slot
+F = your tip + transaction fees, paid only if the bundle lands (because tips are in-bundle and bundles are all-or-nothing) [4]
+So:
+E_bundle = p_target × F + (1 − p_target) × L
+This is the same structure we will use for Haiku AOT: conditional payment provides cleaner economics than “pay priority fee and still maybe land late.”
+Prop AMM oracle and quote updates
+What the targeted-slot objective is
+Prop AMMs compete to land the earliest oracle-driven update in a given slot, measured by earliest PoH tick. The first update effectively defines the “fresh” price state for that slot, and later updates are disadvantaged.
+This dynamic and the measurement definition are described in the Blockworks research thread covering six prop AMMs across 2.82M slots from Dec 30, 2025 to Jan 14, 2026, defining “win rate” as the prop AMM that lands the first oracle update in a slot by earliest tick.
+Loss definition
+For this note, we define:
+L = expected economic loss from missing the targeted update slot
+We model it as adverse selection / toxic flow while the AMM is stale relative to competitors
+A practical proxy that maps directly into dollars:
+L = notional traded during the stale window × markout
+This uses an empirically observable quantity: prop AMM “markouts” by validator client.
+Sourced numeric inputs
+Recent prop AMM volume and market share:
+SolanaFloor reports in a Jan 2026 data-insight write-up:
+prop AMM daily volume reached $4B at peak, driven by BisonFi’s ascent
+BisonFi processed >$1.43B in one day (Jan 21)
+HumidiFi’s share was ~26.5% of daily prop AMM volume in that snapshot
+Tessera weekly volume $1.35B, SolFi weekly volume $1.03B [8]
+Markout magnitudes:
+The uploaded Blockworks research PDF documents markout behavior by validator client, including cases where markouts are on the order of ~1 bp and regimes reaching multiple bps (examples include several-basis-point differences across clients/time horizons).
+For a conservative internal example, we use:
+Base markout: 1 bp
+Stress markout: 4 bp
+These are consistent with the order of magnitude shown in the Blockworks markout analysis.
+Time conversion:
+Seconds per day = 86,400
+We model one targeted-slot stale window as 0.4 seconds
+This is simply a conversion constant; it is not a Solana claim.
+Compute the miss-loss L in dollars
+Let:
+Volume_day = prop AMM volume per day in USD
+Window_sec = 0.4 seconds
+Notional_window = Volume_day × (Window_sec / 86,400)
+Markout = bps / 10,000
+Then:
+L = Notional_window × Markout
+Worked examples using SolanaFloor’s latest Jan 2026 volume values:
+1) BisonFi day with $1.43B volume [8]
+- Notional_window = 1.43B × (0.4 / 86,400) = 6,620 USD
+- L at 1 bp = 6,620 × 0.0001 = 0.66 USD
+- L at 4 bp = 6,620 × 0.0004 = 2.65 USD
+2) Mid-size prop AMM at 10% share of $4B day [8]
+- Volume_day = 0.10 × 4B = 400M
+- Notional_window = 400M × (0.4 / 86,400) = 1,852 USD
+- L at 1 bp = 0.19 USD
+- L at 4 bp = 0.74 USD
+Expected cost without and with Haiku AOT
+This is where we produce the final number.
+Assumptions for the example:
+Fees and success rates are product-level inputs; use the placeholders below unless replaced by measured Haiku data.
+Example fees consistent with the AOT cost framing used internally:
+F_regular = 50,000 lamports
+F_AOT = 60,000 lamports
+Example landing probabilities:
+p_target_regular = 0.85
+p_target_AOT = 0.995
+Inclusion probabilities:
+p_include_regular = 1.0 (lands on-chain, but often late)
+p_include_AOT = 0.995 (if validator misses, no inclusion via AOT)
+Fee conversion assumption for readability:
+1 SOL = 100 USD
+1 SOL = 1,000,000,000 lamports
+So:
+50,000 lamports = 0.00005 SOL = 0.005 USD
+60,000 lamports = 0.00006 SOL = 0.006 USD
+Now compute:
+E_regular = (1.0 × 0.005) + (0.15 × L)
+E_AOT = (0.995 × 0.006) + (0.005 × L)
+0.995 × 0.006 = 0.00597
+Opportunity cost avoided by AOT:
+Savings = E_regular − E_AOT = (0.005 − 0.00597) + (0.145 × L)
+Savings = −0.00097 + 0.145 × L
+Numeric results:
+These are the “final numbers” for this scenario under the stated fee and probability assumptions.
+Break-even loss
+Using the same parameters, break-even loss is:
+L_star = (p_include_AOT × F_AOT − p_include_regular × F_regular) / (p_target_AOT − p_target_regular)
+In USD:
+L_star = (0.00597 − 0.00500) / 0.145 = 0.0067 USD
+So for prop AMM updates: if the expected stale-slot loss exceeds ~0.7 cents, AOT is economically justified in this example.
+Perpetual liquidation defense
+What the targeted-slot objective is
+A trader submits a transaction that must land before liquidation triggers: add collateral, reduce position, close position.
+Loss definition
+L = collateral value forfeited due to liquidation that would have been avoided if the transaction landed in the targeted slot
+Jupiter Perps documentation states:
+if a position is liquidated, any remaining collateral is collected as liquidation fees, and the user effectively loses the remaining collateral. [9]
+Jupiter also provides a concrete numeric example:
+collateral = 10,000 USD
+remaining collateral after liquidation = 1,000 USD
+liquidation penalty collected = 1,000 USD [9]
+So a defensible L range for examples is:
+base: L = 1,000 USD
+stress: L = 10,000 USD
+Expected cost without and with Haiku AOT
+Reuse the same fee/probability assumptions as above for a consistent “how big is the effect” demonstration:
+E_regular = 0.005 + 0.15 × L
+E_AOT = 0.00597 + 0.005 × L
+Savings = −0.00097 + 0.145 × L
+Results:
+This scenario produces large avoided opportunity costs because L is large.
+Break-even loss
+Same break-even threshold as above:
+L_star ≈ 0.0067 USD
+Liquidation losses are orders of magnitude larger than this threshold, so the decision is dominated by reliability rather than fees.
+Summary of final numbers
+Under the example fee and probability inputs:
+F_regular = 50k lamports
+F_AOT = 60k lamports
+p_target_regular = 0.85
+p_target_AOT = 0.995
+p_include_regular = 1.0
+p_include_AOT = 0.995
+1 SOL = 100 USD
+The opportunity cost avoided by using Haiku AOT instead of relying only on standard priority fees is:
+Prop AMM updates: roughly $0.03 to $0.38 per targeted-slot action in the worked examples using Jan 2026 prop AMM volume data and 1–4 bp markout regimes. [10]
+Liquidation defense: roughly $145 to $1,450 per action for $1k–$10k collateral-at-risk examples, grounded by Jupiter’s liquidation penalty mechanics. [9]
+Break-even loss in this configuration is ~$0.0067 per missed target slot, meaning even small missed-slot losses justify AOT when the fee premium and Δp_target match the assumptions.
+
+[1] https://solana.com/docs/core/fees/fee-structure
+https://solana.com/docs/core/fees/fee-structure
+[2] https://github.com/solana-foundation/solana-com/blob/main/apps/docs/content/docs/en/core/fees/fee-structure.mdx
+https://github.com/solana-foundation/solana-com/blob/main/apps/docs/content/docs/en/core/fees/fee-structure.mdx
+[3] https://solana.com/docs/core/transactions/durable-nonces
+https://solana.com/docs/core/transactions/durable-nonces
+[4] https://www.quicknode.com/guides/solana-development/transactions/jito-bundles
+https://www.quicknode.com/guides/solana-development/transactions/jito-bundles
+[5] https://docs.jito.wtf/lowlatencytxnsend/
+https://docs.jito.wtf/lowlatencytxnsend/
+[6] https://www.helius.dev/blog/solana-mev-report
+https://www.helius.dev/blog/solana-mev-report
+[7] https://academy.extropy.io/pages/articles/mev-crosschain-analysis-2025.html
+https://academy.extropy.io/pages/articles/mev-crosschain-analysis-2025.html
+[8] [10] https://solanafloor.com/news/prop-amms-on-solana-bison-fi-ends-humidi-fi-s-dominance-with-11-5-b-volume
+https://solanafloor.com/news/prop-amms-on-solana-bison-fi-ends-humidi-fi-s-dominance-with-11-5-b-volume
+[9] https://learn.backpack.exchange/articles/solana-transaction-failed
+https://learn.backpack.exchange/articles/solana-transaction-failed

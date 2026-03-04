@@ -1,0 +1,784 @@
+Post-TGE Protocol Design
+RAIKU Protocol
+Post-TGE Protocol Design Specification
+Technical Specification v1.1
+Document Status: Draft
+Target Context: Mainnet Deployment Q3-Q4 2026
+Scope: Integration of $RAIKU tokenomics into the AOT and JIT auction mechanisms.
+Table of Contents
+Executive summary
+This document outlines the integration of the $RAIKU token into the protocol's existing Ahead-of-Time (AOT) and Just-in-Time (JIT) auction mechanisms. Targeting a mainnet deployment in Q3-Q4 2026, the $RAIKU token features a fixed maximum supply of 1 billion tokens and is designed to introduce protocol-level coordination primitives without disrupting the security-critical, SOL-denominated execution paths.
+The Lock Vault & Token Utility
+The $RAIKU token is fundamentally non-inflationary, and its utility is mainly anchored by the Lock Vault. The Vault is designed around three core functions:
+DAO Governance Voting: Token holders can deposit $RAIKU into the Vault to vote on Raiku Improvement Proposals (RIPs), which control economic parameters like protocol take rates, validator evaluation criteria, and treasury allocations.
+Bootstrapping & Yield Distribution: Initially, the Vault incentivizes early stakers by distributing yield from a finite $RAIKU emission pool. Over time, this transitions to a sustainable, revenue-backed yield model funded by market buybacks from the protocol's SOL fee revenue.
+Customer Loyalty & Rebates: Customers can stake $RAIKU to unlock VIP levels based on the staked amount and bid volume in the auctions, leading to tiered rebates on their bids. This effectively reduces their auction costs by a small percentage based on their VIP level.
+The Multi-Incentive Mechanism: Customers lock their $RAIKU in the exact same vault utilized for governance, yield generation, and to get VIP rebates. Consequently, VIP staking also earns standard staking yield, as the rebate amounts are distributed directly to the user's lock vault position alongside their standard staking rewards. This strengthens the overall demand effect, creating continuous buying pressure while incentivizing users to keep their tokens staked to maintain their VIP tiers.
+Retrospective Airdrop
+To reward early usage without encouraging speculative farming, Raiku will allocate 8% to 13% of its total supply to early adopters via a retrospective airdrop.
+The airdrop targets six distinct pools based on operational risk and revenue contribution: Validators, infrastructure partners, AOT customers, JIT customers, LST stakers, and the Community.
+Eligibility is based on undisclosed on-chain and community activity captured during a 5 to 7-month snapshot window leading up to the Token Generation Event (TGE).
+Validator Alignment & Protocol Economics
+Validators represent the supply side of Raiku's blockspace and primarily earn SOL-denominated revenue. To ensure compliance with block inclusion rules, the protocol utilizes an automated evaluation system.
+Revenue Enhancement: By default, the protocol captures a 5% fee from AOT and JIT flow. Validators who meet performance criteria over a 15-epoch lookback window are rewarded with a reduced protocol take rate, (e.g., 3.5%), directly increasing their SOL revenue share (to 96.5%).
+rkSOL Delegation: High-performing validators also receive increased SOL delegation from the rkSOL stake pool, boosting their leader slots and overall network revenue.
+Value Accrual & Treasury Allocation
+The real SOL-denominated revenue captured by the protocol's take rate is routed to the Treasury and deployed through governance-configurable mechanisms.
+Value Accrual (Fee Switch): Treasury SOL can be used to execute market buybacks of $RAIKU. This acquired $RAIKU is either permanently burned to reduce total supply, or distributed to stakers in the Lock Vault as “real yield”.
+Growth Reinvestment: Revenue is also allocated toward protocol operating costs, ecosystem grants, treasury diversification into stable assets, and adoption incentives like the validator/delegator subsidy.
+1. Protocol Context (Raikunomics)
+Document Scope
+This specification extends the Pre-TGE Raiku protocol design by introducing the $RAIKU token. The Pre-TGE protocol already functions without a token; this document defines how token mechanics integrate with existing auction infrastructure and introduces new coordination primitives enabled by the token.
+It covers token allocation, utility mechanisms, revenue flows, governance, and phased activation. 
+Target deployment: Mainnet Q3-Q4 2026.
+Relationship to Pre-TGE Design
+Low-level auction mechanics, networking, and execution pipelines are defined in the Pre-TGE Protocol Design document and are not repeated here. This specification assumes familiarity with:
+Ahead-of-Time (AOT) auction mechanics: sealed-bid auctions for reserved compute windows
+Just-in-Time (JIT) auction mechanics: real-time tip-based transaction ordering
+Settlement flow via TipPaymentAccount PDAs and TipDistributionAccounts
+Merkle-proof-based claiming for validators and delegators
+Unless explicitly stated otherwise, the following invariants hold throughout all protocol phases:
+AOT and JIT auctions continue to operate as specified in the Pre-TGE design.
+AOT and JIT settlement remains SOL-denominated phases.
+The token does not sit on the critical execution path unless a phase explicitly introduces gating or token settlement.
+Token Purpose Overview
+$RAIKU introduces protocol-level coordination primitives:
+Value Accrual:  Protocol fees routed to agents (token holders, validators, customers, protocols)
+Yield-bearing:  Vault-based staking to earn a share of protocol-aligned distributions
+Governance: Token-weighted voting on protocol parameters
+Customer loyalty: Tiered fee rebates on AOT and JIT auction
+Validator alignment: Governance participation on validator economics
+Rewards (Early adopters): Airdrops and bootstrap yield to incentivize early usage
+Token Utility by Agent
+Token holders
+Token holders use RAIKU as a governance and yield bearing asset. They interact with RAIKU and the protocol through:
+Value capture: the protocol captures a portion of fees and redirects value to holders, via the Lock Vault (bootstrap yield from initial Staking Rewards allocation, then revenue-backed buyback distributions) and via burn (permanent supply reduction).
+Governance: voting on RIPs to control economic parameters (take rate, buyback split, revenue enhancement thresholds).
+Customers (AOT/JIT)
+Customers are the demand side: Settlement remains SOL-denominated. $RAIKU bootstraps usage and creates a loyalty layer:
+Rebates: locking $RAIKU unlocks tiered fee rebates (0.25–1% on AOT, 0–0.5% on JIT), reducing auction costs.
+Incentive rewards: $RAIKU allocations for early adopters (airdrop, usage-based incentives).
+Governance: voting on parameters affecting customer economics (rebate tiers, loyalty thresholds).
+Infrastructure Partners
+Partners such as RPC providers that integrate with Raiku.
+Incentive rewards: $RAIKU allocations for integration and sustained partnership (airdrop).
+Governance: voting on parameters affecting the infrastructure integration.
+Validators
+Validators are the supply side of deterministic blockspace. Their core economics remain SOL-denominated (95% default revenue share from AOT and JIT). $RAIKU provides:
+Incentive rewards: $RAIKU allocations for early adoption and sustained performance (airdrop, validator rewards allocation).
+Governance: voting on parameters affecting validator economics (take rate range, evaluation criteria, penalty thresholds).
+Note: validators also benefit from a SOL-denominated revenue enhancement mechanism independent of $RAIKU holdings. Qualifying validators receive a reduced take rate (e.g. 5% → 3.5%), increasing their SOL earnings (cf. Section 2 & Section 6).
+Utility Summary by Agent
+2. Value Accrual / Capture
+Objective
+Redistribute the protocol's real SOL-denominated revenue to token holders, validators, customers, and treasury reserves through governance-configurable mechanisms.
+Design Principle
+Raiku generates revenue in SOL from two streams: AOT auction fees (sealed-bid payments for reserved compute windows) and JIT tips (real-time tips on transactions and bundles). Governance-configurable take rates (aot_protocol_fee and jit_protocol_fee, default 5%, range 0–5%) capture a share of these flows into the Treasury. From there, governance allocates between two broad categories: direct value accrual via buyback (i.e. swapping Treasury SOL into $RAIKU on open markets), and growth-oriented reinvestment.
+This is a structural trade-off between returning value to holders now versus investing in protocol expansion to increase future revenue. This trade-off was extensively debated in 2025 within Jito's DAO (see Appendix F - Token value accrual - Other Protocols for detailed analysis). Raiku adopts the same principle: allocation is not fixed but governance-controlled and adapts across protocol maturity phases.
+Mechanism Details
+The protocol fees are applied to the AOT and JIT revenues. The captured portion enters the Treasury. Treasury SOL is then deployed across the mechanisms described below.
+A. Direct Value Accrual - Buyback
+The protocol captures a share of its SOL-denominated fees and redistributes that value to token holders, either directly via staker distribution, or indirectly via buyback & burn that reduces circulating supply. This is fee capture (“fee switch”): the protocol converts real revenue into token holder value, rather than retaining it exclusively for operations.
+Buyback execution. The buyback can be executed statically or dynamically.
+ A static buyback runs periodic TWAP purchases (e.g. weekly over a 7-day window via an aggregator) regardless of market conditions, simple and auditable, but buys indiscriminately across all price levels. 
+A dynamic (valuation-aware) buyback activates only when the token trades below a governance-set price corridor (e.g. below a defined revenue multiple), pausing during overvaluation, more capital-efficient, but requires oracle infrastructure (e.g. Pyth) and adds governance surface.
+Both approaches and their trade-offs are detailed in Appendix F.
+Post-buyback redistribution. Once $RAIKU is acquired, two primary paths exist:
+Burn. Tokens are sent to a burn address, permanently reducing circulating supply. This benefits all holders proportionally by increasing each token's share of future value. Simple, auditable, irreversible.
+Distribute to stakers. Tokens are routed to the Lock Vault RewardPool and distributed to stakers based on their effective weight at epoch boundaries. This is equivalent to activating a fee switch, directing real protocol revenue as yield to participants who lock tokens, a mechanism widely discussed since the Uniswap governance debates. It creates direct "real yield" and reinforces long-term holding behavior over speculation.
+B. Growth-Oriented Reinvestment
+Growth mechanisms deploy Treasury SOL into protocol expansion.
+Protocol operating costs. The protocol retains a share of captured revenue to cover infrastructure, development, audits, legal, and team costs. This is the baseline operational allocation that ensures protocol sustainability regardless of market conditions.
+Token-based incentives. Distribute acquired $RAIKU as adoption incentives to validators, customers (via the VIP loyalty program, cf. Section 5 & Section 6), or ecosystem participants.
+With LST (rkSOL). If Raiku operates a liquid staking token, the primary growth mechanism is a validator/delegator subsidy: redirecting a share of protocol fees to boost rkSOL yield, making it competitive against JitoSOL and other LSTs. This drives stake capture and TVL growth. Jito's JIP-31 adopted this approach at 100% of revenue during its BAM launch phase (Q1–Q3 2026).
+With or without LST. Growth mechanisms available independently include:
+Ecosystem grants. Fund integrations, developer tooling, security audits, hackathons. Should be KPI-driven rather than open-ended.
+Treasury diversification (DAT). Convert a portion of revenue to stable assets (e.g. USDC) as an operational buffer against market volatility. Defensive baseline allocation.
+Protocol-Owned Liquidity (POL). Treasury provides liquidity in RAIKU/SOL, rkSOL/SOL, or other pairs, ensuring market depth, reducing reliance on mercenary LPs, and collecting LP fees. This can be funded directly in SOL or via buyback-then-pair. Requires active management and risk monitoring.
+C. Other Mechanisms
+Several additional mechanisms have been discussed in the broader Solana MEV governance context (See Appendix F for details). They are included here as potential future extensions, but are not part of the initial design:
+Auction based tip distribution: the DAO sells accumulated SOL tips in on chain auctions, with bidders paying in $RAIKU. Complexity: high.
+Real yield gauges: token holders vote to direct real fees toward specific pools or integrations, Curve inspired ve tokenomics. Complexity: high.
+Buyback and barter, DAO to DAO deals: buy back tokens and lodge them with partner DAOs to create strategic alignment. Complexity: moderate to high.
+Illustrative Treasury Allocation
+The protocol captures a default 5% of total AOTrevenue. This fee flows through a waterfall: token-based incentives are committed first (programmatic, non-discretionary), then the remainder is allocated to protocol operations, growth, and, once governance activates it, value accrual.
+To illustrate the waterfall with concrete numbers: on 100 SOL of MEV revenue, the protocol captures 5 SOL. Of that:
+Customer loyalty rebates are applied first, automatically based on tier (0.25–1% on AOT, 0–0.5% on JIT; cf. Section 5). Assuming an average effective rebate of ~0.5% of total MEV revenue, this consumes roughly 0.5 SOL of the 5.
+Validator revenue enhancement is committed next.  Assuming all validators meet qualifying criteria, the take rate drops from 5% to 3.5%, effectively returning 1.5 SOL to validators (cf. Validator Alignment section).
+The remainder (3 SOL in this example) flows to protocol operations, growth mechanisms, and, once activated, value accrual.
+At launch, token-based incentives alone may consume 40–60% of the protocol fee. This is by design: the protocol prioritizes adoption (customer retention + validator alignment) over extraction.
+Illustrative Protocol Fee Allocation
+For reference, Harmonic operates at 0% take rate with no buyback; Jito ran 100% buyback briefly in Q3–Q4 2025 before pivoting to 100% validator subsidy via JIP-31 (Q1 2026). 
+The freed share comes primarily from reducing protocol operating costs and validator revenue enhancement as the protocol's competitive position stabilizes. The split between burn and staker distribution is itself governance-configurable.
+Economic Effects
+Buyback mechanisms (burn and fee switch) create persistent buy-side pressure on $RAIKU funded by real SOL revenue, linking token value to protocol fundamentals rather than speculative demand. 
+Growth mechanisms (validator subsidy, POL, grants, incentives) do not immediately benefit token holders but expand the revenue base, increasing the value of future buybacks. The combination, weighted by maturity phase and governed dynamically, produces a system where early growth investment compounds into larger future value accrual, while the DAT reserve buffer protects against adverse market conditions.
+The mechanisms and allocation ranges presented in this section are initial insights and non-binding proposals, subject to calibration based on market conditions, governance input, and operational data post-launch.
+3. Bootstrap Yield & Lock Vault
+Objective
+Provide emission-based yield to early $RAIKU stakers during the post-TGE bootstrapping phase, reducing circulating supply and token velocity while building an economically aligned holder base.
+Design Principle
+$RAIKU is non-inflationary: total supply is fixed at 1B tokens with no minting capability. The Lock Vault is therefore fundamentally different from Proof-of-Stake staking, where validators earn newly minted tokens to secure consensus. Instead, the vault draws from a finite, pre-allocated emission pool (50M RAIKU, 5% of supply). Its purpose is to reduce circulating supply during the bootstrap phase by incentivizing holders to lock tokens in exchange for yield. 
+The protocol targets a fixed APY that declines on a predetermined schedule, rather than emitting a fixed token amount per epoch with floating APY (cf. Supply Dynamics Tab - Target APY model).
+The Lock Vault produces three reinforcing effects: locked tokens are removed from circulation, reducing circulating supply and signaling holder confidence; it creates an economically aligned stakeholder base with long-horizon incentives; and if paired with governance weight and user loyalty programs, it reduces short-term capture risk.
+Unstaking Cooldown
+When a user initiates an unstake action, their tokens enter an unbonding queue for a duration of cooldown_epochs (e.g., 3 epochs, or approximately 6 days). During this cooldown period, the unbonding tokens:
+Cease earning staking yield.
+Lose all governance voting power.
+No longer count toward VIP Customer Loyalty tiers.
+Users can only withdraw their $RAIKU from the Lock Vault after the cooldown period has ended.
+Transition to Revenue-Based Yield
+Unlike inflationary L1 tokens, RAIKU's emission pool will deplete. However, this will eventually be compensated by future protocol revenue growth. The transition from emission-based to revenue-based yield marks the shift from bootstrapping (dilutive) to sustainability (non-dilutive). DAO governance can vote to replace or supplement token emissions with buyback-funded distributions as protocol revenue scales (RAIKU buybacks are funded by the DAO's SOL fee take).
+Protocol revenues may optionally be reinjected into bootstrap incentive mechanisms starting from Month 1 to accelerate the transition, subject to governance approval. (See Tab Economic Flows - Treasury Allocation for fee switch activation and buyback program governance mechanisms).
+Yield Accounting Conventions
+APR (Annual Percentage Rate) is the simple annual rate without compounding. A 10% APR on 1,000 tokens yields 100 tokens after one year.
+APY (Annual Percentage Yield) is the effective annual rate including compounding effects, APY = (1 + APR/n)^n - 1, where n is the number of compounding periods per year.
+Solana epochs last approximately 2 days, resulting in n ≈ 182 compounding periods annually. The difference between APR and APY grows with the rate:
+*APY = (1 + APR/182)^182 - 1
+Implementation note: User-facing interfaces must clearly label rates as APR or APY. Industry standard is APY.
+Reward Distribution Model
+The protocol uses the Target APY model: it commits to a target APY and adjusts emission each epoch to deliver that rate to all stakers.
+APY is fixed (or follows a predetermined declining schedule), and communication is straightforward ("earn 20% APY on RAIKU"). The trade-off is that protocol liability is variable, it depends on participation levels, which requires worst-case modeling, a declining rate schedule, and a governance trigger as safeguards.
+The alternative (Fixed Emission model, where a fixed number of tokens per epoch distributes pro-rata among stakers) was considered and rejected. Under that model, APY floats inversely with participation (e.g., ~50% APY at 20% staking participation, ~12% at 70%), making communication complex ("earn your share of the pool") and CEX integration difficult. Protocol liability is bounded but user expectations are unpredictable.
+Token requirement sensitivity under the Target APY model, at 150M initial circulating supply:
+Note: In our base case, 50 million tokens are distributed uniformly over 48 months (~1.0 million per month, or ~12.5 million per year), which implies that with ~40% of a 150 million staked (~60 million tokens), the protocol can initially sustain an APY of ~20-25%.
+[cf. Supply Dynamics Tab - Target APY model for calibration ans sensitivity analyses]
+Engineering decision required: Evaluate build vs. buy trade-offs with technical teams.
+See Appendix C - Emission Infrastructure .
+4. Governance
+Objective
+Establish token-weighted decision-making over economic parameters and treasury allocation without exposing security-critical execution logic to on-chain votes.
+Design Principles
+Governance is the primary and permanent utility of $RAIKU. The framework uses Solana's SPL Governance (e.g. Realms) with $RAIKU as the voting mint, following the approach adopted by major Solana protocols including Jito, Drift, Pyth, and Marinade.
+Three constraints shape the design:
+First, governance controls economic parameters, not execution logic. Core auction mechanics (AOT sealed-bid resolution, JIT tip routing, block-inclusion ordering) are latency-sensitive and security-critical; subjecting them to token-weighted votes introduces unacceptable attack surface. 
+Second, every governable parameter has explicit bounds enforced at the program level, preventing governance from extracting value or destabilizing operations. 
+Third, governance scope starts narrow and expands only when participation data justifies it.
+Governance Scope
+The following categories fall within governance authority:
+The following are explicitly excluded: core auction mechanics (incorrect changes cause immediate fund loss or block-inclusion failures), cryptographic primitives (Ed25519 verification, Merkle proof structures), engine software architecture (networking, gRPC pipelines, regional endpoints), real-time operational decisions (sub-second latency incompatible with governance cycles), and emergency circuit breakers (must remain available to the multisig without governance delay; governance can retroactively review emergency actions).
+Voting Model
+RAIKU adopts simple 1:1 token voting where each deposited $RAIKU equals one vote. Users deposit tokens to Realms to participate, and can withdraw after proposals conclude. Delegation should be fully supported, so users could delegate their voting power to a single address, revocable at any time.
+[Cf. Appendix D: Governance comparison table, for benchmarks and alternatives considered].
+Governance Parameters
+All parameter changes and protocol upgrades pass through the Raiku Improvement Proposal (RIP) process. The following parameters govern the process itself:
+Approval threshold: the percentage of participating votes that must be in favor for a proposal to pass. A threshold of >50% means a simple majority is required; 2/3 means a supermajority. 
+Governable parameters: threshold_rip_a (default >50%), threshold_rip_b (default 2/3).
+Quorum: the minimum level of voter participation required for a vote result to be considered valid. Without a quorum, a small number of voters could pass proposals that do not reflect the broader community's position.
+Governable parameters: quorum_rip_a (default 10M RAIKU), quorum_rip_b (default 20M RAIKU).
+Proposal deposit: the minimum amount of RAIKU a proposer must hold (deposited in Realms) to submit a proposal. In SPL Governance, this corresponds to the min_community_weight_to_create_proposal field. The tokens are not locked or consumed, the proposer simply must hold at least this amount. This value must balance accessibility against spam prevention: too high excludes legitimate community members, too low invites noise. For reference, Jito requires 250K JTO (0.025% of total supply, ~$66K at current prices) and Drift requires 20K DRIFT (0.002% of total supply, ~$30K at current prices). Note: SPL Governance also includes a separate anti-spam mechanism (deposit_exempt_proposal_count) that requires a refundable SOL deposit when a proposer exceeds a configured number of concurrent active proposals.
+Governable parameter: proposal_threshold (default 250K RAIKU / 0.025% of total supply).
+Voting period: the total duration token holders have to participate in a vote. In SPL Governance, this consists of two phases: a base voting time during which token holders can cast any vote (Yes, No, Abstain), followed by a cool-off time during which only negative votes (Deny, Veto) or vote withdrawals are permitted. This prevents last-minute vote manipulation. Total: 5 + 2 = 7 days. For reference, Jito uses 3+2 (5 days total); Marinade uses 3 days with no cool-off. 
+Governable parameters: voting_base_time (default 5 days), voting_cool_off_time (default 2 days).
+Hold-up time: the time between a proposal's approval and execution, giving token holders who disagree an opportunity to react (sell, unstake, withdraw) before the change takes effect. Native SPL Governance parameter (min_transaction_hold_up_time, measured in seconds). 
+Governable parameter: hold_up_time (default 2 days).
+All governance parameters are themselves governable through the RIP process. Proposals could be categorized by scope, with different quorum and approval thresholds. For instance:
+RIP Lifecycle
+The lifecycle of a proposal follows five stages.
+1. 	Draft: Author posts proposal to governance forum for community feedback
+2. 	Temperature Check: Optional Snapshot poll to gauge sentiment
+3. 	Formal Submission: proposal formally submitted to Realms with the required threshold met
+4. 	Voting Period: Token holders vote (including cool-off); delegation could apply
+5. 	Execution: If approved, the change is executed after the hold-up time.
+Emergency Actions
+Emergency circuit breakers remain under the Foundation multisig (4/7) and are not subject to governance voting. The multisig can act immediately when protocol safety requires it. Governance can retroactively review any emergency action through the RIP-B process.
+Governance Evolution
+Governance begins conservatively and expands as the protocol matures.
+Phase 0 (TGE - Month 6): the Foundation multisig (4/7) controls a limited set of parameters with transparent logs. No token voting yet.
+Phase 1 (Month 6-18): token voting activates on Realms for RIP-A and RIP-B proposals. The community can govern economic parameters and approve protocol upgrades.
+Phase 2 (Month 18+): full token voting on RIP categories. Scope may expand based on demonstrated community engagement (e.g., 10%+ average participation), absence of governance attacks, and stable protocol operations.
+Each expansion is governance-approved, creating self-reinforcing legitimacy.
+5. Customer loyalty
+Objective
+Create token-side demand and boost AOT and JIT usage from customers without imposing mandatory token swaps or settlement friction.
+Design Principle
+Many CEXs (such as Binance and KuCoin) offer fee discounts for different VIP levels based on trading volume and holding a certain amount of the exchange’s token. A similar mechanism can be used on Raiku. There is, however, no direct Raiku fee the user pays to give a discount on. Instead, users pay exactly the amount they bid in the auction. Raiku can still give a rebate to users who stake $RAIKU via the same staking mechanism used to earn yield.
+Mechanism Details
+Customers lock some amount of $RAIKU in the same lock vault used for governance and to earn yield (see Bootstrap Yield & Lock Vault). After some minimum amount has been locked for at least the loyalty_period and the bid volume during that period is at least the required volume as defined in the table below, the user enters the corresponding rebate level. There are separate VIP levels for the AOT and JIT auction. Bid volume here refers to the total amount of SOL the user has paid during that period in the corresponding auction type.
+The auctions proceed as usual and the customer pays the full bid amount in SOL. Some percentage of the bid amount is captured by the protocol as a protocol fee. Some part of this (based on the rebate level) is reserved to go back to the user instead of entering the pool for other usage. The reserved rebate amount is accumulated in SOL. Via the buyback mechanism described in Section 7: Direct Value Accrual, the SOL gets converted into $RAIKU. The resulting $RAIKU are then distributed to the user in the same way the user earns yield on the staked tokens.
+As an example, consider an AoT user bidding and winning 100 SOL worth of reserved CU over 30 days, with a 5% protocol fee and a 1% rebate level. At settlement, 4 SOL (4%) flow to the Treasury, while 1 SOL (1%) is swapped to RAIKU via market buyback, then distributed to the user's lock vault position as additional staking rewards.
+Parameters
+VIP levels
+Users get different rebates for the two auction types based on how much $RAIKU they have staked and how much they have paid for AOT or JIT bids during the loyalty_period, as defined in the table below. The thresholds are provided for illustration purposes only. Actual values to be calibrated pre-launch and are subject to DAO governance thereafter.
+Economic Effects
+This mechanism has the following economic effects on the $RAIKU token:
+Regular users are incentivized to stake a certain amount of $RAIKU to enter the next rebate level. This creates buying pressure for users below their target tier and reduces circulating supply as tokens remain staked to maintain eligibility.
+Buying back $RAIKU with the obtained SOL creates buying pressure. Users may choose to sell some of their $RAIKU for SOL, but even if all users sell everything, the net effect is neutral. If some users choose to keep some of their $RAIKU, there is a net positive buying pressure.
+In addition, requiring a certain bid volume to enter higher VIP levels incentivizes participation in the auctions.
+Rationale for keeping fees in SOL while paying rebates in $RAIKU
+Many CEXs also give fee discounts when the fees are paid in the exchange’s token. There are several reasons why letting users pay in $RAIKU is not a good choice:
+Users compete in an auction with others, so bid amounts must be comparable, which is significantly complicated when different currencies are involved.
+Users are used to paying fees in SOL and regular Solana fees still are paid in SOL. Adding a separate fee in a different currency complicates the decision making for users and adds friction.
+Validators are used to getting paid in SOL.
+6. Validator Alignment
+Objective
+Incentivize validators to adopt and operate the Raiku client, and ensure compliance with its execution rules.
+Design Principle
+The Pre-TGE protocol design operates under full trust: “For the initial design, the Raiku marketplace, Raiku engine, and the Raiku validators are fully trusted.” The initial validator set will be selected through direct relationships, making social trust a viable enforcement mechanism. 
+This is consistent with how other Solana block-building systems have launched: Jito BAM launched with a handful of curated validators before scaling via subsidy programs (JIP-31); Harmonic relies on direct relationships and voluntary compliance with zero enforcement (Harmonic overview). 
+The goal is not to launch with zero trust, but to launch honestly and harden incrementally.
+The trust assumptions matter because the Raiku validator occupies a structurally conflicted position. It is simultaneously the execution agent for the AOT market (deterministic, reserved placement at the top of the block) and the JIT market (opportunistic, last-second inclusion). The block inclusion rules are clear: AOT bundles come first in winner-list order, then JIT and finally external transactions. This dual role creates three distinct threat vectors:
+ AOT/JIT reordering: the validator places a lucrative JIT bundle before AOT transactions, violating the winner-list ordering.
+Selective AOT drop: the validator drops a low-value AOT bundle (claiming it was not received or failed the revert check) to free compute for JIT. 
+Reordering and selective drops are specific to Raiku’s dual-auction design and do not arise in pure JIT systems. No Solana framework currently ties ordering violations to penalties on validators' native SOL stake (cf. Appendix D for details).
+Enforcement
+The Raiku engine controls AOT allocations and JIT routing. A deviating validator can be excluded from future flow. In a small, visible set, this carries both direct economic consequences and reputational cost. A rational validator should have more to lose from exclusion than to gain from a one-off deviation.
+Note: In the early phase, Raiku likely needs validators more than validators need Raiku. Exclusion remains the ultimate sanction, but the threshold for triggering it must balance enforcement credibility against the cost of losing validator coverage.
+Reinforcing Alignment: Recommended Approach
+Beyond enforcement, the recommended approach is to incentivize good behavior. At each epoch settlement, the protocol evaluates the validator's performance over a rolling lookback window (e.g., 15 epochs, ~30 days).
+Qualifying criteria are derived from the threat vectors above: AoT ordering compliance and AoT inclusion rate (drop detection relative to established baseline revert rates). Thresholds are to be calibrated from production data.
+Validators that meet all qualifying criteria across the full evaluation window benefit from two complementary mechanisms:
+Revenue Enhancement: By default, the protocol retains 5% of AOT and JIT flow (i.e. the validator receives 95%). If all qualifying criteria are met across the window, the reduced take rate applies starting the following epoch (e.g., 3.5% instead of 5%), effectively increasing the validator's revenue share (e.g. to 96.5%). This reduced rate holds as long as the criteria are met. A single failing epoch resets the rate to the default. The reduced rate is restored once the validator meets the criteria again over a full evaluation period.
+rkSOL Delegation Weighting: An rkSOL stake pool directing SOL delegation toward high-performing Raiku validators. Delegation eligibility is determined by the same criteria and lookback window as revenue enhancement above. More delegation means more leader slots and higher revenue from all sources, not only Raiku flow, but all Solana transaction fees and MEV. This is performance-weighted delegation, not restaking.
+These two mechanisms are complementary. Mechanism 1 is Raiku-specific and immediate (more of the protocol fees go to the validators). Mechanism 2 is broader and compounding (more stake = more slots = more total revenue).
+Role of the Token
+Although $RAIKU is not directly used in the enforcement or incentive mechanisms described above, it plays a structural role in the validator alignment model:
+Governance: thresholds, evaluation criteria, and revenue-sharing parameters become governable through the RIP process (cf. Section 5) rather than set unilaterally.
+Validator initial airdrop: $RAIKU distributed to qualifying validators as a direct token incentive (cf. Airdrop document).
+Token-Based Alternatives
+If the recommended approach proves insufficient at scale, the token opens additional enforcement options:
+Additional Airdrop Seasons. Distribute $RAIKU to well-performing validators from initial supply. Simple, but gives away additional money on top of normal revenue flows and depletes token reserves.
+Bond. Validators lock collateral, partially slashable upon proven violations. SOL bond (no token acquisition friction, but opportunity cost) or $RAIKU bond (creates token demand, but acquisition friction and oracle dependency). Both carry engineering complexity and adoption friction. Precedents: 
+Paladin introduced token-based mechanisms before proving economic value, validators captured 25–50% less than Jito-standard (buffalu), and Coinbase dropped the client by December 2025 (Coinbase Dec 2025). The lesson: proving value first, then adding constraints.
+Marinade: The only SOL bond on Solana is Marinade SAM (1 SOL per 10K delegated SOL), but it targets a different violation class (commission fraud, downtime, sandwich attacks).
+No Solana protocol currently uses a SOL bond for block-level execution violations.
+Staking with Slashing Limited to Rewards. Validators stake $RAIKU and earn rewards. Slashing only applies to accumulated rewards, not principal. Lower risk perception but weaker deterrent (i.e. penalty capped by reward balance).
+The choice depends on operational data. If the recommended approach maintains alignment, no further mechanism is needed. If not, alternatives become relevant, subject to governance vote (cf. Section 5).
+7. Retrospective Airdrop  (Early Adopters)
+Objective
+A retrospective airdrop rewards early adopters. Because eligibility is based exclusively on past on-chain activity and criteria are undisclosed in advance, the mechanism resists speculative gaming and selectively reaches genuine contributors.
+Design Principle
+Raiku launches its private mainnet in Q2 2026 and expands access in Q3, ahead of a TGE in Q4 2026 with a fixed supply of one billion $RAIKU tokens.
+Validators, institutional AOT bidders, permissionless JIT searchers, rkSOL liquid stakers, and community contributors who participate during this restricted phase are allocated 8%-13% of total supply at or after TGE. Design parameters are benchmarked against Solana MEV infrastructure precedents (Jito, Drift, Jupiter).
+Sources: Trust Blog, SolanaFloor, Bitget, Drift, CoinGecko, Jito Foundation, Medium, Binance.
+[See Appendix B: Airdrop Design for allocation rationale and benchmark data]
+Program Structure
+Allocation Pools
+The program is structured around 5 allocation pools, each sized to reflect the participant’s operational risk and revenue contribution:
+Validators (estimated 15-50 operators) receive the largest per-participant allocation at 3-4% of total supply, reflecting their infrastructure commitments: uptime, co-location costs, and block-building logic testing. At a $200M FDV, this translates to $120K-$400K per validator, competitive with Jito's $37K–$385K range for its 260 validators in 2023. Only validators that behave well prior to TGE are eligible for the airdrop, where the criteria for a well-behaving validator are described in the section Validator Alignment.
+AOT customers –15 institutional bidders: market makers, oracle operators, propAMMs) receive 2–3%, averaging $260K–$400K per participant, reflecting SOL deposits and real capital at risk. The distribution to the individual customers is weighted by their AoT bid volume.
+JIT customers (10-30 permissionless searchers and trading desks) receive a smaller pool of 1-2% of supply, intentionally 3 to 4 times lower per participant than AoT, because JiT users bear no deposit risk and lower structural  loyalty. The distribution to the individual customers is weighted by their JiT bid volume.
+Infrastructure partners made up of RPC providers, VaaS providers, e.g., AllNodes, inclusion aggregators, e.g., Astralane.
+LST stakers who stake SOL into rkSOL during the pre-TGE window receive 2-3% of supply, distributed across an estimated 500-2,000 wallets at $4,000-$6,000 each, deliberately lower than Jito’s $16,000 average for JitoSOL holders, because rkSOL is a secondary product rather than Raiku’s core value proposition. Distribution is weighted by the amount of SOL staked during the pre-TGE window
+Community pool of 0.5-1% covers social engagement, content creation, and referrals, with per-participant values of $100-$200 targeting roughly 10,000 qualifying addresses.
+Participants
+Parameters estimations (cf. Appendix Allocation Rationale for details)
+The reward hierarchy is deliberately steep: Average reward per participant: AOT ($260K–$400K) ≥ Validators ($120K–$400K) > JIT ($66K–$133K) > LST ($4K–$6K) > Community ($100–$200). 
+In aggregate, the program represents $17–$26M in token value at $200M FDV across approximately 11,000 participants, with the vast majority concentrated among the 50–100 infrastructure operators who generate protocol revenue. This reflects Raiku’s positioning as a professional-grade MEV protocol targeting validators and institutional trading firms, not a retail-facing application.
+Slashing validators during vesting: If a validator acts maliciously (e.g., executing selective AOT drops) or leaves the network, their unvested tokens can be slashed and returned to the treasury. This prevents a scenario where an operator spins down their infrastructure but continues to dump vested tokens for a year.
+Process Overview
+Tracking period
+Raiku uses Solana epochs as boundaries because epochs are on-chain and immutable. One epoch equals 432,000 slots at approximately 400ms per slot, or roughly 2 days.Epochs are numbered sequentially, for example 10 February 2026 corresponds approximately to epoch 924.
+Based on this framework, the expected milestones are as follows:
+Phase 1: Private mainnet (initial partners) is targeted for April to June 2026 (Q2) [~epochs 949 to 994].
+Phase 2: Private mainnet (expanded whitelist) is targeted for July to September 2026 (Q3) [~epochs 994 to 1040].
+Phase 3: Public launch & TGE is targeted for October to December 2026 (Q4) [~1040 to 1086].
+Private mainnet participants accumulate rewards for the duration of the private phase only. Participants active during Phase 1 (Q2 2026) receive a multiplier on their final score relative to participants who join only in Phase 2 (Q3 2026). This reflects the higher operational risk and lower product maturity during initial onboarding. Suggested range: 1.5–2.0×. Exact value TBD based on cohort sizes.
+Snapshot Window (5–7 months)
+During this window, the protocol records raw activity data (bids, tips, volumes, timestamps). No points are visible to users at this stage. Users do not know the exact eligibility criteria or scoring weights, so they cannot optimize their behavior during the snapshot.
+Assuming private mainnet launch in April 2026 , the snapshot captures all activity from mainnet until TGE. Depending on TGE timing, this represents 5–7 months of activity (75–105 epochs):
+The window should not be shorter than 5 months; shorter windows favor last-minute farmers over genuine early adopters.
+Example: Jito used a 10-month window, Jupiter used 6 months.
+Buffer Period (14–21 days after snapshot close)
+After snapshot close, a 14–21 day buffer period begins before TGE. During this period, the following operations are executed in sequence:
+Extract raw activity data from snapshot window
+Apply exclusion criteria (known exclusions + activity thresholds)
+Sybil detection → exclude flagged addresses
+Rank eligible addresses by primary metric
+Assign tiers
+Compute Merkle root (cryptographic commitment)
+Publish Merkle root on-chain at TGE
+The buffer exists because these computations require the complete dataset. Threshold validation, score calculation, sybil detection, and tier assignment cannot execute until all snapshot data is available.
+The buffer also provides time for manual review of edge cases before the allocation becomes immutable.
+Tier Assignment & Sybil resistance
+Tier assignment is cohort specific and only applies where it improves distribution quality. The detailed tiering methodology and calibration assumptions are documented in the Appendix.
+For cohorts such as the Community, tiering may use sub linear scaling to avoid excessive concentration while keeping the distribution broad. 
+For rkSOL LST stakers, a simpler stake weighted, linear-type allocation is expected by default, but a points based system can also be considered if needed to better reflect duration, activity, and to mitigate sybil behavior.
+Sybil resistance requirements differ by cohort. Community distributions typically face the highest sybil risk and therefore benefit most from non linear tiering plus eligibility filters.
+In contrast, validator operators and JIT/AOT customers are not expected to require additional sybil specific protections by default, as participation already implies capital commitment, infrastructure, or operational constraints that limit trivial multi account farming.
+If observed farming behavior suggests that tiering and basic filters are insufficient, the protocol can introduce an additional protection layer, for example stricter minimum holding duration, account age constraints, deposit based thresholds, or other cohort specific anti sybil rules, with parameters governed and adjustable over time.
+Merkle Publication, and Claiming
+Merkle root publication and post TGE claiming follow the same process across all cohorts. At the end of the buffer period, Raiku computes the final allocation list and generates a Merkle tree containing all (address, allocation) pairs.
+The Merkle root, which cryptographically commits to the full distribution set, is published on chain at or before TGE. Once published, allocations become immutable. After TGE, claimants submit a Merkle proof to the distributor contract within a 90–180 day claim window. Unclaimed tokens transfer to the DAO treasury upon expiry. CLI tooling will be made available for validators and searchers alongside the standard web interface.
+Appendix
+Appendix A: FDV Comparables (January 2026)
+Note: In the $400M FDV scenario, the token allocations are structurally identical to $200M (same percentages); the higher initial price ($0.40 vs $0.20) effectively doubles the USD value of each allocation and the ROI multiples for early investors.
+Appendix B: Airdrop Design
+This appendix documents allocation rationale, as well as industry practices for airdrop eligibility windows, the buffer period between snapshot close and claim opening, and anti-sybil filtering methodologies.
+Allocation rationale
+Validators (3-4%)
+Distribution: 20% claimable at TGE, 80% vested linearly over 12 months to reduce sell pressure.
+Jito benchmark. Jito allocated 1.5% of total JTO supply (15M JTO out of 1B) to ~260 validators via a 4-tier epoch-weighted system:
+•   	Tier 1: 91 validators × 18,316 JTO = ~$37K per validator at $2/JTO
+•   	Tier 2: 91 validators × 36,630 JTO = ~$73K per validator at $2/JTO
+•   	Tier 3: 52 validators × 96,152 JTO = ~$192K per validator at $2/JTO
+•   	Tier 4: 26 validators × 192,308 JTO = ~$385K per validator at $2/JTO
+50% was claimable at TGE, 50% vested over 12 months. At $2/JTO, total validator allocation = ~$30M across 260 validators, or ~$115K average per validator.
+Source: Jito Foundation, “JTO Airdrop Eligibility And Allocation Specifications,” December 2023.
+Raiku sizing. Raiku expects fewer validators than Jito at TGE. To remain competitive and attract early operators, the per-validator USD value should match or exceed Jito’s average (~$115K). This requires a higher percentage of supply despite lower absolute token count, because fewer validators split the pool.
+At 3% of supply (30M RAIKU) and $0.20 listing price, the average per-validator allocation ranges from ~$120K (50 validators) to ~$400K (15 validators), which is aligned with or above Jito’s $37K–$385K range. This makes the airdrop competitive for early validator recruitment.
+NB:  Additional validator incentives could be considered under a broader ecosystem development envelope in subsequent phases (e.g. post-TGE boost programs, performance-based rewards, onboarding subsidies). These would be scoped and funded separately from the airdrop allocation.
+AoT customers (2–3% / 20-30M RAIKU)
+Distribution: 20% claimable at TGE, 80% vested linearly over 12 months.
+Raiku sizing. No direct market precedent exists for ahead-of-time blockspace reservation. AoT targets institutional participants (oracles, market makers, propAMMs) rather than automated trading bots, a structurally smaller addressable set than JiT-style markets. For reference, Flashbots launched with ~23 active searchers [1] and only 21 Jito MEV searchers qualified at airdrop snapshot [2]. Given AoT's narrower institutional profile, ~5–15 participants at TGE is a conservative baseline
+Assuming: Raiku = $0.2 at TGE
+At the midpoint (2.5%, 25M RAIKU, $0.20 listing, 10 participants), each AoT participant receives on average ~$500K in total token value. For comparison, Jito's 21 MEV searchers received in average  ~$475K average total value per participant (assuming JTO price of $2.00 at TGE) 
+JiT customers (1–2% / 10-20M RAIKU)
+Distribution: 20% claimable at TGE, 80% vested linearly over 12 months.
+Jito benchmark. Jito’s MEV searcher airdrop (5M JTO, 0.5% of supply) went to only 21 qualifying addresses, grouped into 5 tiers by cumulative tip volume. Tier 1 (5 searchers) received 10,000 JTO each (~$20K at $2/JTO), while Tier 5 (4 searchers) received 800,000 JTO each (~$1.6M). The median allocation was ~$133K. However, this was an extremely concentrated distribution to a very small, institutional cohort.
+Raiku sizing. JiT customers are permissionless: no deposit, no KYC, zero switching cost. Solana’s professional searcher ecosystem has grown from Dec 2023 to an estimated more than 100 active operators. Raiku’s private mainnet JiT pool should expect ~10-30 participants. The token allocation is lower than AoT because: (a) no capital at risk, (b) structurally low loyalty (they use whichever engine offers best inclusion), and (c) tips generate less predictable revenue than sealed-bid AoT payments. Still, JiT tips are a material revenue source and early JiT adoption stress-tests the engine.
+ At the midpoint (1.5%, 15M RAIKU, $0.20, 20 participants), each JiT participant receives $150K, intentionally ~3–4× lower than AoT per-participant value.
+LST stakers (2–3% / 20-30M RAIKU)
+Distribution: 20% claimable at TGE, 80% vested linearly over 12 months.
+Jito benchmark. Jito allocated 80M JTO (8% of supply) to 9,852 JitoSOL holders via a 10-tier logarithmic system weighted by Jito Points. At $2/JTO, this produced:
+•   	Tier 1 (4,930 wallets, 50% of recipients): 4,941 JTO each ≈ $10,000 per staker
+•   	Tier 10 (10 wallets, top 0.1%): 104,391 JTO each ≈ $200K per staker
+•       Median: ~$47,000 | Average: ~$16,000
+However, JitoSOL was Jito’s primary product at TGE with 6.8M SOL TVL accumulated over 11 months. The 8% allocation reflected that staking was the core use case.
+Raiku sizing. For Raiku, the core product is the AoT/JiT blockspace marketplace, not the LST. rkSOL may launch with a short pre-TGE window. JitoSOL had ~10,000 eligible wallets at TGE (Nov 2023); rkSOL is a newer, secondary product with a shorter pre-TGE window. Comparable early-stage LSTs (bSOL, mSOL) reached 1,000-5,000 meaningful holders within 6 months. ~1,000 is a conservative estimate, subject to revision based on actual rkSOL adoption data:
+The per-staker value ($4,000–$6,000 at $200M FDV) is lower than Jito’s $16K average. This is intentional: (a) rkSOL is a secondary product, not the core protocol, (b) staking SOL carries minimal risk compared to AoT deposits or validator infrastructure, and (c) the 2–3% allocation (vs. Jito’s 8%) reflects the lower contribution to protocol revenue. The logarithmic tier structure from Jito’s model should be adopted to reward larger stakers proportionally while keeping the distribution broad.
+Note: if rkSOL launches later than anticipated or reaches fewer than 1,000 holders before TGE snapshot, the unallocated portion could be redirected to the Community pool or retained for post-TGE incentive programs.
+Community (0.5–1% / 500K-1M RAIKU)
+Distribution: 100% claimable at TGE.
+Jito benchmark. Jito did not have a standalone community/social airdrop pool. The 10% airdrop was entirely usage-based (JitoSOL holders + validators + searchers). However, broader Solana airdrops provide reference points: Jupiter’s initial airdrop reached ~955K wallets at ~$300–$500 each; Sanctum’s CLOUD airdrop qualified ~200K addresses via points-based engagement. Community-only pools (social tasks, referrals, content) in recent Solana TGEs typically account for 0.5-2% of supply.
+Raiku sizing. Community participants perform non-transactional work: Discord engagement, X/Twitter posts, referrals, eventually bug reports. No capital at risk, no protocol revenue generated. This is the lowest-value contribution tier, but it serves an important function: building awareness, driving organic growth, and establishing a governance-ready holder base before TGE. Raiku’s Discord has ~30K members; after bot filtering, minimum engagement thresholds, and anti-sybil attestation, ~10,000 qualifying participants is a realistic estimate.
+At the midpoint (0.75%, 7.5M RAIKU, $0.20), each community participant receives ~$150 in token value. This is intentionally low: the pool is capped at 1% maximum to avoid diluting rewards for participants who generate actual on-chain value (validators, AoT, JiT). Per-activity caps prevent sybil farming. 
+Rewards USD value by FDV scenario
+Expected Milestone
+Reference point: epoch 924 ≈ 10 February 2026. Solana epoch duration ≈ 2 days.
+Snapshot Period Design
+The snapshot period defines when user activity is tracked for eligibility. Retroactive, unannounced snapshots remain the gold standard with eligibility periods typically spanning 6-18 months of mainnet activity before TGE (i.e. Uniswap, Arbitrum, Jito, and Jupiter) all revealed criteria only after the snapshot concluded, rewarding organic behavior over farming.
+Timing Patterns
+Snapshot periods do not follow a rigid formula. While mainnet-to-TGE tracking dominates, testnet rewards, post-launch distributions, and cross-chain holder snapshots each serve distinct strategic purposes. The critical design tension lies between capturing meaningful long-term engagement (favoring longer windows) and preventing gaming (favoring hidden or randomized snapshots).
+Sources: Airdrops.io,Jito Foundation, Traders Union, Midnight
+Duration Benchmarks
+Buffer Period
+The buffer period is the time gap between snapshot close (eligibility finalized) and claim opening (users redeem tokens). This window allows for Merkle tree computation, anti-sybil filtering, smart contract audit, and infrastructure testing.
+Technical infrastructure:
+Merkle tree construction (aggregation, hashing, root deployment, proof generation)
+Smart contract deployment and audit (cannot begin until eligibility list locked)
+Infrastructure load testing (Jupiter: 16 staging environments, 30k+ req/sec capacity)
+Governance integration (ENS: Constitution voting during buffer)
+Legal and compliance:
+Geo-blocking implementation (IP-based jurisdiction filtering, Regulation S)
+Terms and conditions, privacy policy (GDPR)
+KYC/AML procedures, OFAC sanctions screening
+References: Merkle distributor, Legal framework, Compliance
+Buffer Duration Benchmarks
+Buffer duration varies from 2 weeks to 3 months depending on distribution complexity, eligible population size, and anti-sybil rigor.
+Solana-native protocols (Jito, Drift) average 12-28 day buffers. Cross-chain distributions (Wormhole 30 chains, Pyth 27 chains) require 56-80 days for multi-network verification. Announced snapshots (Kamino) enable shorter buffers but attract mercenary capital.
+Anti-Sybil Filtering
+A sybil attack occurs when a single entity creates multiple fake identities (wallet addresses) to claim disproportionate airdrop allocations. Anti-sybil filtering during the buffer period identifies and removes these fraudulent addresses from the eligible set.
+Case Study: WET (HumidiFi) — Forced Token Reset
+In late 2025, a single entity operating 1,100+ wallets (~72% of participants) hijacked the Solana WET presale, forcing HumidiFi to cancel the launch and issue a new token. Bubblemaps identified the sybil cluster through identical funding patterns: new wallets with no prior activity, funded simultaneously with similar SOL amounts. This case illustrates the operational risk of launching without pre-distribution sybil detection (Cointelegraph, Bubblemaps).
+Industry Anti-Sybil Approaches
+Sybil detection methodologies range from heuristic rules to machine learning clustering. The most effective approaches combine multiple techniques with post-hoc community bounties. 
+Claim Windows
+Claim windows balance user accessibility against treasury management. Unclaimed tokens typically return to DAO treasury or are burned.
+Appendix C: Emission Infrastructure - Options & Cost Analysis
+Example - Streamflow Cost Estimation (Solana)
+If using Streamflow as reference implementation, estimated costs are as follows (source: Streamflow Documentation):
+Note: Streamflow takes 0% fee on tokens distributed on Solana. Network fees include ATA creation, contract metadata, escrow account, and signatures. Documentation shows some discrepancies between stated service fees and total fee examples but this provides a general idea.
+Emission Infrastructure Options
+Infrastructure selection applies to all emission features (Lock Vault rewards, vesting, airdrops). Engineering decision required: evaluate build vs. buy trade-offs with technical teams. See Appendix A for Streamflow cost analysis.
+* CEX-managed staking is limited to simple fixed-duration products. It cannot support revenue-share distribution (where yield depends on protocol inflows) or loyalty rebates (which require on-chain identification of auction participants). CEX custody obscures wallet-level activity, making it incompatible with mechanisms that tie rewards to on-chain behavior.
+Appendix D: Governance comparison table
+Voting mechanisms across protocols
+Alternatives Considered
+The decision to implement simple 1:1 voting over more complex mechanisms (such as veToken models) is based on analysis of the Solana governance landscape and documented trade-offs:
+Capital efficiency vs. lock commitment:Raiku already operates a Lock Vault that rewards long-duration locking with yield distribution weight; adding a second lock layer for governance would compound capital inefficiency and fragment the holder base.
+Implementation risk. veToken models on Solana require the Voter Stake Registry (VSR) plugin, which introduces additional audit scope and maintenance overhead. Saber/Tribeca’s shutdown in 2025 after deploying a similar architecture demonstrates that this complexity does not guarantee protocol success and creates orphaned infrastructure risk. Marinade’s veMNDE requires active management of decay schedules. For a protocol launching governance from zero participation, this overhead is not justified.
+Empirical prevalence. Among major Solana infrastructure protocols (e.g. Jito, Jupiter, Drift, Pyth), all use simple 1:1 voting. Helium's veHNT model grants up to 100× voting power to holders who lock HNT for the maximum 48-month duration, compared to 1× for unlocked tokens — effectively giving maximum-duration lockers overwhelming governance weight over short-term or liquid holders. The 1:1 model is not merely “simpler”; it is the model that has actually sustained governance activity on Solana, and, more broadly, in real world governance mechanisms.
+Option A: veToken Model (Vote-Escrowed)
+In a veToken model, users lock tokens for a chosen duration and receive voting power weighted by lock length (e.g., 4-year lock = maximum multiplier). Examples on Solana include:
+Marinade (veMNDE): Users lock MNDE tokens and receive veMNDE voting power. Longer lock periods yield greater voting weight. Uses the Voter Stake Registry plugin
+Helium (veHNT): Aggressive multiplier system from 1x (1 day) to 100x (4 years). 1 HNT locked for 4 years generates 100 veHNT voting power
+Why not chosen: Implementation complexity requiring the Voter Stake Registry (VSR) plugin, which demands additional audit scope and maintenance overhead. The capital inefficiency of locked tokens conflicts with the need for active trading liquidity post-TGE. Furthermore, the shutdown of Saber/Tribeca in 2025 demonstrates that veToken complexity does not guarantee protocol success, and exit scenarios for locked tokens require careful planning.
+Option B: Hybrid Model (Simple Voting + Council/Futarchy)
+Some protocols use simple 1:1 token voting but add a council layer or alternative decision-making mechanism for operational efficiency. Examples on Solana:
+Drift Multi-Branch DAO: Uses simple 1:1 voting (1 DRIFT = 1 vote) on Realms, but adds a Security Council for protocol upgrades and Futarchy via MetaDAO for grant allocation using prediction markets.
+Orca Council: Uses simple 1:1 voting (1 ORCA = 1 vote) but adds a 7-member Governance Council with community veto power during 2-day cooldown period.
+Why not chosen at launch: Council election processes add complexity before community engagement is established. However, this model may be adopted in Phase 2 governance as the protocol matures and requires faster operational decision-making.
+Industry Precedents: Voting Mechanisms
+The simple 1:1 voting model is the dominant approach among major Solana infrastructure protocols:
+Governance Statistics
+Key governance lessons across protocols
+Jito - Conservative parameters can paralyze governance. The initial quorum of 30M JTO (3% of total supply) proved unattainable when circulating supply was limited to ~110M tokens. The Security Council lowered it to 10M JTO, the minimum allowed by Realms' full-digit percentage constraint (Jito Foundation Actions). In parallel, the Foundation's delegation of 12M JTO to 17 delegates became essential to enable any governance activity, effectively subsidizing participation to reach quorum (Community Call for Delegates).
+Jupiter - Mechanism sophistication does not prevent governance dysfunction. In June 2025, Jupiter suspended all DAO votes until end of 2025 after what founder Kash Dhanda described as a "breakdown in trust" stemming from team wallet voting controversies, a single wallet controlled 4.5% of voting power despite co-founders pledging not to use theirs (DL News). Staking rewards continue during the pause, but no new proposals can be submitted. The episode demonstrates that community trust matters more than governance complexity (Cryptopolitan).
+Marinade - Council models balance efficiency with decentralization. The 7-member Marinade Council operates a 4/7 multisig for day-to-day operational decisions (contract parameter updates, budget execution), while tokenholders retain ultimate authority over treasury allocation and major protocol upgrades through on-chain veMNDE votes. The DAO can replace council members at any time by tokenholder vote (Marinade Governance Docs).
+Drift - Three-branch separation prevents single-mechanism dominance. Drift's DAO architecture is the most structurally innovative in this comparison, splitting governance across three bodies: a Realms DAO for standard token voting on protocol development, a Security Council for expert oversight of protocol upgrades, and a Futarchy DAO for market-based grant allocation. Each branch has distinct membership and decision-making rules (Drift Foundation Constitution).
+Helium - Aggressive lockup multipliers target whale prevention. veHNT's decay-weighted staking model applies up to 100x multipliers for maximum lockup duration, explicitly designed to force differentiation between short-term speculators and committed network participants. A 6% emission cap on veHNT rewards further protects hotspot operators from governance capture by large token holders (HIP-51 - Helium DAO).
+Raydium - Extreme barriers create governance dormancy. The 1M RAY proposal threshold (~$600K+ at current prices) has produced exactly 2 proposals in the protocol's entire history, effectively concentrating governance power in the handful of addresses capable of meeting the deposit. Despite holding ~$240M in treasury assets, the DAO remains functionally inert (Messari - State of Raydium Q3 2024).
+Orca - Hybrid council plus community veto preserves execution velocity. The 7-member governance council (requiring 4/7 approval) handles routine decisions with speed, while community tokenholders retain a veto mechanism: 1M ORCA in opposition during the cooldown period can block any council proposal. This design trades broad direct participation for operational efficiency while maintaining a decentralization backstop (Orca Governance Docs).
+Appendix E: Validator Alignment  - Ecosystem Context
+No Solana block-building protocol currently slashes validator SOL stake for execution-level failures tied to block ordering behavior. Enforcement approaches vary:
+BAM (Jito) separates block building from validation via a trusted execution environment (TEE). The validator does not control ordering inside the enclave, reducing manipulation risk by architectural separation.
+Harmonic operates under voluntary compliance without formal enforcement mechanisms.
+Paladin proposed token-based social slashing but did not achieve sustained adoption. The client was later discontinued.
+Marinade SAM uses a SOL bond model limited to commission fraud, not execution-level manipulation.
+There is no established Solana standard for execution-level slashing tied to block ordering behavior.
+* Paladin is no longer active. Coinbase dropped Paladin Dec 2025 (Coinbase Dec 2025).
+† Harmonic validator count from schedulerwar.vercel.app; closed beta, not independently verifiable. 
+‡ Marinade SAM is a stake delegation marketplace, not a block-building protocol. Included for bond/slash precedent only.
+Source: validators.app & schedulerwar.vercel.app for validator client distribution, Feb 13, 2026; JIP-31; BAM launch (Blockworks); Helius BAM overview; Harmonic launch (The Block); Harmonic overview; ; buffalu Jan 2025; Paladin docs; Marinade SAM bonds; MIP-9.
+Appendix F: Token value accrual - Other Protocols
+F1: Jito DAO References - Token value accrual evolution
+In its early stages (before mid-2025), Jito’s system accrued significant revenue from MEV transaction fees, but initially did not distribute these earnings to token holders. 
+JIP-17: Activate a Cryptoeconomics SubDAO (CSD): By mid-2025, Jito’s community established a CSD to research and implement mechanisms linking the token (JTO) to on-chain revenues[4]. The CSD’s mandate was to ensure that the “economic machine” generating fees (from Jito’s block engine, liquid staking, etc.) feeds value back to JTO. 
+JIP-24: Jito DAO receives all Jito Block Engine fees: Over its first months, the CSD experimented with 100% revenue buyback programs, (e.g. executing a $1 million token buyback over 10 days), as a way to drive token value[5]. This “value accrual first” phase treated all protocol fees as resources to support the token price (similar to a stock buyback)[6].
+JIP-31: BAM (Block Assembly Market) Early Adopter Subsidy Programme: Later, Jito shifted towards balancing growth and value accrual. Notably, by late 2025 the community decided to redirect revenue into growing network adoption. 
+A governance proposal (JIP-31) introduced a BAM Early Adopter Subsidy Program that temporarily directs 100% of protocol revenue to validators rather than token buybacks[7]. 
+Under this program (running Q1–Q3 2026), all fees collected by Jito’s DAO are paid out to eligible validators running Jito’s new BAM software, boosting their earnings. 
+This came with a trade-off: the usual 100% buyback value-accrual policy was paused during the subsidy period[8]. 
+The validator subsidy is distributed each epoch in JitoSOL (yield-bearing SOL) based on each validator’s stake weight, using a formula that caps the advantage of very large validators to encourage broader participation[9]. 
+Rewards unclaimed by a validator after 10 epochs recycle back into the reward pool to avoid waste[10]. 
+Jito’s plan is to gradually wind down the subsidy after Q3 2026 and then resume directing fees to token value accrual (buybacks) once sufficient network growth is achieved[11].
+Sources:
+https://forum.Jito.network/t/jip-17-activate-a-cryptoeconomics-subdao/797
+https://forum.Jito.network/t/jip-31-introduce-a-bam-early-adopter-subsidy-programme/909
+https://forum.Jito.network/t/jip-24-Jito-dao-receives-all-Jito-block-engine-fees-and-future-bam-fees/860
+F2. Other protocol - Paladin ($PAL) & Seeker ($SKR)
+$PAL: https://medium.com/@uri_61495/paladin-priority-port-p3-dea9561b71b6
+Their token utilities were:
+1 what they call "Token Gating":
+For Users (Lock-to-Access): Users must lock $PAL to get access to specific bandwidth/throughput
+For Leaders (Collateral): Validators must stake $PAL as a security bond. If they act maliciously (frontrun), they get slashed.
+2. Value Capture:
+2.5% of priority fees are redistributed to $PAL stakers/holders.
+So basically, this is quite similar to the mechanisms which were orginally designed for $RAIKU. However, there are the obvious trade-offs we discussed :
+User Friction: Mandating a lock-to-access creates barriers for users that we may want to avoid at the beginning
+Validator: I would say that our current risk profile is likely lower than Paladin's context (avoiding leader frontrunning).
+This is the main pending point at the moment: do we want to force our validators to stake $RAIKU to avoid misbehavior, such as accepting last-millisecond JIT transactions over AOT? (modifié) 
+$SKR https://solanamobile.com/whitepaper
+SKR launched with  an FDV around $100M. At this stage it's mainly a governance token, with a staking option (lock + 25% APY). 
+They may implement a curation system with a 250k SKR bond for dApps (not yet implemented, cf. WP).
+F.3 Jito Forum
+https://forum.Jito.network/t/jto-utility-and-tokenomics/646
+Gauntlet feedback:
+“Buy Backs/Burn
+ At this time, we remain unconvinced that buybacks are an attractive use of DAO revenue compared to reinvestment in protocol growth. If the growth strategy includes incentives, buyback and distribution of JTO via incentives are an option. Still, there is not a convincing benefit to buyback and burn (or dividends) at this time, given the opportunity cost of re-investment in growth.
+Treasury Diversification
+ Treasury diversification is a staple of operations that should be conducted regardless of the intent of revenue re-investment. We strongly recommend a runway analysis and diverting some revenue to the Jito Treasury, converting it to USDC, and holding it as an operational buffer against market volatility. An organization with service providers, employees, contractors, etc., often has assets in a volatile token while liable for dollar-denominated contracts and payments.
+On the more exciting side, we believe there is a massive opportunity to invest in JitoSOL and JTO liquidity via POL. This could help siphon JTO trade volume away from CEXs to Solana and enable strategic integrations (as mentioned above) via ownership of revenue-generating liquidity for JitoSOL/SOL pairs in both AMMs and Lending.
+Conclusion
+ In the comments above, it does seem like there is some consensus that the revenue generated should be reinvested into Jito’s growth and that some of it should be diverted toward the treasury. Moving forward, it might be helpful to hold a working group with the Foundation or a third party to understand the strategic focus for the Jito team in more depth. Understanding the product roadmap and priorities would help accelerate consensus around experiments that leverage revenue to invest further in protocol and product growth. We currently believe a thesis-driven and KPI-driven approach to reinvestment in growth is the most suitable use of DAO revenue.”
+All Proposals & arguments at a glance
+Appendix G: Private Key Secure Storage
+Introduction
+Secure storage of private keys is one of the most critical aspects when managing the treasury funds, multisignature wallets, and on-chain governance mechanisms of the protocol.
+The Foundation oversees:
+The native token $RAIKU: the utility and governance token powering the Raiku protocol (Solana infrastructure, SPL (Solana Program Library) Tokens).
+Protocol-level decisions such as parameter changes, treasury disbursements, and ecosystem development initiatives executed via on-chain governance (e.g., referenda and collective multisig actions).
+Any compromise of the associated private keys would result in permanent and irreversible loss of control over significant $RAIKU holdings, treasury assets, or protocol authority, potentially jeopardizing the integrity of the Raiku protocol and the broader Raiku ecosystem.
+This appendix compares the main physical storage media suitable for holding these keys (or their seed phrases), with a strong emphasis on security, auditability (chain of custody), and operational resilience in the specific context of Raiku protocol's high-stakes responsibilities.
+Mandatory Requirements
+To be considered acceptable for storing Raiku DAO private keys (used for treasury management, $RAIKU governance, and protocol-level decisions), every storage medium must fully satisfy all of the following mandatory requirements:
+Chain of Custody (Full Auditability & Traceability). Every access, transfer, or use of the storage medium must be documentable and traceable. 
+Device / Medium Security (Intrinsic Security Properties). The medium must provide hardware-level protection of key material, preventing extraction even under physical access. Ideally, cryptographic operations (signing) occur within the device without exposing the raw private key.
+Separation of Control / No Single Point of Failure. No single individual, device, or location may hold sufficient key material to unilaterally authorize a transaction. This is enforced through multisig schemes (e.g., 3-of-5), Shamir Secret Sharing (SLIP39), or equivalent threshold mechanisms.
+Multisig Architecture - Squads Protocol
+Raiku's on-chain treasury and program authority are managed through Squads Protocol (v4), the leading multisig infrastructure on Solana. Squads secures over $10 billion in value across the Solana ecosystem and is used by major protocols including Pyth, Jito, Helium, Drift, and Orca.
+Squads v4 provides:
+Threshold signatures (e.g., 3-of-5) enforced at the smart contract level, not by a centralized custodian.
+Granular role-based access control: Proposer, Approver, Executor roles can be assigned independently.
+Time locks for high-value transactions, providing a review window before execution.
+Spending limits per member, per token, per time period — allowing routine operations without full multisig approval.
+Sub-accounts for organizing assets across operational functions (treasury, grants, operational expenses).
+Formally verified and audited smart contracts (OtterSec, Neodyme, Bramah Systems), open-source under AGPL-3.0.
+Each signer in the Squads multisig must use a hardware wallet (Ledger or Trezor) as their signing device. Software wallets (browser extensions, mobile wallets) are not permitted for multisig signers.
+Source: Squads Protocol v4 — GitHub; Squads Multisig
+Comparison of Physical Storage Media
+The following table compares the main physical storage media suitable for holding private keys or seed phrases in the context of Raiku's treasury and governance requirements.
+Hardware Wallets (Signing Devices)
+Hardware wallets store private keys in a dedicated secure chip and sign transactions without exposing the raw key material. They are the primary signing devices for multisig participants.
+Sources: Ledger Academy — HSM; Trezor SLIP39 FAQ; CryptoNews — Trezor vs Ledger
+Recommendation for Raiku. All multisig signers should use hardware wallets with Secure Element chips (Ledger Flex/Stax or Trezor Safe 5/7). The choice between Ledger and Trezor depends on the Foundation's trust model: Ledger offers deeper native Solana integration; Trezor offers full open-source auditability and native SLIP39 support. A mixed fleet (some signers on Ledger, some on Trezor) provides diversity against vendor-specific vulnerabilities.
+Seed Phrase Backup Media
+Seed phrases (BIP39 24-word mnemonics or SLIP39 shares) must be backed up on durable physical media and stored in geographically separated secure locations.
+Sources: Jameson Lopp — Metal Bitcoin Seed Storage Reviews; CoinCheckup — Best Metal Crypto Wallets 2026; Hodlr.swiss — Choosing the Right Metal
+Recommendation for Raiku. Use paper backup with non-fading ink or for added safety titanium plates (Cryptotag Zeus or Tinyseed) as backup medium for all seed phrases. Titanium provides the highest combined fire, corrosion, and impact resistance validated by independent stress testing. Each backup medium should be stored in a certified fire-rated safe or bank safety deposit box, and inventoried in the Foundation's chain-of-custody register.
+Enterprise Hardware Security Modules (HSMs)
+For organizations requiring the highest level of key security with regulatory compliance (e.g., FIPS 140-2 Level 3+), dedicated HSMs provide key generation, storage, and signing within tamper-resistant, tamper-responsive hardware. Keys never leave the HSM boundary.
+Sources: Securosys — Blockchain HSM; Ledger Academy — HSM
+Recommendation for Raiku. Enterprise HSMs are not required at launch but should be evaluated as the treasury AUM grows beyond a governance-defined threshold (e.g., >$10M). For the initial deployment phase, hardware wallet–based multisig via Squads provides sufficient security at significantly lower cost and operational complexity.
+Shamir Secret Sharing (SLIP39) vs. Multisig
+Shamir Secret Sharing and multisig solve related but distinct problems. They can be combined for defense-in-depth.
+Sources: Bitcoin Wiki — Shamir Secret Snakeoil; Trezor SLIP39 FAQ; Bitcoin Magazine — Protecting Your HODL Legacy
+Recommendation for Raiku. Use multisig (Squads, 3-of-5 minimum) as the primary transaction authorization mechanism. 
+Recommended Architecture Summary
+The following architecture is recommended for Raiku's treasury and governance key management at launch:
+This architecture eliminates single points of failure at every layer: no single device, person, location, or vendor can compromise the treasury. It is operationally practical for a team of 5–7 Foundation members and scales to enterprise-grade HSM integration as the protocol matures.
+Appendix H: Example Program Interfaces
+The following tables describe the instruction sets for the main Raiku on-chain programs. These are illustrative interfaces showing the expected caller, inputs, and authorization model for each instruction.
+raiku_lock_vault
+The Lock Vault program manages token locking positions, weight calculation, and reward distribution for $RAIKU stakers.
+Supply Dynamics
+Supply Dynamics
+This section analyzes circulating supply projections and provides scenario analyses for yield and lock rate trade-offs.
+Core Token Parameters
+Note: All allocation percentages, lock periods, and vesting schedules in this section are preliminary assumptions. They will be iterated based on market conditions, investor negotiations, legal review, and governance input.
+Funding Assumptions & FDV Scenarios
+* NB: Share/equity valuation differs from token valuation. 
+FDV Scenarios - Assumed FDV between $200M and $400M at TGE
+FDV: fully diluted valuation; ROI: return on investment ; TGE: token generation event
+* Share valuation is used as a proxy for token valuation to approximate potential ROI for private investors. This approach is purely illustrative and provides an indicative view of investor returns (token warrant assumption: one token corresponds to one share and should not be interpreted as a direct equivalence outside this framework)
+Scenario A reduces sell pressure but makes late-stage rounds less attractive. Scenario B signals stronger positioning but increases dumping risk at unlock. See Appendix A - FDV Comparables for benchmark.
+Token Unlock Structure
+The token is a fixed-supply SPL token on Solana.The total supply is minted at genesis through the SPL Token program. After minting, the mint authority is revoked (Mint Authority set to null), making it technically impossible to create additional tokens. This is the canonical way to implement fixed supply on Solana using SPL Token authorities.
+Thus, token allocations do not create supply over time, they only define how portions of the fixed supply are issued to stakeholders under predefined unlock rules. Allocations follow a two step issuance schedule:
+Lock Period: During the lock period, tokens allocated to a stakeholder category are held in escrow, custody, or a vesting mechanism controlled by the protocol or its designated governance entity. The beneficiary has no access to the tokens: they cannot claim, transfer, stake, or sell them. No vesting event occurs during the lock period.
+Unlock Period:  After the lock period ends, tokens become claimable according to a predefined unlock schedule. At each unlock event:
+A specific tranche becomes claimable.
+Upon claim, the tokens are transferred onchain to the beneficiary wallet.
+Once delivered, they become transferable under SPL Token rules.
+From that point, the beneficiary may transfer, stake, or sell the tokens, subject to any additional contractual or regulatory restrictions.
+The behavior of the unlock period depends on which unlock structure applies to the allocation: standard lockup or cliff. Both structures share the same lock period (during which no tokens are released), but they differ in how token entitlement begins once the unlock period starts.
+Standard Lockup
+In a standard lockup structure, the lock period serves purely as a waiting period. When the lock period ends, the claimable token portion begins from zero and proceeds linearly over the defined duration. There is no retroactive release for the time spent in lockup.
+Example - Standard Lockup. Consider an allocation of 100 tokens with a 12-month lockup followed by 36 months of linear unlock. 
+From Month 0 to Month 11, the tokens are locked. No token entitlement accrues, and none are claimable.
+Starting at Month 12, entitlement begins from zero. Tokens linearly at a rate of approximately 2.78 tokens per month (100 ÷ 36). By Month 48, all 100 tokens are unlocked.
+At no point does the beneficiary receive a lump-sum release. The lockup delays the start of the date when tokens can be disposed of without generating any accumulated entitlement.
+Cliff
+In a cliff structure, the lock period is counted as part of the total timeline. Although no tokens are released during the cliff months, entitlement accrues silently in the background. When the cliff date is reached, all tokens that would have accumulated during the cliff period are released at once as a single tranche. After this initial release, the remaining tokens continue to unlock linearly according to the schedule.
+In this framework, the cliff structure applies specifically to the Team allocation (cf. Team Vesting Mechanism below), as contractually defined.
+Example - Cliff. Consider an allocation of 100 tokens with a 12-month cliff within a 48-month total unlock period.
+From Month 0 to Month 11, the tokens are locked. No tokens are released, but entitlement accrues at a rate of approximately 2.083 tokens per month (100 ÷ 48).
+At Month 12, the accumulated entitlement is released at once: 25 tokens become claimable in a single tranche (12 × 2.083 ≈ 25).
+From Month 13 to Month 48, the remaining 75 tokens unlock linearly at approximately 2.083 tokens per month.
+Summary of the distinction. Under a standard lockup, the lock period delays accrual entirely, and the token count starts from zero when the lockup ends. Under a cliff, the lock period is part of the accrual timeline; the accumulated entitlement is released as a single tranche (or lump sum) when the cliff date is reached. In both cases, no tokens are delivered to the beneficiary during the initial lock months.
+Note on Upfront Releases
+In a standard lockup structure, a portion of the allocation may be released immediately at TGE before the lock period begins. This upfront tranche is negotiated per category, for example, 20–50% for airdrops, or a working capital tranche for ecosystem and reserve allocations. The upfront percentage does not alter the total allocation or the vesting terms for the remaining tokens.
+Team Vesting Mechanism
+The Team allocation (20% of total supply, 200,000,000 RAIKU) follows the cliff structure defined above. Tokens are granted under individual Token Grant Agreements, with vesting conditional on the grantee's continuous service to the Company.
+The vesting schedule spans 48 months from the Vesting Commencement Date. No tokens vest during the first 12 months (the cliff period). On the cliff date, 25% of the granted tokens vest at once. Thereafter, 2.08% of the granted amount vests on the last day of each subsequent month over the following 36 months, such that 100% of the tokens are fully vested on the fourth anniversary of the Vesting Commencement Date.
+If a grantee's continuous service terminates before full vesting, all unvested tokens are automatically reacquired by the Company at no cost. The Company holds unvested tokens in escrow, either via smart contract or other custodial methods, until each vesting event occurs. Vested tokens remain subject to a one-year transfer restriction from TGE during which the grantee may not transfer, sell, pledge, or otherwise dispose of them.
+See Supply Dynamics - Allocation and Vesting Table for details
+Allocation and Unlock Table
+Allocations
+Token allocations are distributed as follows,on an indicative basis:
+Core Contributors (Team and Advisors): 25%
+Investors (Pre-Seed, Seed, Series A): 25%
+Community (Airdrops and Rewards): 17%
+Protocol (CEX/DEX Liquidity, Ecosystem, DAO Reserve): 33%.
+Benchmark: Token Allocation
+The allocation structure supports: (1) multi-class airdrops (customers, validators, community, futures LST stakers) and (2) early-stage emission-funded yield before protocol revenue reaches sufficient scale. 
+Note: Airdrop categories are separated to allow different timing and criteria for each cohort (e.g. future LST stakers)
+Circulating Supply Projections
+Circulating supply refers to issued tokens minus Ecosystem and DAO reserves held by the protocol. It represents all tokens theoretically available on the market, though actual trading volume depends on holder behavior. Only circulating tokens are eligible for staking in the Lock Vault. 
+Circulating supply increases as tokens unlock according to the vesting schedule (see Unlock Schedule for detailed breakdown). The acceleration at M12 reflects the end of 12-month cliffs for Team, Advisors, Pre-seed, Seed, and Series A. After M36, supply growth slows materially as investor and team unlocks conclude, leaving primarily Ecosystem emissions and Yield Vault rewards..
+Key inflection points: 
+M0–M5 releases ~25M/month ( Airdrops, Liquidity deployment, Ecosystem, and Yield); 
+M6–M11 slows to ~10M/month (Liquidity deployment complete); 
+M12 cliff releases ~30M in a single month (first linear unlock from Team, Advisors, and Investors; post-cliff); 
+M13–M23 resumes at ~20M/month (linear Team/Advisor/Investor unlock);
+M24–M35: ~17.4M/month as Series A completes and emissions normalize;
+M36–M47: ~8M/month, primarily Ecosystem and Yield Vault;
+M48: ~1M final issuance as emissions conclude.
+*Assuming TGE in September 2026
+Note: For clarity of visualization and scale consistency, the tokens issued at TGE (month 0) related to CEX/DEX liquidity allocations and the DAO reserve are not displayed in the chart.
+(Values are expressed in millions of tokens)
+(Values are expressed in millions of tokens)
+Inflation Rate
+Selling Pressure Assessment
+This section estimates theoretical selling pressure from primary market token unlocks only. This is a conservative simplification: in practice, secondary market activity (buying and selling of already-circulating tokens) will also impact price dynamics. However, modeling secondary market flows requires assumptions about liquidity depth, market maker behavior, and overall market conditions that are beyond the scope of this analysis.
+The purpose here is to identify potential peak selling periods from primary allocations, providing directional signals for market making strategy and liquidity planning. 
+More sophisticated analyses (e.g., Monte Carlo simulations, market impact modeling using square-root laws, POV-based execution planning) can be conducted closer to TGE with finalized parameters.
+Three scenarios are considered:
+Conservative base case. Token price assumed constant ($0.2, FDV = $200M), all stakeholders sell 100% of unlocked tokens immediately.
+Realistic scenario. Selling behavior differentiated by stakeholder type: 
+Price appreciation is modeled at +25% in Years 1-2, and +15% in Years 3-4,
+Team sells 50%;
+Partners, Pre-seed, Seed, Private and ICO sell 80%; 
+Airdrops and rewards sell 70%;
+Unsold tokens from month N carry forward to month N+1 with the same sell probability applied recursively.
+Classic lockup vs cliff for team. Same assumptions as Conservative and Realistic scenarios but replaces the 12-month team cliff with a classic linear lockup: team tokens vest linearly over 36 months instead of unlocking entirely at month 12. This smooths the Year 2 inflation spike visible in Scenarios 1 and 2.
+Basecase analysis (Conservative) - Max. Selling Pressure over 48 month (if 100% sell within the month & Constant token price from listing: $0.2; assumed FDV = $200M)
+Sensitivity analysis (Realistic) - Selling Pressure over 48 month depending on stakeholders and price increase (+25% Y1-Y2, +15% Y3-Y4)
+Cliff vs classic lockup comparison - Conservative - Max. Selling Pressure over 48 month (if 100% sell within the month & Constant token price from listing: $0.2; assumed FDV = $200M)
+Cliff vs classic lockup comparison - Realistic - Selling Pressure over 48 month depending on stakeholders and price increase (+25% Y1-Y2, +15% Y3-Y4)
+These estimates are directional only. Actual market impact depends on liquidity depth, order book structure, market maker capacity, and broader market conditions. Detailed execution analysis should be conducted with market making partners prior to TGE.
+Precedent: Jito cliff unlock and price impact
+Jito used a 12-month cliff for core contributors (purple curve below), releasing ~200M tokens (~20% of total supply) for team and investors over a 5-month window. During that period, JTO dropped from ~$3.5 to ~$1.6, coinciding with the Trump tariff shock but still underperforming ETH. This is multifactorial and driven by broader market conditions; however, it is worth noting that this period corresponds to the phase during which Jito generated its highest revenues.
+A classic lockup (orange curve below) would have spread the same tokens linearly from month 1, avoiding the concentrated selling spike.
+Source: Tokenomist — JTO Governance Token
+Vault - Simulation Analyses
+This section provides quantitative analysis of the Bootstrap Yield Pool sustainability under various staking participation scenarios. All projections use the Target APY model adopted in Section 4 (Design Principle), and briefly outlined below.
+Definitions
+Supply. Supply terminology is not standardized across data providers. This document uses a two-tier framework:
+Issued supply. All tokens that have vested and are claimable or delivered on-chain. Verifiable on-chain.
+Circulating supply. Issued supply minus protocol-held reserves (Ecosystem Fund 80M + DAO Reserve 50M). At full vesting, circulating supply plateaus at 870M, not 1B.
+A vested tranche increases issued supply when it becomes claimable, but is not counted as circulating supply if it remains held under protocol control. This is consistent with free-float-style methodologies that exclude restricted or non-market-supplying balances.
+Epoch. One Solana epoch ≈ 2 days. There are approximately 182 epochs per year (365 ÷ 2.006). All emission and compounding calculations use this frequency.
+APR (Annual Percentage Rate). Simple annual rate. If a staker earns n tokens per epoch on a stake of S, then: APR = (n × 182) / S
+APY (Annual Percentage Yield). Compound annual rate assuming epoch-frequency reinvestment: APY = (1 + APR / 182)^182 − 1.
+At 25% APY, the corresponding APR is ~22.33%. At 10% APY, APR is ~9.53%. All figures in this document are labeled explicitly. All user-facing interfaces must do the same.
+Staking ratio. Tokens locked in the Vault ÷ circulating supply. This ratio is exogenous: the protocol does not control it.
+Emission. The quantity of RAIKU released from the Bootstrap Yield Pool each epoch and distributed pro rata to all stakers.
+Inputs
+Pool Budget
+The Bootstrap Yield Pool is initially calibrated with 50M RAIKU (5% of total supply). This is a finite, non-replenishable allocation. Once depleted, vault yield transitions to revenue-backed distributions (out of scope here; will be updated later).
+Circulating Supply Schedule
+Only circulating tokens are eligible for staking in the Lock Vault. Circulating grows as vesting schedules release tokens (see 2. Circulating Supply Projection for detailed breakdown).
+Three regimes matter for APY modeling:
+Rapid growth (M0–M11): Airdrops + Liquidity unlocks release ~10-25M tokens/month. Circulating supply nearly triples (150M → 420M). This is the period of steepest APY decline.
+Cliff shock (M12): Team, Advisors, Pre-seed, Seed, and Serie A cliff unlocks release ~100M tokens in a single month (~24% increase in circulating supply). (Cf Stress test)
+Plateau (M36–M48): Vesting is essentially complete. Circulating supply is flat at ~860-870M. APY stabilizes because the denominator stops growing.
+Staking Ratio
+The base case assumes 40% of circulating supply is locked in the Vault. This is calibrated against observed lock rates on Solana-native protocols:
+Base case justification: 40%. Across the benchmarks above, staking ratios range from around 10–25% (Raydium ~12.5%, Jupiter ~24%) to around 35–50% (Helium ~37%, SKR ~44% on Day 1, Marinade ~49%). 40% is a conservative assumption within the upper range.
+It can be noted that SKR peaked at ~70% within its first week (SolanaFloor). However, this is a B2C consumer token distributed to 100K+ phone buyers, structurally different from RAIKU's B2B model. The 70% figure is nonetheless used as an upper-bound stress scenario.
+Emission Models
+This section evaluates differents emission functions. All distribute tokens from the same 50M pool. They differ in how emission is distributed over time.
+All models produce declining APY over time for the same reason: total staked tokens grow while epoch emission follows a predetermined schedule. As vesting releases new tokens and a constant fraction enters the Vault, more tokens compete for each epoch's emission.
+When total_staked doubles (60M → 120M) with constant emission, APR halves. This is mechanical, not a design flaw. The supply plateau after M36 is why APY stabilizes in the final year rather than trending to zero
+Uniform Emission
+The pool is divided equally across all 48 months. Epoch emission is constant regardless of participation.
+epoch_emission = 50,000,000 ÷ (48 × 15.17) = 68,681 RAIKU/epoch
+monthly_emission = 68,681 × 15.17 ≈ 1,041,667 RAIKU/month
+Properties:
+Pool duration is deterministic: exactly 48 months.
+Starting APY depends on staking participation (unknown at launch).
+At 40% staking ratio and 150M circulating supply (M0): total staked = 60M, instantaneous APR = (68,681 × 182) / 60,000,000 = 20.83%, instantaneous APY = 23.2%.
+Calibrated Emission
+Epoch emission is set once at launch to deliver a target starting APY (25%) given an assumed staking ratio, then held constant.
+target_APR = ((1 + 0.25)^(1/182) − 1) × 182 = 22.33%
+epoch_emission = total_staked_at_M0 × target_APR / 182
+At 40% staking (60M staked): epoch_emission = 60,000,000 × 0.2233 / 182 = 73,466 RAIKU/epoch (~1,114K/month).
+Properties:
+Starting APY is deterministic: exactly 25%.
+Pool duration depends on staking participation (unknown at launch).
+Monthly draw exceeds the uniform model by ~7% (1,114K vs. 1,042K), meaning the 50M pool depletes before month 48. See Section 6.3.
+Sigmoid (Back-Loaded, e.g. B=2, S=10)
+Inverse S-curve that starts low, ramps, then plateaus:
+emission(t) = C / (1 + e^(−B×(t−S)))
+where C is calibrated to sum to 50M, B=2 controls steepness, and S=10 is the inflection month.
+Only ~15% of the pool is distributed in the first 12 months. Month 1 emission is 0.36× month 48 emission. Gini coefficient: 0.14 (low concentration).
+This model rewards sustained participation over time but produces weak initial incentives (starting APY ~40% lower than uniform at M0). Early adoption may be slower if holders perceive the reward as insufficient relative to alternatives.
+Model Comparison
+All four models evaluated under 40% staking, same 50M pool, same circulating supply schedule:
+Gini coefficient measures temporal inequality in reward distribution. Values above 0.3 indicate concentration levels that tend to attract extractive participation patterns.
+Compressed Distribution (24 Months)
+All four models can be run over 24 months instead of 48. This doubles average monthly emission and amplifies the behavioral dynamics of each model:
+Under compressed distribution, the protocol must transition to revenue-backed yield by month 24. This is viable only if protocol revenue at that date exceeds the minimum viable yield threshold (estimated at ~3–4% APY equivalent). Out of scope for this appendix but flagged as a dependency.
+Base Case Results
+Configuration: uniform emission (68,681/epoch), 40% staking ratio held constant, 48-month pool.
+The pool depletes exactly at month 48 by construction. APY declines from 23.2% to 3.7% over four years. The steepest drop occurs between M11 and M13 (cliff event). APY stabilizes in the final year because circulating supply plateaus at 870M.
+Per-staker example (M0). A 5,000 RAIKU stake represents 0.00833% of the 60M staked pool. Epoch reward: 68,681 × 0.00833% = 5.73 RAIKU. Annual reward: 5.73 × 182 = ~1,043 RAIKU (APR 20.9%, APY 23.2%). Reward scales linearly with stake size and inversely with total participation.
+Base Case: 40% Staking Ratio, Uniform Emission
+At 25% APY, the corresponding APR is ~22.33%. User-facing interfaces must clearly label rates as APR or APY.
+The chart below shows the instantaneous APY over the first 100 2-day epochs (182 epochs per year). With a constant 40% staking ratio and rewards calibrated so epoch 0 starts at exactly 25% APY (~73,000 tokens per epoch, ~1.1M/month at 15 epochs/month), the APY declines as circulating supply grows. Over 48 months, this configuration would require ~53M tokens, slightly above the current assumed pool size of 50M, meaning the pool would be fully depleted after approximately 45 months rather than the intended 48. This is acceptable by design: the emission pool is a finite bootstrap mechanism intended to be progressively replaced by protocol revenue growth (RAIKU buybacks) well before exhaustion.
+Sensitivity & Stress Tests
+This section tests how outputs change when inputs deviate from the base case. Organization:
+6.1 varies the staking ratio under uniform emission.
+6.2 compares the calibrated model against the base case.
+6.3 crosses calibrated emission × multiple staking ratios to map pool depletion risk.
+6.4 tests extreme or adverse scenarios.
+Staking Ratio Sensitivity (Uniform Emission)
+Emission is fixed at 68,681/epoch. Staking ratio determines starting APY and the shape of decay. Pool duration is always 48 months.
+Low participation (<25%) produces APYs above 50% at launch — this self-corrects as capital enters to capture yield. High participation (>60%) compresses APY below 7% by M6 but doesn't threaten pool duration. Under uniform emission, the pool always survives its full 48-month term regardless of staking ratio.
+Calibrated vs. Uniform (40% Staking)
+Side-by-side at the base case staking ratio:
+Calibrated emission delivers +1.8% APY at launch and maintains a ~7% premium throughout, at the cost of depleting the pool ~4 months early. The 48-month draw under calibrated emission totals ~53.5M — exceeding the 50M budget.
+Pool Depletion Map (Calibrated × Staking Ratio)
+Higher staking at launch forces higher epoch emission under the calibrated model, accelerating depletion:
+Break-even staking ratio: ~37%. Below this level, calibrated emission costs less than uniform (pool lasts longer). Above it, the pool depletes before 48 months. This is the central trade-off between the two models.
+Stress Tests
+Stress A — Extreme Participation (70% staking, calibrated emission)
+Worst-case pool depletion scenario. Epoch emission rises to 128,565 (~1,950K/month). Pool depletes around month 25.
+25 months of bootstrap yield still provides sufficient runway to establish an aligned holder base and transition to revenue-backed distributions. Safeguard: governance can adjust emission via RIP-A proposal if the pool approaches a depletion threshold.
+Sensitivity Analysis - Extreme Scenario (70% staking ratio)
+Under an extreme assumption where 70% of circulating supply is locked in the vault (i.e. a staking ratio well above typical DeFi participation rates) and the protocol still targets a 25% APY at launch, the 50M emission pool would be fully depleted after approximately 26 months. While this halves the intended 48-month horizon, it still guarantees over two years of bootstrap yield, providing sufficient runway to establish an aligned holder base and transition to revenue-backed distributions. 
+Additional safeguards further bound this risk: the predetermined declining rate schedule reduces draw as the protocol matures, governance can adjust rates via RIP-A proposal if the pool approaches a depletion threshold, and the transition to revenue-based yield is designed to begin well before pool exhaustion.
+Stress B — Cliff Event (M12)
+Cliff unlocks release ~100M tokens in a single month (~24% increase in circulating supply). Under 40% staking, total staked jumps from ~130M to ~170M, compressing APY from ~8.0% to 7.7%. The mechanical impact is moderate. The risk is behavioral: if cliff recipients sell rather than stake, price pressure can trigger cascading exits.
+Mitigations: duration boost multiplier (longer locks = higher weight) incentivizes pre-cliff stakers to hold; diversified lock durations prevent synchronized exits; market maker support around cliff dates absorbs sell-side flow.
+Stress C — Low Participation (<25% staking, uniform emission)
+Starting APY exceeds 50%, attracting mercenary capital — short-term yield seekers who exit once rates normalize. Under uniform emission the pool still lasts 48 months (duration is emission-determined, not participation-determined), but rewards concentrate among few stakers. The risk is misallocation, not depletion: bootstrap yield flows to extractive participants rather than aligned holders.
+Mitigation: communicate APY as variable from inception; governance-mediated reallocation of over-concentrated yield toward other incentive mechanisms.
+Alternative Emission Curves (Exploratory)
+This section explores parametric emission functions as potential alternatives to uniform distribution. These are design options under evaluation — none are incorporated into the base model.
+All functions distribute exactly 50M RAIKU over the selected period. They differ in temporal concentration.
+Parametric Functions (48 Months)
+Sigmoid (inverse S-curve) back-loads emission, rewarding sustained participation. Weaker initial incentives may slow early adoption.
+Gini coefficient measures temporal inequality in reward distribution. Values above 0.3 indicate concentration levels that tend to attract extractive participation patterns.
+Example using parametric function - Sigmoid
+The sigmoid function is recommended for balancing early adopter incentives with distribution fairness:
+ Emission(t) = 1 / (1 + B * e^(-t/S))
+Where:
+B (Backweight Factor): Determines curve steepness before leveling off
+S (Slope Factor): Controls transition speed from initial boost to plateau
+t: Period in months
+Emissions are normalized to distribute exactly 125M tokens over the 48-month period for instance:
+Emission Scenario Comparison 125 M in 48 month
+Note: The Gini coefficient measures inequality in distribution over time. A coefficient < 0.3 indicates high equality, minimizing wealth concentration among early stakers.
+Note: Higher Gini scores attract mercenary capital that may exit aggressively once boost periods end
+Over 48 month - Early Staker Boost (param; B=2, S=10; Gini score = 0.3)
+Note: Note: B = 2 to account for potential staker growth during the first six months.
+Compressed Distribution (24 Months)
+Halving the distribution period doubles monthly emission and amplifies temporal dynamics:
+[Chart placeholder: Emission curves — Exponential / Sigmoid / Linear, 24 months]
+Sensitivity analyses: Emission Scenario Comparison 125 M in 24 month
+Over 24 month - Early Staker Boost (param; B=1, S=5; Gini score = 0.45)
+Trade-off: Higher early incentives may attract mercenary capital that exits at first opportunity.
+Over 24 month - Fair Distribution (param; B=1, S=15; Gini score =0.10)
+Over 24 month - Linear (param NA; Gini score = 0.00)
+USD Value Projection (Illustrative)
+Assuming token price appreciation (25% annual Y1–Y2, 15% annual Y3–Y4):
+Under sigmoid, monthly USD value rises from ~$600K to ~$1.2M by month 24, remaining stable through month 48 as price appreciation offsets the emission ramp.
+[note: More sophisticated Monte Carlo simulations could be run using, e.g. geometric Brownian motion (GBM) with Black–Scholes–based approach, calibrated on daily growth rates from historical data of comparable protocols (e.g., Jito) on similar periods and market conditions, but this would likely not be materially more accurate than the scenario-based assumptions used here. This can be used to introduce price volatility analysis, but it remains largely exploratory at this stage.]
+Under the Early Staker Boost scenario with price appreciation, initial monthly USD rewards peak at ~$1.3M after 1 year, decline sharply to ~$200K by month 48 as emission decay outpaces price growth.
+Under the Fair Distribution scenario, the monthly USD value of distributed rewards rise steadily from ~$600K to plateau at ~$1.2M by month 24, remaining stable through month 48 as price appreciation offsets declining emissions.
+Over 48 month - Early Staker Boost (param; B=2, S=10; Gini score = 0.3)
+Over 48 month - Fair Distribution (param; B=1, S=30; Gini score =0.10)
+Summary & Open Decisions
+The 50M pool sustains bootstrap yield for 48 months under uniform emission. APY starts at ~23% with 40% staking and declines to ~3.7% as circulating supply grows from ~150M to 870M. Supply plateau after M36 stabilizes final-year yield.
+Calibrated emission delivers a higher starting APY (25%) at the cost of earlier depletion (~month 44 at 40% staking). Under stress (70% staking + calibrated), depletion accelerates to ~month 25 still over two years of runway.
+Open engineering decision: uniform vs. calibrated emission.
+Economic Flows and Revenue Redistribution
+Economic Flows and Revenue Redistribution
+This section covers how protocol revenue (real money earned) is distributed. This is fundamentally different from initial token emissions (Section 3) which are bootstrapping mechanisms.
+Revenue Sources
+The protocol generates revenue from two primary sources:
+AOT Auction Fees: Sealed-bid payments for reserved compute windows, SOL-denominated, settled from user deposits.
+JIT Tips: Real-time tips attached to transactions and bundles, SOL-denominated.
+Take Rate Parameter
+The protocol fee (protocol_fee) is the percentage of total auction and tip amounts flowing to the Raiku treasury. This applies to both AOT and JIT revenue streams combined. Default: 5%, governance-bounded range: 1-5%.
+Note on Jito fee structure: While Jito's nominal TipRouter fee is 6% since August 2025  (and was 2.7% previously), the effective DAO take rate relative to total MEV tips in 2025 was approximately 1-2%.
+Market Reference: Jito MEV Revenue Analysis (2025)
+Understanding the Solana MEV market through Jito's performance provides the basis for Raiku revenue projections.
+Total Jito Tips (2025) (See Google Sheet Jito Revenues for details)
+Total MEV tips flowing through Jito (searcher payments to validators):
+Sources are consistent: approximately $720M in total MEV tips for 2025, averaging ~$60M/month.
+Jito DAO TipRouter Revenue (2025)
+Revenue captured by Jito DAO via TipRouter mechanism:
+Excluding Artemis outlier, consensus estimate: ~$7-8M in DAO TipRouter revenue for 2025.
+Effective Take Rate Analysis
+Despite a nominal 3% TipRouter fee (i.e. 3% to Jito Lab and 3 % to DAoA before August 2025), Jito DAO seems to capture only 1-2% of total tip volume.
+Key Observations
+Declining trend: Q4-25 tips (~$25M) represent only 5.5% of Q1-25 ($445M), indicating significant market contraction post-bull run.
+Revenue concentration: Q1-25 alone accounts for ~62% of annual tips.
+Fee evolution: Jito transitioned from 3% Labs + 3% DAO to 6% full DAO in August 2025, now redirecting 100% of protocol revenue to BAM validator subsidies (January 2026).
+Raiku Revenue Projections
+Baseline Assumptions
+Given the declining trend in Jito MEV volume, projections use Q4-25 annualized (~$100M) as the conservative market size estimate rather than the full 2025 total ($720M). This reflects:
+Current market conditions (post-bull run normalization)
+More realistic entry conditions for a new protocol
+Prudent financial planning
+Market capture scenarios:
+Conservative (5%): New entrant baseline
+Base (10%): Successful differentiation via AOT unique value proposition
+Optimistic (15%): Strong adoption with validator and customer traction
+Revenue Matrix by Take Rate
+Assuming market base of ~$100M annual MEV volume (Q4-25 annualized):
+Reading the table: At Base scenario (10% market share, $10M annual revenue) with a 4% protocol fee (i.e. take rate), Treasury captures $400K annually.
+Sensitivity Analysis
+If MEV market recovers to 2025 average levels (~$720M annual), projections scale accordingly:
+Comparison with Jito
+Jito DAO revenue 2026-01-20: Annualized based on last 30D: $7,140,000 :https://www.Jito.network/jto/
+Dune 2026-01-20: Proxy Annualized USD Rev DAO: $7,748,296 https://dune.com/Jito/Jito-dao-net-income
+Lessons from Jito's Evolution
+Delayed value accrual: Jito operated without token value accrual for ~2 years before the Cryptoeconomics SubDAO (CSD) was activated in 2025.
+Growth-first worked: Prioritizing validator adoption built dominant market position before focusing on token economics.
+Flexibility matters: JIP-31's validator subsidy shows the value of being able to pivot treasury allocation based on strategic needs.
+Buyback execution: Jito's TWAP buyback experiments provide operational precedent for Raiku.
