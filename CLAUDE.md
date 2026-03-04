@@ -24,32 +24,31 @@ Build a **data pipeline + revenue model** for RAIKU, a Solana blockspace marketp
 
 ## Project Structure
 
-**IMPORTANT**: Some files below are drafts from an early session and **must be rewritten**.
-Status legend: ✅ = keep as-is, ⚠️ = exists but REWRITE needed, 🆕 = does not exist yet.
+Status legend: ✅ = exists and working, 🆕 = to be created by Claude Code.
 
 ```
 raiku-revenue-model/
 ├── CLAUDE.md                ← You are here (project guide)
-├── config.py             ✅ ← API keys, business parameters, scenarios (KEEP)
-├── run_pipeline.py       ⚠️ ← REWRITE: must add Trillium, fix imports, match new architecture
+├── config.py             ✅ ← API keys, business parameters, scenarios
+├── run_pipeline.py       🆕 ← Master orchestrator (extract → transform → model → output)
 │
 ├── 01_extract/
 │   ├── extract_trillium.py 🆕 ← CREATE FIRST: PRIMARY data source (epochs 553+)
-│   ├── dune_client.py    ✅ ← Dune API wrapper (KEEP)
-│   ├── dune_epochs.py    ✅ ← Epoch economics query 6773409 (KEEP)
-│   ├── dune_validators.py ✅ ← Commission/validators query 6773227 (KEEP)
-│   ├── dune_active_stake.py ✅ ← Active stake query 6776267 (KEEP)
-│   └── coingecko_prices.py ✅ ← SOL price + FDV (KEEP)
+│   ├── dune_client.py    ✅ ← Dune API wrapper (tested, working)
+│   ├── dune_epochs.py    ✅ ← Epoch economics query 6773409
+│   ├── dune_validators.py ✅ ← Commission/validators query 6773227
+│   ├── dune_active_stake.py ✅ ← Active stake query 6776267
+│   └── coingecko_prices.py ✅ ← SOL price + FDV
 │
 ├── 02_transform/
-│   └── build_database.py ⚠️ ← REWRITE: must merge Trillium data, Python computes (not Excel)
+│   └── build_database.py 🆕 ← Merge Trillium + Dune + CoinGecko, all computations in Python
 │
 ├── 03_model/
-│   ├── aot_revenue.py    ⚠️ ← REWRITE: replace placeholder values with real extracted data
-│   └── jit_revenue.py    ⚠️ ← REWRITE: replace placeholder values with real extracted data
+│   ├── aot_revenue.py    🆕 ← AOT: top-down + bottom-up (6 archetypes), use real data
+│   └── jit_revenue.py    🆕 ← JIT: Jito TAM from Trillium × share × fee
 │
-├── 04_output/               ← Google Sheets export (presentation layer)
-│   └── (empty)           🆕 ← CREATE: sheets_export.py (Phase 4)
+├── 04_output/
+│   └── sheets_export.py  🆕 ← Push results to Google Sheets (Phase 4)
 │
 ├── data/
 │   ├── raw/                 ← Never edit manually. Re-extractable.
@@ -66,16 +65,6 @@ raiku-revenue-model/
 ```
 
 All CSVs use **semicolon delimiter** (`;`) and UTF-8 encoding. See `config.py` for settings.
-
-### What to do with ⚠️ files
-
-The ⚠️ files were written in an early session BEFORE Trillium was identified as primary source. They contain:
-- `run_pipeline.py`: No Trillium step, wrong import paths (`_01_extract` vs `01_extract`)
-- `build_database.py`: Only merges Dune + CoinGecko, comment says "Excel formulas" (wrong, we use Python)
-- `aot_revenue.py`: Placeholder values (e.g. `avg_bid_lamports_per_cu: 50`), TODO mentions BigQuery
-- `jit_revenue.py`: Placeholder scenarios, not connected to real Trillium data
-
-**Action**: Rewrite these files when you reach their phase. Read them first for structure/ideas, then rewrite to match the current architecture.
 
 ---
 
