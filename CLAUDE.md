@@ -10,7 +10,9 @@ Build a **data pipeline + revenue model** for RAIKU, a Solana blockspace marketp
 
 **Revenue split**: 95% validators / 5% protocol (governance range 1-5%).
 
-**Goal**: Extract real Solana on-chain data, build a revenue model with multiple scenarios, output Excel with live formulas.
+**Goal**: Extract real Solana on-chain data, build a revenue model with multiple scenarios.
+
+**Architecture**: Python = computation engine (CSV intermediates, git-versioned) → Google Sheets = final presentation layer (scenarios, sharing).
 
 ---
 
@@ -38,7 +40,7 @@ raiku-revenue-model/
 │   └── [TO CREATE] build_database.py
 ├── 03_model/              ← Revenue models
 │   └── [TO CREATE] aot_revenue.py, jit_revenue.py
-├── 04_output/             ← Excel/dashboard generation
+├── 04_output/             ← Google Sheets export (presentation layer)
 ├── data/
 │   ├── raw/               ← Never edit manually. Re-extractable.
 │   │   ├── dune_epoch_data_v2.csv        (785 rows, epochs 150-935)
@@ -144,7 +146,7 @@ Build script: `build_final_data.py`
    - Rate-limit: 0.2s between requests (be polite)
 2. Merge Trillium + existing Dune data on `epoch` key
 3. Cross-check overlapping fields (MEV, fees, inflation, validator count)
-4. Rebuild Excel with enriched columns (Trillium RAW + Dune RAW + FORMULAS)
+4. Build enriched processed CSV → `data/processed/solana_epoch_database.csv`
 
 ### Phase 2: Extract RAIKU-Specific Data
 5. Jito/MEV breakdown per epoch (already in Trillium epoch_data)
@@ -160,9 +162,11 @@ Build script: `build_final_data.py`
 13. **Sanity check**: top-down ~ bottom-up (order of magnitude)
 
 ### Phase 4: Output
-14. Excel with live formulas (raw data + `=` formulas, NOT hardcoded computed values)
+14. Export results to Google Sheets (presentation layer — formatted, shareable)
+    - Existing Sheet: https://docs.google.com/spreadsheets/d/14xHMN7HpBuGbRA1SFgehbUgyvQs1Gf3XVwWdoOpuST4
+    - Use `gspread` or Google Sheets API with service account
 15. Revenue split waterfall (total → 95% validators / 5% protocol → rebates → remainder)
-16. Sensitivity analysis
+16. Sensitivity analysis (scenario parameters adjustable in the Sheet)
 17. Validator profitability view
 
 ---
@@ -289,9 +293,11 @@ Savings = E_regular - E_AOT
 1. **From-scratch capable**: Pipeline must be able to re-extract ALL data if run with `--full`
 2. **Incremental by default**: Only extract new epochs/dates not already in CSVs
 3. **Raw data is sacred**: Never manually edit files in `data/raw/`
-4. **Excel formulas, not hardcoded**: Computed values = Excel `=` formulas, NOT Python-calculated values
-5. **Semicolon CSVs**: European locale compatibility (`;` delimiter)
-6. **Reproducible**: Any developer can clone this repo, run the pipeline, get the same output
+4. **Python = computation engine**: All calculations happen in Python. CSVs are intermediates.
+5. **Google Sheets = presentation**: Final output pushed to Sheets for sharing/scenarios. Sheet is NOT the computation engine.
+6. **Semicolon CSVs**: European locale compatibility (`;` delimiter)
+7. **Reproducible**: Any developer can clone this repo, run the pipeline, get the same output
+8. **Data flow**: `data/raw/` (extracted) → `data/processed/` (computed by Python) → Google Sheets (presentation)
 
 ---
 
