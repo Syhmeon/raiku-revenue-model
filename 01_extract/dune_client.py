@@ -47,6 +47,24 @@ class DuneClient:
         with urllib.request.urlopen(req) as resp:
             return json.loads(resp.read().decode())
 
+    def create_query(self, name: str, query_sql: str, is_private: bool = True) -> int:
+        """Create a new query on Dune. Returns the query_id.
+
+        Use this to programmatically create queries instead of pasting SQL
+        into the Dune web UI. The query will appear in your Dune dashboard.
+        """
+        print(f"  Creating Dune query: {name}...")
+        result = self._post("query", data={
+            "name": name,
+            "query_sql": query_sql,
+            "is_private": is_private,
+        })
+        query_id = result.get("query_id")
+        if not query_id:
+            raise RuntimeError(f"Failed to create query: {result}")
+        print(f"  → Created query ID: {query_id}")
+        return query_id
+
     def execute_query(self, query_id: int) -> str:
         """Execute a query, return execution_id."""
         result = self._post(f"query/{query_id}/execute")

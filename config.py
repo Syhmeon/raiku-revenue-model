@@ -19,6 +19,11 @@ except ImportError:
 PROJECT_ROOT = Path(__file__).parent
 DATA_RAW = PROJECT_ROOT / "data" / "raw"
 DATA_PROCESSED = PROJECT_ROOT / "data" / "processed"
+DATA_MAPPING = PROJECT_ROOT / "data" / "mapping"
+
+# ── Google Sheets ─────────────────────────────────────
+GOOGLE_SHEET_ID = "14xHMN7HpBuGbRA1SFgehbUgyvQs1Gf3XVwWdoOpuST4"
+SERVICE_ACCOUNT_FILE = PROJECT_ROOT / "service_account.json"
 
 # ── API Keys (from .env or environment) ────────────────
 DUNE_API_KEY = os.environ.get("DUNE_API_KEY", "")
@@ -42,7 +47,15 @@ DUNE_QUERIES = {
     "commission_validators": 6773227, # Commission rates, validator count, stake accounts
     "active_stake": 6776267,          # Active stake per epoch
     "fee_breakdown": 6776270,         # Base fee vs priority fee per epoch
+    "fee_per_cu_by_program": 6777333, # Fee/CU by program (7-day snapshot)
+    "daily_priority_fees": 6777334,   # Daily priority fees (91-day)
+    "program_fees_30d": 6783409,       # Per-program daily fees/CU 30-day
+    "program_fees_aggregate": 6783408, # Top 500 programs aggregate 30-day
 }
+
+# ── Solscan Pro API (free tier) ──────────────────────────
+SOLSCAN_API_KEY = os.environ.get("SOLSCAN_API_KEY", "")
+SOLSCAN_BASE_URL = "https://pro-api.solscan.io/v2.0"
 
 # ── CoinGecko ──────────────────────────────────────────
 COINGECKO_BASE_URL = "https://api.coingecko.com/api/v3"

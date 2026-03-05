@@ -1,0 +1,81 @@
+program_id;program_name;raiku_category;subcategory;raiku_product;source;notes
+675kPX9MHTjS2zt1qfr1NYHuzeLXfQM9H24wFSUt1Mp8;Raydium V4;dex;amm;both;manual;MMs need reliable LP rebalancing (AOT) + traders need fast execution (JIT)
+JUP6LkbZbjS1jKKwapdHNy74zcZ3tLUZoi5QNyVTaV4;Jupiter V6;dex;aggregator;both;manual;Aggregator routing needs reliability (AOT) + traders need fast fills (JIT)
+whirLbMiicVdio4qvUfM5KAg6Ct8VwpYzGff3uctyCc;Orca Whirlpool;dex;clmm;both;manual;CLMM LPs need rebalancing reliability (AOT) + traders need JIT
+CAMMCzo5YL8w4VFF8KVHrK22GGUsp5VTaW7grrKgrWqK;Raydium CLMM;dex;clmm;both;manual;Concentrated liquidity - same logic as Orca Whirlpool
+6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P;Pump.fun;dex;bonding_curve;potential;manual;Snipers during congestion need JIT - high volume during launches
+LBUZKhRxPF3XUpBCjp4YzTKgLccjZhTSDM9YuVaPwxo;Meteora DLMM;dex;dlmm;both;manual;Dynamic liquidity MMs need AOT + traders need JIT
+PhoeNiXZ8ByJGLkxNfZRnkUfjvmuYqLR89jjFHGqdXY;Phoenix;dex;orderbook;both;manual;On-chain orderbook - market makers need reliable order placement (AOT) + traders (JIT)
+srmqPvymJeFKQ4zGQed1GFppgkRHL9kaELCbyksJtPX;Serum/OpenBook;dex;orderbook;potential;manual;Legacy orderbook - same logic as Phoenix but legacy
+opnb2LAfJYbRMAHHvqjCwQxanZn7ReEHp1k81EQMQf8;OpenBook V2;dex;orderbook;both;manual;Orderbook DEX - market makers (AOT) + traders (JIT)
+FLUXubRmkEi2q6K3Y9kBPg9248ggaZVsoSFhtJHSOfk;FluxBeam;dex;amm;potential;manual;DEX - traders could benefit from guaranteed execution
+T1pyyaTNZsKv2WcRAB8oVnk93mLJw2XzjtVYqCsaHqt;Jito Tip Payment;mev;tips;jit;solscan;Jito MEV tips - JIT searcher activity (Solscan: Jito Tip Payment)
+Jito4APyf642JPZPx3hGc6WWJ8zPKtRbRs4P3e9pVSc;Jito Restaking;mev;restaking;potential;manual;Staking ops may need reliable execution for stake rebalancing
+dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH;Drift Protocol;perps;perpetuals;both;manual;Cranking/funding settlement = AOT + traders/liquidators = JIT
+ZETAxsqBRek56DhiGXrn75yj2NHU3aYUnxvHXRas1EQ;Zeta Markets;perps;perpetuals;both;manual;Options/perps - cranking = AOT + traders = JIT
+PERPHjGBqRHArX4DySjwM6UJHiR3sWAatqfdBS2qQJu;Perpetual Protocol;perps;perpetuals;both;manual;Perps - funding keeper = AOT + traders = JIT
+So1endDq2YkqhipRh3WViPa8hFMUpXRQrETEgTcKSaJ;Solend;lending;pool;aot;manual;Lending - liquidation bots and keepers = AOT
+KLend2g3cP87ber41GtWkPjXCVRKyomUr11Hpe26LhL3;Kamino Lend;lending;pool;aot;manual;Kamino - rebalance keeper = AOT
+MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA;Marginfi;lending;pool;aot;manual;Lending - liquidation keepers = AOT
+JupSoLaHXQiZZTSfEWMTRRgpnyFm8f6sZdosWBjx93v;Jupiter Staking;staking;liquid;potential;manual;Staking ops - rebalancing could benefit from guaranteed execution
+mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So;Marinade;staking;liquid;aot;manual;Marinade - rebalance cranker = AOT (confirmed in usecases doc)
+CgntPoLka5pD5fesJYhGmUCF8KU1QS1ZmZiuAuMZr2az;Sanctum;staking;liquid;potential;manual;LST infrastructure - stake rebalancing could need AOT
+BSwp6bEBihVLdqJRKGgzjcGLHkcTuzmSo1TQkHepzH8p;BonkSwap;dex;amm;potential;manual;DEX - traders could benefit from guaranteed execution
+jCebN34bUfdeUYJT13J1yG16XWQpt5PDx6Mse9GUqhR;Jupiter DCA;cranker;dca;aot;manual;DCA = predictable scheduled execution = AOT (confirmed in usecases doc)
+ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL;Associated Token;system;token;neither;solana_docs;SPL token accounts - system infrastructure
+TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA;Token Program;system;token;neither;solana_docs;SPL token program - system infrastructure
+11111111111111111111111111111111;System Program;system;core;neither;solana_docs;Solana system program - system infrastructure
+ComputeBudget111111111111111111111111111111;ComputeBudget;system;core;neither;solana_docs;Compute budget program - system infrastructure
+Vote111111111111111111111111111111111111111;Vote Program;system;vote;neither;solana_docs;Validator voting - system infrastructure
+FsJ3A3u2vn5cTVofAjvy6y5kwABJAqYWpe4975bi2epH;Pyth Oracle;oracle;price_feed;aot;manual;Oracle updates = scheduled/predictable = AOT (confirmed in usecases doc)
+7UVimffxr9ow1uXYxsr4LHAcV58mLzhmwaeKvJ1pjLiE;Switchboard;oracle;price_feed;aot;manual;Oracle = scheduled updates = AOT
+GDDMwNyyx8uB6zrqwBFHjLLG3TBYk2F8Az4yrQC5RzMp;Orca Legacy;dex;amm;potential;manual;Legacy DEX - LPs could benefit from execution guarantees
+9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin;Serum V3;dex;orderbook;potential;manual;Legacy orderbook - historical but same MM logic applies
+worm2ZoG2kUd4vFXhvjh93UUH596ayRfgQ2MgjNMTth;Wormhole;bridge;cross_chain;potential;manual;Bridge - cross-chain messages may need guaranteed timing
+3u8hJUVTA4jH1wYAyUur7FFZVQ8H635K3tSHHF4ssjQ5;Allbridge;bridge;cross_chain;potential;manual;Bridge - same logic as Wormhole
+SoLXmnP9JWfhGMCSWUQPcDkd4byAEGiiV7aSG6iGMRz;Solax;dex;amm;potential;manual;DEX - traders could benefit
+HQ2UUt18uJqKaQFJhgV9zaTdQxUZjNrsKFKRMIBZga1c;Hadeswap;nft;marketplace;potential;manual;NFT AMM - could benefit from guaranteed execution during high-demand mints
+M2mx93ekt1fmXSVkTrUL9xVFHkmME8HTUi5Cyc5aF7K;Magic Eden V2;nft;marketplace;potential;manual;NFT marketplace - minting/trading during congestion
+TSWAPaqyCSx2KABk68Shruf4rp7CxcNi8hAsbdwmHbN;Tensor;nft;marketplace;potential;manual;NFT marketplace - same logic
+BiSoNHVpsVZW2F7rx2eQ59yQwKxzU5NvBcmKshCSUypi;BisonFi;dex;prop_amm;aot;bisonfi_docs;PropAMM by Forward Industries - confirmed AOT (oracle/quote updates)
+TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb;Token-2022;system;token_extension;neither;solana_docs;SPL Token-2022 (Token Extensions) - system infrastructure
+Ed25519SigVerify111111111111111111111111111;Ed25519 Sig Verify;system;signature_verify;neither;solana_docs;Native Solana Ed25519 signature verification precompile
+MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr;Memo Program;system;metadata;neither;solana_docs;SPL Memo program - system infrastructure
+pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA;Pump.fun AMM;dex;amm;potential;manual;Pump.fun graduated AMM pools - snipers during launches could need JIT
+BPFLoaderUpgradeab1e11111111111111111111111;BPF Loader;system;program_deployment;neither;solana_docs;Native Solana program deployment - system infrastructure
+routeUGWgWzqBWFcrCfv8tritsqukccJPu3q5GPP3xS;Jupiter Route;dex;aggregator;both;jupiter_docs;Jupiter aggregator routing - same logic as Jupiter V6
+KeccakSecp256k11111111111111111111111111111;Keccak Secp256k1;system;signature_verify;neither;solana_docs;Native Solana secp256k1 verification - system infrastructure
+BGUMAp9Gq7iTEuizy4pqaxsTyUCBK68MDfK752saRPUY;Bubblegum;nft;compressed_nft;potential;metaplex_docs;Compressed NFT protocol - minting during congestion
+KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD;Kamino Lending v2;lending;pool;aot;kamino_docs;Kamino K-Lend - liquidation keepers = AOT
+pythWSnswVUd12oZpeFP8e9CVaEqJg25g1Vtc2biRsT;Pyth Push Oracle;oracle;price_feed;aot;pyth_docs;Pyth push oracle - scheduled updates = AOT
+SAGE2HAwep459SNq61LHvjxPk4pLPEJLoMETef7f7EE;Star Atlas SAGE;gaming;game;potential;staratlas_docs;Gaming - raiku.com lists gaming as a vertical (multiplayer coordination)
+Stake11111111111111111111111111111111111111;Stake Program;system;staking;neither;solana_docs;Native Solana stake program - system infrastructure
+AddressLookupTab1e1111111111111111111111111;Address Lookup Table;system;address_lookup;neither;solana_docs;Native Solana address lookup table - system infrastructure
+FLASHX8DrLbgeR8FcfNV1F5krxYcYMUdBkrP1EPBtxB9;Flash Trade;perps;perpetuals;both;flash_trade_docs;Perps DEX - crankers/keepers = AOT + traders/liquidators = JIT
+9H6tua7jkLhdm3w8BvgpTn5LZNU7g4ZynDmCiNN3q6Rp;HumidiFi;dex;prop_amm;aot;solscan;Solscan: HumidiFi - PropAMM (documented in raiku_exec_problems.txt)
+King7ki4SKMBPb3iupnQwTyjsq294jaXsgLmJo8cb7T;Arbitrage Bot (King7);trading_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - DEX-DEX arb = JIT
+8Ue7UGaqgk9GR3YphyDMe9TX4rdUqsbVXfPcFbzM5LDE;Arbitrage Bot (8Ue7U);trading_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - DEX-DEX arb = JIT
+EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih;Phoenix Eternal;dex;orderbook;both;solscan;Solscan: Phoenix Eternal - orderbook MMs (AOT) + traders (JIT)
+phDEVv4w6BcfkLrLNeXr8HhhgQxnxziVGXpGPcaadMf;Phoenix Perpetuals Program;perps;perpetuals;both;solscan;Solscan: Phoenix Perpetuals - crankers (AOT) + traders (JIT)
+MEXkeo4BPUCZuEJ4idUUwMPu4qvc9nkqtLn3yAyZLxg;Swissborg;system;exchange;potential;solscan;Solscan: Swissborg - crypto exchange may need reliable execution
+HDwcJBJXjL9FpJ7UBsYBtaDjsBUhuLCUYoz3zr8SWWaQ;Wormhole Program;bridge;cross_chain;potential;solscan;Solscan: Wormhole Program - bridge may need guaranteed timing
+vBoNdEvzMrSai7is21XgVYik65mqtaKXuSdMBJ1xkW4;Marinade Bond program;staking;bond;potential;solscan;Solscan: Marinade Bond - staking operations could use AOT
+SKRskrmtL83pcL4YqLWt6iPefDqwXQWHSw9S9vz94BZ;Solana Seeker;unknown;mobile_gaming;potential;solscan;Solscan: Solana Seeker - mobile/gaming vertical on raiku.com
+HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ;Kamino Scope Price;oracle;price_feed;aot;solscan;Solscan: Kamino Scope Price - oracle = scheduled updates = AOT
+CroWg74XNDF8UMnAZVbXx49iVj7iJ7b4CsqTCVWF7aK;Arbitrage Bot (CroWg);trading_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - DEX-DEX arb = JIT
+G3z6yQqLP1q2JqFqEwND6rTX3vsnzzr3Vv16pMoSdkcx;SolPump Crash Program;gambling;crash;potential;solscan;Solscan: SolPump Crash - gaming/gambling could need reliable execution
+cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG;Meteora DAMM v2;dex;amm;both;solscan;Solscan: Meteora DAMM v2 - LPs (AOT) + traders (JIT)
+PdMDrKEMaX8q7CCJb7NvUCxerBCcsFUa4LjBEynTtEd;pumpup.ai;trading_bot;sniper;jit;solscan;Solscan: pumpup.ai - token sniper bot needs fast execution = JIT
+1avaAUcjccXCjSZzwUvB2gS3DzkkieV2Mw8CjdN65uu;Lavarage USDC Leverage;lending;leverage;potential;solscan;Solscan: Lavarage - leverage/liquidation defense could use AOT
+4pjbtQCpaXFrmT7wcfuCQnAWLCUhRuK9CKQyvou1F5xo;Luck.io Program;gambling;casino;potential;solscan;Solscan: Luck.io - on-chain casino could need reliable execution
+jesterKqzZ7hWfNLnUDeB8WtMrm7a44g2vSyhs7WmyT;UNVERIFIED (jester);unknown;unknown;unknown;no_solscan_label;No Solscan label - vanity address - 246K txs - no GitHub/web results
+Bgo4vNe3vxRv37j8mmQarJo8vbjHEKgkhJDZzxiizBid;UNVERIFIED (Bgo4v);unknown;unknown;unknown;no_solscan_label;No Solscan label - 88K txs - high fee/CU (37.10) suggests trading bot
+FtyzXdj1NRexpX3WJqxs4qaqo2S2LehiRPyPY9hWDarn;UNVERIFIED (Ftyz);unknown;unknown;unknown;no_solscan_label;No Solscan label - 635K txs - no GitHub/web results
+45fCmmKfFjZ1bYu7zHyUPYsfPauQAD1RVinUmBp8DbSb;UNVERIFIED (45fC);unknown;unknown;unknown;no_solscan_label;No Solscan label - 328K txs - no GitHub/web results
+CoqTVH4YViufSd8idZ7WwndUQUDWnTT6yERGjXfjQd52;UNVERIFIED (CoqT);unknown;unknown;unknown;no_solscan_label;No Solscan label - 713K txs - 164K avg CU
+DT3X9y2w3S13M4GiQNbMtsrYeA9eEZpLg6frM4V28at5;UNVERIFIED (DT3X);unknown;unknown;unknown;no_solscan_label;No Solscan label - 224K txs - very consistent fee/CU (2.47) suggests bot
+D4aBeFn9DBhU41kFNvr9kVKRuBy858ATxwTevmJCCJYL;UNVERIFIED (D4aB);unknown;unknown;unknown;no_solscan_label;No Solscan label - 261K txs - very consistent fee/CU (3.18) suggests bot
+8jaLKWLJAj5jVCZbxpe3zRUvLB3LD48MRtaQ2AjfCfxa;UNVERIFIED (8jaL);unknown;unknown;unknown;no_solscan_label;No Solscan label - 519K txs - 76K avg CU
+9VX8EKBg6vM6tA68xaDsPkbrx26XConZjkQmhVApUptc;UNVERIFIED (9VX8);unknown;unknown;unknown;no_solscan_label;No Solscan label - 361K txs - very high fee/CU (11.28) suggests MEV/arb
+5bsFrMYiXMEEkVny2x37J1kK3U6h6RbtYGqxNAAFeSV7;UNVERIFIED (5bsF);unknown;unknown;unknown;no_solscan_label;No Solscan label - 65K txs - 150K avg CU
+GH8Ya8jNnovpKH6r4YUiZGmfmv2t4onak1D4Bng4Vudw;UNVERIFIED (GH8Y);unknown;unknown;unknown;no_solscan_label;No Solscan label - 38K txs - 206K avg CU
