@@ -1,0 +1,1 @@
+Utilise le Dune MCP pour créer et exécuter la requête SQL contenue dans le fichier `data/sql_query2_jito_tips_30d.sql` de ce repo. Nom de la requête : "RAIKU: Jito tips per program 30d v1". Sauvegarde les résultats en CSV délimiteur `;` UTF-8 dans `data/raw/dune_jito_tips_per_program.csv`. Note-moi le query ID créé. Affiche les 10 premiers résultats.

@@ -1,0 +1,1 @@
+Utilise le Dune MCP pour créer et exécuter la requête SQL contenue dans le fichier `data/sql_query1_program_fees_30d.sql` de ce repo. Nom de la requête : "RAIKU: Fee breakdown per program 30d v1". Sauvegarde les résultats en CSV délimiteur `;` UTF-8 dans `data/raw/dune_program_fees_v2.csv`. Note-moi le query ID créé. Affiche les 10 premiers résultats.

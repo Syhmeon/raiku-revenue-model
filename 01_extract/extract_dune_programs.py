@@ -33,80 +33,92 @@ from config import DUNE_QUERIES, DATA_RAW
 # ── SQL Queries (to create on Dune) ──────────────────────
 
 SQL_AGGREGATE = """
--- RAIKU: Top programs by priority fees (30-day aggregate)
--- Created via extract_dune_programs.py --create-queries
+-- RAIKU: Top 500 programs by fees (30-day aggregate) v3
+-- Includes failed txns (for fail_rate), adds avg_cu_per_block + blocks_touched
+-- Primary program = first instruction's executing_account
+-- Uses block_date partition column for pruning (not block_time)
+-- fee = base + priority combined (no separate priority_fee column in Dune)
+WITH tx_with_program AS (
+  SELECT
+    block_slot,
+    fee,
+    compute_units_consumed,
+    instructions[1].executing_account AS program_id,
+    success
+  FROM solana.transactions
+  WHERE block_date >= CURRENT_DATE - INTERVAL '30' DAY
+    AND compute_units_consumed > 0
+    AND fee > 0
+)
 SELECT
-    t.executing_account AS program_id,
-    COUNT(*) AS tx_count,
-    COUNT(CASE WHEN t.success THEN 1 END) AS success_count,
-    SUM(t.fee) / 1e9 AS total_fees_sol,
-    SUM(COALESCE(t.priority_fee, 0)) / 1e9 AS priority_fees_sol,
-    SUM(t.compute_units_consumed) AS total_cu,
-    AVG(t.compute_units_consumed) AS avg_cu_consumed,
-    -- Fee per CU distribution (in lamports)
-    APPROX_PERCENTILE(
-        CASE WHEN t.compute_units_consumed > 0
-        THEN CAST(COALESCE(t.priority_fee, 0) AS DOUBLE) / CAST(t.compute_units_consumed AS DOUBLE)
-        END, 0.5
-    ) AS median_fee_per_cu,
-    APPROX_PERCENTILE(
-        CASE WHEN t.compute_units_consumed > 0
-        THEN CAST(COALESCE(t.priority_fee, 0) AS DOUBLE) / CAST(t.compute_units_consumed AS DOUBLE)
-        END, 0.25
-    ) AS p25_fee_per_cu,
-    APPROX_PERCENTILE(
-        CASE WHEN t.compute_units_consumed > 0
-        THEN CAST(COALESCE(t.priority_fee, 0) AS DOUBLE) / CAST(t.compute_units_consumed AS DOUBLE)
-        END, 0.75
-    ) AS p75_fee_per_cu,
-    -- Avg fee per CU (for aggregates)
-    CASE
-        WHEN SUM(t.compute_units_consumed) > 0
-        THEN SUM(CAST(COALESCE(t.priority_fee, 0) AS DOUBLE)) / SUM(CAST(t.compute_units_consumed AS DOUBLE))
-        ELSE 0
-    END AS avg_fee_per_cu_lamports
-FROM solana.transactions t
-WHERE t.block_time >= NOW() - INTERVAL '30' DAY
-    AND t.success = true
-    AND t.compute_units_consumed > 0
-GROUP BY 1
-HAVING SUM(COALESCE(t.priority_fee, 0)) > 0
-ORDER BY priority_fees_sol DESC
+  program_id,
+  COUNT(*) AS tx_count,
+  SUM(CASE WHEN success THEN 1 ELSE 0 END) AS success_count,
+  ROUND(SUM(CAST(fee AS double)) / 1e9, 4) AS total_fees_sol,
+  ROUND(SUM(CAST(fee AS double)) / 1e9, 4) AS priority_fees_sol,
+  SUM(compute_units_consumed) AS total_cu,
+  ROUND(AVG(CAST(compute_units_consumed AS double)), 0) AS avg_cu_consumed,
+  CASE
+    WHEN COUNT(DISTINCT block_slot) > 0
+    THEN ROUND(CAST(SUM(compute_units_consumed) AS double) / COUNT(DISTINCT block_slot), 0)
+    ELSE 0
+  END AS avg_cu_per_block,
+  COUNT(DISTINCT block_slot) AS blocks_touched,
+  ROUND(APPROX_PERCENTILE(
+    CAST(fee AS double) / CAST(compute_units_consumed AS double), 0.5
+  ), 4) AS median_priority_fee_per_cu_lamports,
+  ROUND(APPROX_PERCENTILE(
+    CAST(fee AS double) / CAST(compute_units_consumed AS double), 0.25
+  ), 4) AS p25_priority_fee_per_cu_lamports,
+  ROUND(APPROX_PERCENTILE(
+    CAST(fee AS double) / CAST(compute_units_consumed AS double), 0.75
+  ), 4) AS p75_priority_fee_per_cu_lamports,
+  ROUND(AVG(CAST(fee AS double) / CAST(compute_units_consumed AS double)), 4)
+    AS avg_priority_fee_per_cu_lamports
+FROM tx_with_program
+GROUP BY program_id
+HAVING SUM(fee) > 0
+ORDER BY total_fees_sol DESC
 LIMIT 500
 """.strip()
 
 SQL_DAILY = """
--- RAIKU: Per-program daily fee/CU breakdown (30-day)
--- Created via extract_dune_programs.py --create-queries
+-- RAIKU: Per-program daily fee/CU breakdown (30-day) v2
+-- Uses CTE pattern (same as aggregate) for Dune schema compatibility
+-- Includes failed txns for fail_rate consistency with aggregate query
+WITH tx_with_program AS (
+  SELECT
+    block_date AS day,
+    block_slot,
+    fee,
+    compute_units_consumed,
+    instructions[1].executing_account AS program_id,
+    success
+  FROM solana.transactions
+  WHERE block_date >= CURRENT_DATE - INTERVAL '30' DAY
+    AND compute_units_consumed > 0
+    AND fee > 0
+)
 SELECT
-    DATE_TRUNC('day', t.block_time) AS day,
-    t.executing_account AS program_id,
-    COUNT(*) AS tx_count,
-    COUNT(CASE WHEN t.success THEN 1 END) AS success_count,
-    SUM(t.fee) / 1e9 AS total_fees_sol,
-    SUM(COALESCE(t.priority_fee, 0)) / 1e9 AS priority_fees_sol,
-    SUM(t.compute_units_consumed) AS total_cu,
-    AVG(t.compute_units_consumed) AS avg_cu_consumed,
-    CASE
-        WHEN SUM(t.compute_units_consumed) > 0
-        THEN SUM(CAST(COALESCE(t.priority_fee, 0) AS DOUBLE)) / SUM(CAST(t.compute_units_consumed AS DOUBLE))
-        ELSE 0
-    END AS fee_per_cu_lamports
-FROM solana.transactions t
-WHERE t.block_time >= NOW() - INTERVAL '30' DAY
-    AND t.success = true
-    AND t.compute_units_consumed > 0
-    -- Only top programs (by total priority fees) to limit result size
-    AND t.executing_account IN (
-        SELECT t2.executing_account
-        FROM solana.transactions t2
-        WHERE t2.block_time >= NOW() - INTERVAL '30' DAY
-            AND t2.success = true
-        GROUP BY t2.executing_account
-        HAVING SUM(COALESCE(t2.priority_fee, 0)) / 1e9 > 1.0  -- >1 SOL in priority fees
-    )
+  day,
+  program_id,
+  COUNT(*) AS tx_count,
+  SUM(CASE WHEN success THEN 1 ELSE 0 END) AS success_count,
+  ROUND(SUM(CAST(fee AS double)) / 1e9, 4) AS total_fees_sol,
+  ROUND(SUM(CAST(fee AS double)) / 1e9, 4) AS priority_fees_sol,
+  SUM(compute_units_consumed) AS total_cu,
+  ROUND(AVG(CAST(compute_units_consumed AS double)), 0) AS avg_cu_consumed,
+  ROUND(AVG(CAST(fee AS double) / CAST(compute_units_consumed AS double)), 4)
+    AS fee_per_cu_lamports
+FROM tx_with_program
+WHERE program_id IN (
+    SELECT program_id
+    FROM tx_with_program
+    GROUP BY program_id
+    HAVING SUM(fee) / 1e9 > 1.0  -- >1 SOL in total fees
+)
 GROUP BY 1, 2
-ORDER BY day DESC, priority_fees_sol DESC
+ORDER BY day DESC, total_fees_sol DESC
 """.strip()
 
 # ── Output columns ────────────────────────────────────────
@@ -114,7 +126,9 @@ ORDER BY day DESC, priority_fees_sol DESC
 AGGREGATE_COLUMNS = [
     "program_id", "tx_count", "success_count",
     "total_fees_sol", "priority_fees_sol", "total_cu", "avg_cu_consumed",
-    "median_fee_per_cu", "p25_fee_per_cu", "p75_fee_per_cu", "avg_fee_per_cu_lamports",
+    "avg_cu_per_block", "blocks_touched",
+    "median_priority_fee_per_cu_lamports", "p25_priority_fee_per_cu_lamports",
+    "p75_priority_fee_per_cu_lamports", "avg_priority_fee_per_cu_lamports",
 ]
 
 DAILY_COLUMNS = [

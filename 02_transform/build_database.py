@@ -64,7 +64,7 @@ RAW_COLUMNS = [
     "mev_to_stakers_sol",       # J - MEV → stakers
     "mev_to_jito_sol",          # K - MEV → Jito (block engine + tip router)
     # Group 4: Validator economics
-    "validator_commissions_sol", # L - Commissions on inflation
+    "validator_inflation_share_sol", # L - Validator total inflation share (Dune: voting_rewards_sol)
     "avg_commission_rate",      # M - Stake-weighted avg commission
     "validator_count",          # N - Active validators
     "stake_accounts",           # O - Stake account count
@@ -320,7 +320,7 @@ def build():
         row["mev_to_jito_sol"] = (jito_be + jito_tr) if (jito_be or jito_tr) else None
 
         # ── Group 4: Validator economics ──
-        row["validator_commissions_sol"] = safe_float(v.get("voting_rewards_sol"))
+        row["validator_inflation_share_sol"] = safe_float(v.get("voting_rewards_sol"))
         row["avg_commission_rate"] = safe_float(v.get("avg_commission_rate")) or safe_float(t.get("avg_commission_rate"))
         row["validator_count"] = safe_float(t.get("total_active_validators")) or safe_float(v.get("validator_count"))
         row["stake_accounts"] = safe_float(v.get("stake_account_count"))

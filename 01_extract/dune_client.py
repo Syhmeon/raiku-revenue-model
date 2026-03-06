@@ -79,7 +79,7 @@ class DuneClient:
         """Fetch results page."""
         return self._get(f"execution/{execution_id}/results?limit={limit}&offset={offset}")
 
-    def execute_and_fetch(self, query_id: int, max_wait_sec: int = 600, page_size: int = 1000) -> list[dict]:
+    def execute_and_fetch(self, query_id: int, max_wait_sec: int = 1200, page_size: int = 1000) -> list[dict]:
         """Execute query, wait for completion, return all rows."""
         print(f"  Executing Dune query {query_id}...")
         exec_id = self.execute_query(query_id)

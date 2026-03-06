@@ -3,8 +3,7 @@
     "allow": [
       "Bash(python 01_extract/extract_dune_programs.py --create-queries)",
       "Bash(python 01_extract/extract_dune_programs.py --print-sql)",
-      "mcp__dune__createDuneQuery",
-      "mcp__dune__executeQueryById"
+      "mcp__dune__*"
     ]
   }
 }
