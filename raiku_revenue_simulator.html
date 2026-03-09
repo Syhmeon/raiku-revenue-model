@@ -393,6 +393,21 @@ details[open] summary::before { transform:rotate(90deg); }
 /* v4: Honest "no temporal data" note */
 .cat-no-temporal { font-size:10px; color:var(--text2); padding:8px 10px; background:#0a0b10; border:1px solid #16181e; border-radius:6px; margin-top:8px; font-family:var(--font-mono); line-height:1.6; }
 .cat-no-temporal strong { color:var(--text-mid); }
+/* v6: Network temporal charts section */
+.temporal-section { margin-top:12px; }
+.temporal-section-title { font-size:11px; font-weight:600; color:var(--text-mid); margin-bottom:4px; font-family:var(--font-mono); text-transform:uppercase; letter-spacing:1px; }
+.temporal-section-sub { font-size:9px; color:var(--text2); margin-bottom:10px; font-family:var(--font-mono); }
+.temporal-charts-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+@media (max-width:800px){ .temporal-charts-grid { grid-template-columns:1fr; } }
+.temporal-chart-box { background:#0a0b0c; border:1px solid #16181e; border-radius:6px; padding:10px; }
+.temporal-chart-box h4 { font-size:9px; color:var(--text2); font-family:var(--font-mono); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+.temporal-chart-wrap { position:relative; height:160px; }
+.temporal-gap { font-size:10px; color:var(--text2); padding:10px 12px; background:#0d0a10; border:1px solid #1a161e; border-radius:6px; margin-top:10px; font-family:var(--font-mono); line-height:1.7; }
+.temporal-gap strong { color:#c9a0dc; }
+.temporal-gap .tg-needed { color:var(--text-mid); font-weight:500; }
+.temporal-gap .tg-status { display:inline-block; font-size:8px; padding:1px 5px; border-radius:3px; background:#2a1a10; color:#F5A623; font-weight:600; letter-spacing:0.5px; margin-left:4px; }
+/* v6: Secondary label for demoted chart */
+.secondary-chart-label { font-size:9px; color:var(--text2); font-family:var(--font-mono); text-transform:uppercase; letter-spacing:1px; padding:8px 0 4px; border-top:1px solid #16181e; margin-top:10px; }
 /* v4: Per-program chart in Program Explorer */
 .cat-prog-chart { height:140px; background:#0a0b0c; border-radius:6px; padding:6px; margin-bottom:8px; }
 /* v5: Fragment card — inputs vs derived outputs */
@@ -1036,11 +1051,14 @@ details[open] summary::before { transform:rotate(90deg); }
         </div>
     </div>
 
-    <!-- Per-program distribution view (v3) -->
+    <!-- v6: Temporal context + distribution stats -->
     <div id="sim-cat-distrib-view"></div>
 
-    <!-- Programs in selected category -->
-    <div id="sim-cat-progs" style="max-height:300px;overflow-y:auto;"></div>
+    <!-- v6: Network temporal charts (from D.e epoch data) -->
+    <div id="sim-cat-temporal"></div>
+
+    <!-- v6: Secondary — Programs in selected category (demoted from primary) -->
+    <div id="sim-cat-progs" style="max-height:400px;overflow-y:auto;"></div>
 </div>
 
 <!-- D. METHODOLOGY & SOURCES (full-width card grid) -->
@@ -1075,6 +1093,18 @@ details[open] summary::before { transform:rotate(90deg); }
                 <div class="meth-card-body">
                     10 business categories map <code>(cat, sub)</code> pairs to human-readable customer segments. Prop AMM listed first (strategic importance).<br>
                     <span class="meth-mapping">Prop AMM → dex/prop_amm · Orderbook → dex/orderbook · AMM/Pools → dex/{amm,clmm,dlmm,bonding_curve} · Perps → perps/perpetuals · Lending → lending/{pool,flash_loan,yield} · Aggregator → dex/aggregator · Oracle → oracle/price_feed · Bridge → bridge/cross_chain · Trading Bots → trading_bot/keeper · Infrastructure → {defi,payments,staking}/*</span>
+                </div>
+            </div>
+        </div>
+        <!-- v6: Temporal Analytics methodology card -->
+        <div class="meth-grid" style="margin-top:12px;">
+            <div class="meth-card" style="grid-column:1/-1;border-color:#1a161e;">
+                <div class="meth-card-title" style="color:#c9a0dc;">⏱ Temporal Data Coverage</div>
+                <div class="meth-card-body">
+                    <strong>Network-level temporal data (available):</strong> ~100 epochs (Aug 2025 – Mar 2026) with per-epoch priority fees (SOL), MEV rewards (SOL), SOL price (USD). Source: <code>D.e</code> embedded dataset.<br><br>
+                    <strong>Per-program temporal data (not available):</strong> The current program dataset (<code>D.p</code>) contains only 30-day aggregates per program — a single fee/CU, CU, and fee total covering the Feb 4 – Mar 5, 2026 window. There is <strong>no per-day or per-epoch breakdown</strong> by program or category.<br><br>
+                    <strong>What this means for charts:</strong> Network-wide temporal charts (priority fees/MEV/revenue over time) are rendered from real epoch data. Per-category temporal charts (fee/CU over time, distribution bands, category vs. market baseline) <strong>cannot be built</strong> from current data — they require a new Dune extraction with daily or per-epoch granularity: <code>(program, date, cu, priority_fees, base_fees)</code>.<br><br>
+                    <strong>Status:</strong> Per-program daily extraction is planned but not yet executed. The simulator will be updated when this data becomes available.
                 </div>
             </div>
         </div>
@@ -1982,25 +2012,139 @@ function renderCategoryDetail(id){
     renderCategoryDistribution(id, c);
 }
 
-// v4: Distribution stats + honest "no temporal data" statement (correction #4)
+// v6: Distribution stats + temporal context section
 function renderCategoryDistribution(id, c){
     var el = document.getElementById('sim-cat-distrib-view');
     if(!el) return;
-    if(!c || c.progs.length === 0){ el.innerHTML = ''; return; }
+    if(!c || c.progs.length === 0){ el.innerHTML = ''; document.getElementById('sim-cat-temporal').innerHTML = ''; return; }
     var fmtFpc = function(v){ return v < 0.01 ? v.toFixed(4) : v < 0.1 ? v.toFixed(3) : v >= 10 ? v.toFixed(1) : v.toFixed(2); };
 
     var html = '';
-    // Distribution stats (p25/median/p75) — these ARE valid from the aggregate data
+    // Distribution stats (p25/median/p75) — valid from the aggregate data
     if(c.progFpcs.length >= 3){
         html += '<div class="cat-distrib" style="margin-top:8px"><span class="cd-item">p25 <span class="cd-val">' + fmtFpc(c.p25Fpc) + '</span></span><span class="cd-item">median <span class="cd-val">' + fmtFpc(c.medianFpc) + '</span></span><span class="cd-item">p75 <span class="cd-val">' + fmtFpc(c.p75Fpc) + '</span></span><span class="cd-item">CU-wt avg <span class="cd-val" style="color:' + (CAT_COLORS[c.id]||'var(--text)') + '">' + fmtFpc(c.totFeePerCU) + '</span></span></div>';
     }
-    // Honest statement: temporal data not available
-    html += '<div class="cat-no-temporal">' +
-        '<strong>Temporal fee/CU chart not available.</strong> The current dataset contains only 30-day aggregates per program (total CU, total fees over the Feb 4 – Mar 5 window). ' +
-        'A time-series chart (fee/CU per day or per epoch, with median/p25/p75 bands) requires per-epoch or per-day granularity data, which has not yet been extracted. ' +
-        'The per-program fee/CU comparison chart is shown below in the Program Explorer.' +
+    el.innerHTML = html;
+
+    // v6: Render temporal charts section
+    renderTemporalCharts(id, c);
+}
+
+// v6: Network temporal charts (from D.e epoch data) + honest gap notice
+var cTempFees = null;
+var cTempRevenue = null;
+function renderTemporalCharts(id, c){
+    var el = document.getElementById('sim-cat-temporal');
+    if(!el) return;
+
+    var catColor = CAT_COLORS[id] || '#aaa';
+
+    // Build HTML structure
+    var html = '<div class="temporal-section">' +
+        '<div class="temporal-section-title">\u23F1 Temporal Market Context</div>' +
+        '<div class="temporal-section-sub">Network-level data from ' + D.e.length + ' epochs (' + D.e[0].d + ' \u2192 ' + D.e[D.e.length-1].d + ') \u00B7 Not category-specific \u2014 shown as market backdrop for ' + c.label + '</div>' +
+        '<div class="temporal-charts-grid">' +
+            '<div class="temporal-chart-box"><h4>Priority Fees + MEV Over Time (SOL per epoch)</h4><div class="temporal-chart-wrap"><canvas id="chart-temp-fees"></canvas></div></div>' +
+            '<div class="temporal-chart-box"><h4>Network Fee Revenue Over Time (USD per epoch)</h4><div class="temporal-chart-wrap"><canvas id="chart-temp-revenue"></canvas></div></div>' +
+        '</div>' +
+        // Temporal gap notice
+        '<div class="temporal-gap">' +
+            '<strong>\u26A0 Per-category temporal charts not available.</strong><br>' +
+            'The current dataset (<code>D.p</code>) contains <strong>30-day aggregates only</strong> per program \u2014 a single fee/CU value covering Feb 4 \u2013 Mar 5, 2026. ' +
+            'There is no per-day or per-epoch breakdown of fee/CU by program or category.<br><br>' +
+            '<span class="tg-needed">To build the requested charts (fee/CU over time with mean/median/p25/p75 bands per category), a new Dune extraction is required:</span><br>' +
+            '\u00B7 Query: per-program daily or per-epoch granularity of <code>(program, date, cu, priority_fees, base_fees)</code><br>' +
+            '\u00B7 This single extraction unlocks: category fee/CU over time, distribution bands, category-vs-market baseline<br>' +
+            '\u00B7 <span class="tg-status">PLANNED \u2014 NOT YET EXTRACTED</span>' +
+        '</div>' +
     '</div>';
     el.innerHTML = html;
+
+    // Draw the charts after DOM insertion
+    requestAnimationFrame(function(){
+        drawTemporalFees();
+        drawTemporalRevenue();
+    });
+}
+
+function drawTemporalFees(){
+    var canvas = document.getElementById('chart-temp-fees');
+    if(!canvas) return;
+    if(cTempFees) cTempFees.destroy();
+
+    var labels = D.e.map(function(ep){ return ep.d; });
+    var pfData = D.e.map(function(ep){ return Math.round(ep.pf); });
+    var mevData = D.e.map(function(ep){ return Math.round(ep.mev); });
+
+    cTempFees = new Chart(canvas, {
+        type:'line',
+        data:{
+            labels: labels,
+            datasets:[
+                {
+                    label:'Priority Fees (SOL)',
+                    data: pfData,
+                    borderColor:'#C0FF38',
+                    backgroundColor:'#C0FF3815',
+                    borderWidth:1.2, pointRadius:0, fill:true, order:2
+                },
+                {
+                    label:'MEV (SOL)',
+                    data: mevData,
+                    borderColor:'#5B8DEF',
+                    backgroundColor:'#5B8DEF15',
+                    borderWidth:1.2, pointRadius:0, fill:true, order:1
+                }
+            ]
+        },
+        options:{
+            responsive:true, maintainAspectRatio:false,
+            interaction:{ mode:'index', intersect:false },
+            plugins:{
+                legend:{ display:true, position:'top', labels:{ color:'#aaa', font:{size:8, family:'JetBrains Mono'}, boxWidth:10, padding:6 }},
+                tooltip:{ callbacks:{ label: function(ctx){ return ctx.dataset.label + ': ' + fmtHuman(ctx.raw) + ' SOL'; }}}
+            },
+            scales:{
+                x:{ grid:{display:false}, ticks:{color:'#666', font:{size:7, family:'JetBrains Mono'}, maxRotation:45, maxTicksLimit:12} },
+                y:{ stacked:true, grid:{color:'#12141a'}, ticks:{color:'#888', font:{size:8, family:'JetBrains Mono'}, callback: function(v){ return fmtHuman(v); }}, title:{display:true, text:'SOL / epoch', color:'#666', font:{size:8, family:'JetBrains Mono'}}}
+            }
+        }
+    });
+}
+
+function drawTemporalRevenue(){
+    var canvas = document.getElementById('chart-temp-revenue');
+    if(!canvas) return;
+    if(cTempRevenue) cTempRevenue.destroy();
+
+    var labels = D.e.map(function(ep){ return ep.d; });
+    var revenueData = D.e.map(function(ep){ return Math.round((ep.pf + ep.mev) * ep.p); });
+
+    cTempRevenue = new Chart(canvas, {
+        type:'line',
+        data:{
+            labels: labels,
+            datasets:[{
+                label:'Fee Revenue (USD)',
+                data: revenueData,
+                borderColor:'#d4e8a0',
+                backgroundColor:'#d4e8a018',
+                borderWidth:1.5, pointRadius:0, fill:true,
+                tension:0.15
+            }]
+        },
+        options:{
+            responsive:true, maintainAspectRatio:false,
+            plugins:{
+                legend:{ display:false },
+                tooltip:{ callbacks:{ label: function(ctx){ return '$' + fmtHuman(ctx.raw) + ' USD'; }}}
+            },
+            scales:{
+                x:{ grid:{display:false}, ticks:{color:'#666', font:{size:7, family:'JetBrains Mono'}, maxRotation:45, maxTicksLimit:12} },
+                y:{ grid:{color:'#12141a'}, ticks:{color:'#888', font:{size:8, family:'JetBrains Mono'}, callback: function(v){ return '$' + fmtHuman(v); }}, title:{display:true, text:'USD / epoch', color:'#666', font:{size:8, family:'JetBrains Mono'}}}
+            }
+        }
+    });
 }
 
 // v4: Program Explorer — chart above table, prioritized columns (correction #6)
@@ -2022,9 +2166,10 @@ function renderCategoryTable(id){
         var bfpc = b.cu > 0 ? (b.tf * LS / (b.cu * 1e9)) : 0;
         return bfpc - afpc;
     });
-    // Chart container above table
-    el.innerHTML = '<div style="font-size:11px;font-weight:600;color:var(--text-mid);margin-bottom:4px;font-family:var(--font-mono);">PROGRAM EXPLORER — ' + c.label.toUpperCase() + ' (' + c.n + ' programs)</div>' +
-        '<div style="font-size:9px;color:var(--text2);margin-bottom:6px">Per-program fee/CU comparison \u00B7 Sorted by fee/CU descending (block-fill order) \u00B7 Source: Dune extraction (30d window)</div>' +
+    // v6: Secondary label above per-program chart (demoted from primary)
+    el.innerHTML = '<div class="secondary-chart-label">\u25BD SECONDARY — Per-Program Snapshot (30d aggregate)</div>' +
+        '<div style="font-size:11px;font-weight:600;color:var(--text-mid);margin-bottom:4px;font-family:var(--font-mono);">PROGRAM EXPLORER — ' + c.label.toUpperCase() + ' (' + c.n + ' programs)</div>' +
+        '<div style="font-size:9px;color:var(--text2);margin-bottom:6px">Per-program fee/CU comparison \u00B7 Sorted by fee/CU descending (block-fill order) \u00B7 Source: Dune extraction (30d window) \u00B7 Static snapshot, not temporal</div>' +
         '<div class="cat-prog-chart"><canvas id="chart-prog-explorer"></canvas></div>' +
         '<table class="cat-prog-table"><thead><tr>' +
         '<th>Program</th><th style="color:#F5A623">Fee/CU (lam)</th><th style="color:#8ddb6a;font-weight:700">Avg CU/block</th><th style="color:var(--lime)">Implied fees/block</th><th>30d CU (B)</th><th>30d Fees (SOL)</th></tr></thead><tbody>' +
