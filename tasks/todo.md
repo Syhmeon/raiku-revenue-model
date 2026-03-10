@@ -16,7 +16,7 @@
 
 ## In Progress
 <!-- Fill at the start of each session -->
-- [ ] Complete agent/workflow setup (place files, verify /agents, commit)
+- No tasks in progress currently
 
 ---
 
@@ -60,6 +60,7 @@ Summary of what must change in the simulator and Python models:
 
 ## Recently Completed
 
+- [x] Agent workflow infrastructure complete — 6 custom agents + task tracking ✅ (2026-03-10)
 - [x] Pipeline A complete — epoch DB 786×43, program DB 500×23 ✅
 - [x] Pipeline B complete — 6 Dune batch queries, temporal injection ✅
 - [x] Simulator v6 — D.daily + D.dailyNet injected ✅
@@ -79,3 +80,10 @@ Summary of what must change in the simulator and Python models:
 
 ## Session Notes
 <!-- Add key decisions made during the session -->
+
+### 2026-03-10 — Agent Infrastructure Setup
+- Created 6 custom agents in `.claude/agents/`: python-pipeline-dev, html-simulator-dev, dune-data-fetcher, revenue-model-analyst, solana-data-analyst, competitive-analyst
+- Added task tracking system: `tasks/todo.md` + `tasks/lessons.md`
+- Updated CLAUDE.md with Session Initialization workflow and Subagent Routing table
+- Committed: cd688f1 "feat: add agent workflow infrastructure and project organization"
+- **NEXT**: Implement revenue waterfall correction (staged in lessons.md)

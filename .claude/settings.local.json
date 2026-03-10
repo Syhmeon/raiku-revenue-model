@@ -6,7 +6,22 @@
       "mcp__dune__*",
       "Bash(echo $DUNE_API_KEY)",
       "Bash(claude mcp:*)",
-      "Bash(echo $HOME)"
+      "Bash(echo $HOME)",
+      "Bash(git push*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(git restore*)",
+      "Bash(git stash*)",
+      "Bash(ls*)",
+      "Bash(find*)",
+      "Bash(grep*)",
+      "Bash(cat*)",
+      "Bash(python run_pipeline.py*)",
+      "Bash(python scripts/*)",
+      "Bash(python -m http.server*)"
     ]
   }
 }
