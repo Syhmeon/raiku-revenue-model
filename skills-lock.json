@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "oiloil-ui-ux-guide": {
+      "source": "oil-oil/oiloil-ui-ux-guide",
+      "sourceType": "github",
+      "computedHash": "e1c1223bf689e8a2bb7026152d22feb1c55e82f5203ed3f995c11381c229cc81"
+    }
+  }
+}
