@@ -181,15 +181,15 @@ details[open] summary::before { transform:rotate(90deg); }
 .sidebar .control input[type=range]::-webkit-slider-thumb { width:14px; height:14px; border-width:2px; box-shadow:0 0 6px #C0FF3840; }
 .sidebar .control input[type=range]::-moz-range-thumb { width:14px; height:14px; border-width:2px; }
 .sidebar .control input[type=range]::-moz-range-track { height:4px; }
-.sidebar .control .val { font-size:14px; min-width:48px; }
+.sidebar .control .val { font-size:12px; min-width:44px; }
 .sidebar .note { display:none; }
 .sidebar .pool-usage, .sidebar .treasury-summary { display:block; }
-.sidebar .section-label { font-size:10px; margin-top:2px; padding-bottom:2px; }
+.sidebar .section-label { font-size:10px; margin-top:8px; padding-bottom:4px; border-bottom:1px solid #1e2028; margin-bottom:4px; }
 
 /* Model params panel: globals row + 2-col grid */
 #model-params .controls-grid { gap:4px; }
 #model-params .section-label { grid-column:1/-1; }
-#model-params .controls-section { padding:8px 8px; }
+#model-params .controls-section { padding:6px 4px; }
 .globals-row { display:grid; grid-template-columns:1fr 1fr; gap:6px; grid-column:1/-1; }
 
 /* Panel redesign: 2-column AOT/JIT layout */
@@ -198,10 +198,10 @@ details[open] summary::before { transform:rotate(90deg); }
 .param-col.aot { border-top-color:var(--clr-aot, #6BF); }
 .param-col.jit { border-top-color:var(--clr-jit, #FFF); }
 .param-col .control label { font-size:9px; }
-.param-col .control .val { font-size:12px; min-width:38px; }
+.param-col .control .val { font-size:11px; min-width:36px; }
 .param-col .control input[type=range] { height:3px; }
 .param-col-label { font-size:8px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:var(--text2); margin-bottom:3px; }
-.pool-usage { font-size:9px; color:var(--text2); font-style:italic; margin-top:-1px; line-height:1.3; }
+.pool-usage { font-size:10px; color:var(--text2); font-style:italic; margin-top:0; line-height:1.3; }
 .treasury-summary { font-size:10px; color:var(--lime-soft); padding:4px 6px; background:#111213; border-radius:5px; margin-top:4px; border-left:2px solid var(--lime-soft); }
 .method-link { display:inline-block; font-size:9px; color:var(--lime-soft); text-decoration:none; opacity:0.7; margin-top:3px; }
 .method-link:hover { opacity:1; text-decoration:underline; }
@@ -502,8 +502,8 @@ details[open] summary::before { transform:rotate(90deg); }
     <h2>Model Parameters</h2>
     <div class="controls-grid">
 
-        <!-- ─── SECTION 1: GLOBAL + TAKE RATE (side by side) ─── -->
-        <div class="section-label">Revenue Distribution</div>
+        <!-- ─── SECTION 1: GLOBAL SETTINGS ─── -->
+        <div class="section-label">Global Settings</div>
         <div class="globals-row">
             <div class="control">
                 <label>SOL Price (USD)</label>
@@ -515,7 +515,8 @@ details[open] summary::before { transform:rotate(90deg); }
             </div>
         </div>
 
-        <!-- AOT / JIT side-by-side redistribution -->
+        <!-- ─── SECTION 2: PROTOCOL POOL DISTRIBUTION ─── -->
+        <div class="section-label">Protocol Pool Distribution</div>
         <div class="param-columns" style="grid-column:1/-1;">
             <div class="param-col aot">
                 <div class="param-col-label">AOT</div>
@@ -550,9 +551,7 @@ details[open] summary::before { transform:rotate(90deg); }
             <div class="param-col aot">
                 <div class="param-col-label">AOT &mdash; Blockspace Auctions</div>
                 <div class="control">
-                    <label>Raiku Stake %
-                        <span class="info-tip"><span class="info-icon">&#9432;</span><span class="info-box">Share of total Solana stake held by Raiku validators. Total active stake &asymp; 424M SOL. 5% = ~21M SOL staked = ~3.9M slots/yr.</span></span>
-                    </label>
+                    <label>Raiku Stake %</label>
                     <div class="slider-row"><input type="range" id="sl-stake" min="0" max="50" step="0.1" value="5"><span class="val blue" id="v-stake">5.0%</span></div>
                 </div>
                 <div class="control">
@@ -563,7 +562,7 @@ details[open] summary::before { transform:rotate(90deg); }
                     <label>Avg Auction Fee/CU (lamports)</label>
                     <div class="slider-row"><input type="range" id="sl-fcu" min="0.01" max="25" step="0.01" value="1.00"><span class="val blue" id="v-fcu">1.00</span></div>
                 </div>
-                <a href="#aot-fcu-data-section" class="method-link" onclick="document.getElementById('aot-fcu-data-section').scrollIntoView({behavior:'smooth'});return false;">&#x2197; methodology</a>
+                <a href="#aot-fcu-data-section" class="method-link" onclick="document.getElementById('aot-fcu-data-section').scrollIntoView({behavior:'smooth'});return false;">&#x2197; Source &amp; Methodology</a>
             </div>
             <div class="param-col jit">
                 <div class="param-col-label">JIT &mdash; Tip-based Ordering</div>
@@ -576,7 +575,7 @@ details[open] summary::before { transform:rotate(90deg); }
                     <label>Market Share %</label>
                     <div class="slider-row"><input type="range" id="sl-jit" min="0" max="30" step="1" value="5"><span class="val blue" id="v-jit">5%</span></div>
                 </div>
-                <a href="#jit-data-section" class="method-link" onclick="document.getElementById('jit-data-section').scrollIntoView({behavior:'smooth'});return false;">&#x2197; methodology</a>
+                <a href="#jit-data-section" class="method-link" onclick="document.getElementById('jit-data-section').scrollIntoView({behavior:'smooth'});return false;">&#x2197; Source &amp; Methodology</a>
             </div>
         </div>
 
@@ -1035,12 +1034,11 @@ details[open] summary::before { transform:rotate(90deg); }
 <!-- Block Sim: left/right layout -->
 <div class="sim-layout">
 
-<!-- LEFT PANEL: Controls + Block Builder -->
+<!-- LEFT PANEL: Controls only (sticky) -->
 <div class="sim-sidebar">
-    <div class="sim-hero fade-in" style="margin-bottom:0;border-radius:var(--radius) var(--radius) 0 0;">
+    <div class="sim-hero fade-in" style="margin-bottom:0;border-radius:var(--radius);">
         <h2 style="font-size:14px;">AOT Block Simulation</h2>
-        <div class="sim-subtitle" style="font-size:10px;">Allocate blockspace to customer categories and see per-block fee revenue.<br>
-        <span style="color:#F5A623;">Proxy framing:</span> Observed fees are proxies for willingness-to-pay — <strong style="color:var(--text-mid)">not</strong> AOT bid prices.</div>
+        <div class="sim-subtitle" style="font-size:10px;">Observed fees are proxies for willingness-to-pay — <strong style="color:var(--text-mid)">not</strong> AOT bid prices.</div>
         <div class="sim-local-params" id="sim-local-params">
             <div class="slp-group">
                 <label class="slp-label">Block Size</label>
@@ -1064,17 +1062,17 @@ details[open] summary::before { transform:rotate(90deg); }
             </div>
         </div>
     </div>
-    <div class="section fade-in fade-in-1" style="border-radius:0 0 var(--radius) var(--radius);margin-bottom:0;border-top:none;">
+</div>
+
+<!-- RIGHT PANEL: Block Builder + Output -->
+<div class="sim-main">
+    <div class="section fade-in fade-in-1" style="margin-bottom:var(--gap);">
         <h2 style="margin-bottom:4px;">Block Builder</h2>
-        <div style="font-size:11px;color:var(--text2);margin-bottom:12px;">Fragments are <b style="color:var(--text-mid)">sorted by fee/CU descending</b> and fill the block in order until capacity is exhausted.</div>
+        <div style="font-size:11px;color:var(--text2);margin-bottom:12px;">Allocate blockspace fragments to customer categories. Fragments are <b style="color:var(--text-mid)">sorted by fee/CU descending</b> and fill the block in order until capacity is exhausted.</div>
         <div class="bb-fill-bar" id="bb-fill-bar"></div>
         <div class="bb-fragments" id="bb-fragments" style="position:relative;"></div>
     </div>
-</div>
-
-<!-- RIGHT PANEL: Output -->
-<div class="sim-main">
-    <div class="bb-summary" style="margin-bottom:var(--gap);">
+    <div class="bb-summary">
         <div class="bb-primary" id="bb-primary"></div>
         <div class="bb-annual" id="bb-annual"></div>
     </div>
