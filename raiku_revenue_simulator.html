@@ -155,7 +155,7 @@ details[open] summary::before { transform:rotate(90deg); }
 /* ═══ Sidebar Layout — inputs & outputs side-by-side ═══ */
 .tab-layout { display:flex; gap:var(--gap); align-items:flex-start; }
 .sidebar {
-    width:310px; min-width:310px; position:sticky; top:10px;
+    width:360px; min-width:360px; position:sticky; top:10px;
     max-height:calc(100vh - 100px); overflow-y:auto;
     scrollbar-width:thin; scrollbar-color:#333 transparent;
 }
@@ -187,14 +187,16 @@ details[open] summary::before { transform:rotate(90deg); }
 .sidebar .section-label { font-size:9px; margin-top:2px; padding-bottom:2px; }
 
 /* Panel redesign: 2-column AOT/JIT layout */
-.param-columns { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:4px; }
-.param-col { background:#111213; border-radius:6px; padding:8px; border-top:2px solid #333; }
+.param-columns { display:grid; grid-template-columns:1fr 1fr; gap:5px; margin-top:4px; }
+.param-col { background:#111213; border-radius:5px; padding:5px 6px; border-top:2px solid #333; overflow:hidden; }
 .param-col.aot { border-top-color:var(--clr-aot, #6BF); }
 .param-col.jit { border-top-color:var(--clr-jit, #FFF); }
-.param-col-label { font-size:8px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text2); margin-bottom:4px; }
-.pool-usage { font-size:9px; color:var(--text2); font-style:italic; margin-top:-1px; line-height:1.3; }
-.treasury-summary { font-size:10px; color:var(--lime-soft); padding:5px 8px; background:#111213; border-radius:5px; margin-top:4px; border-left:2px solid var(--lime-soft); }
-.method-link { display:inline-block; font-size:9px; color:var(--lime-soft); text-decoration:none; opacity:0.7; margin-top:4px; }
+.param-col .control label { font-size:8px; }
+.param-col .control .val { font-size:11px; min-width:40px; }
+.param-col-label { font-size:7px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:var(--text2); margin-bottom:3px; }
+.pool-usage { font-size:8px; color:var(--text2); font-style:italic; margin-top:-1px; line-height:1.3; }
+.treasury-summary { font-size:9px; color:var(--lime-soft); padding:4px 6px; background:#111213; border-radius:5px; margin-top:4px; border-left:2px solid var(--lime-soft); }
+.method-link { display:inline-block; font-size:8px; color:var(--lime-soft); text-decoration:none; opacity:0.7; margin-top:3px; }
 .method-link:hover { opacity:1; text-decoration:underline; }
 
 /* Custom tooltip for info icon */
