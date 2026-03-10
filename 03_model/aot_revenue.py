@@ -86,7 +86,7 @@ def top_down_model(db_rows):
     # Compute annualized priority fees from recent data
     recent = []
     for row in reversed(db_rows):
-        fees = safe_float(row.get("priority_fees"))
+        fees = safe_float(row.get("priority_fees_sol"))
         epy = safe_float(row.get("epochs_per_year"))
         price = safe_float(row.get("sol_price_usd"))
         if fees is not None and epy is not None and price is not None:
@@ -258,7 +258,7 @@ def bottom_up_model(db_rows):
 
     total_stake = safe_float(latest.get("active_stake_sol")) if latest else 424_200_000
     sol_price = safe_float(latest.get("sol_price_usd")) if latest else 100.0
-    total_validators = safe_float(latest.get("active_validators")) if latest else 788
+    total_validators = safe_float(latest.get("validator_count")) if latest else 788
 
     # Solana constants
     SLOTS_PER_YEAR = 78_408_000  # ~2 slots/sec × 86400 × 365.25

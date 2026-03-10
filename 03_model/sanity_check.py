@@ -73,12 +73,12 @@ def run():
     # Get recent epochs with full data
     recent = []
     for row in reversed(db):
-        fees = safe_float(row.get("priority_fees"))
-        mev = safe_float(row.get("total_mev_earned"))
+        fees = safe_float(row.get("priority_fees_sol"))
+        mev = safe_float(row.get("mev_jito_tips_sol"))
         epy = safe_float(row.get("epochs_per_year"))
         price = safe_float(row.get("sol_price_usd"))
         stake = safe_float(row.get("active_stake_sol"))
-        validators = safe_float(row.get("active_validators"))
+        validators = safe_float(row.get("validator_count"))
         if all(v is not None for v in [fees, mev, epy, price]):
             recent.append({
                 "epoch": int(row["epoch"]),
@@ -231,19 +231,21 @@ def run():
     print(f"  Weighted avg fee/CU: {avg_fee_per_cu:.4f} lamports/CU")
 
     # What would bottom-up generate if CU was 100% utilized at market rates?
-    # Trillium avg priority fee per 10M CU
-    avg_fee_10m_cu = []
+    # Derive market fee/CU from real epoch columns: priority_fees_sol / total_CU
+    market_fee_per_cu_samples = []
     for row in reversed(db):
-        v = safe_float(row.get("priority_fee_per_10m_cu"))
-        if v is not None:
-            avg_fee_10m_cu.append(v)
-        if len(avg_fee_10m_cu) >= 10:
+        pf = safe_float(row.get("priority_fees_sol"))
+        cu_per_blk = safe_float(row.get("avg_cu_per_block"))
+        blocks = safe_float(row.get("total_blocks"))
+        if pf is not None and cu_per_blk and blocks:
+            total_cu = cu_per_blk * blocks
+            fee_per_cu = (pf * LAMPORTS_PER_SOL) / total_cu if total_cu > 0 else 0
+            market_fee_per_cu_samples.append(fee_per_cu)
+        if len(market_fee_per_cu_samples) >= 10:
             break
-    # priority_fee_per_10m_cu is in SOL per 10M CU — convert to lamports/CU
-    market_fee_per_10m_cu_sol = (sum(avg_fee_10m_cu) / len(avg_fee_10m_cu)) if avg_fee_10m_cu else 0
-    market_fee_per_cu = (market_fee_per_10m_cu_sol * LAMPORTS_PER_SOL) / 10_000_000 if avg_fee_10m_cu else 0
+    market_fee_per_cu = (sum(market_fee_per_cu_samples) / len(market_fee_per_cu_samples)) if market_fee_per_cu_samples else 0
 
-    print(f"\n  Market avg fee/CU (Trillium): {market_fee_per_cu:.4f} lamports/CU ({market_fee_per_10m_cu_sol:.5f} SOL/10M CU)")
+    print(f"\n  Market avg fee/CU (from epoch data): {market_fee_per_cu:.4f} lamports/CU (avg of {len(market_fee_per_cu_samples)} recent epochs)")
     print(f"  Bottom-up archetype avg fee/CU: {avg_fee_per_cu:.6f} lamports/CU")
     if market_fee_per_cu > 0:
         print(f"  Fee ratio (archetypes/market): {avg_fee_per_cu/market_fee_per_cu:.1f}x")

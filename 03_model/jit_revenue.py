@@ -61,7 +61,7 @@ def compute_total_market_from_data(db_rows):
     # Use most recent 10 Trillium epochs with valid data for annualization
     recent = []
     for row in reversed(db_rows):
-        mev = safe_float(row.get("total_mev_earned"))
+        mev = safe_float(row.get("mev_jito_tips_sol"))
         epy = safe_float(row.get("epochs_per_year"))
         price = safe_float(row.get("sol_price_usd"))
         if mev is not None and epy is not None and price is not None:
