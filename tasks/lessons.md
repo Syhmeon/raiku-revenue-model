@@ -86,8 +86,8 @@
 
 ## Revenue Model — Core Waterfall Correction
 
-> Recorded: 2026-03-10. Staged for implementation immediately after agent/workflow setup.
-> Status: NOT YET IMPLEMENTED in simulator or Python models — must be the first implementation task after setup.
+> Recorded: 2026-03-10. ✅ IMPLEMENTED 2026-03-10.
+> Status: Implemented in simulator (separate AOT/JIT panels, guard logic, ratio display) + Python models (jit_revenue.py, aot_revenue.py, sanity_check.py) + config.py.
 
 **Mistake**: Rebates and validator bonus were applied directly on gross revenue, not constrained by the protocol take.
 

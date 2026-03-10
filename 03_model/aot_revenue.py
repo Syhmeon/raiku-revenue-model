@@ -2,25 +2,29 @@
 AOT Revenue Model — Raiku Protocol
 ====================================
 Two approaches:
-  1) Top-Down: Total_Priority_Fees × Latency_Sensitive_Share × RAIKU_Capture × Protocol_Fee
+  1) Top-Down: Total_Priority_Fees × Latency_Sensitive_Share × RAIKU_Capture × Take_Rate
   2) Bottom-Up (3D Framework): Stake% × Slots/yr × CU_reserved% × Fee/CU × SOL_price
+
+Revenue waterfall (per stream):
+  Step 1: Validator Base = Gross × (1 - Take Rate)
+          Protocol Pool  = Gross × Take Rate
+  Step 2: AOT Rebate     = funded from Protocol Pool (% of gross, clamped)
+          Validator Bonus = funded from Protocol Pool (AOT only, clamped)
+          Treasury        = Protocol Pool - Rebate - Bonus
 
 Terminology:
   - total_priority_fees: Annualized priority fees on Solana (all programs combined)
-  - latency_sensitive_share: % of those fees from latency-sensitive programs (PropAMMs, arb, HFT)
+  - latency_sensitive_share: % of those fees from latency-sensitive programs
   - addressable_market: total_priority_fees × latency_sensitive_share
   - raiku_capture: % of addressable market that RAIKU wins
-  - gross_revenue: addressable_market × raiku_capture (before protocol/validator split)
-  - protocol_revenue: gross × 5% fee (what RAIKU treasury keeps)
-  - validator_revenue: gross × 95% (what validators keep)
+  - gross_revenue: addressable_market × raiku_capture (before split)
+  - protocol_pool: gross × take rate (before redistributions)
+  - aot_rebate: customer rebate funded from protocol pool
+  - validator_bonus: bonus to compliant validators, funded from protocol pool
+  - treasury: protocol pool - rebate - bonus (what RAIKU keeps)
+  - validator_revenue: gross × (1 - take rate) + validator bonus
 
-Bottom-up uses 6 customer archetypes from raiku_usecases.txt:
-  1. PropAMMs (oracle/quote updates)
-  2. Quant Trading Desks
-  3. Market Makers (operational)
-  4. DEX-DEX Arbitrage
-  5. Protocol Crankers/Keepers
-  6. CEX-DEX Arbitrage
+Bottom-up uses 6 customer archetypes from raiku_usecases.txt.
 
 Output: data/processed/aot_revenue_scenarios.csv
 """
@@ -36,6 +40,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from config import (
     DATA_RAW, DATA_PROCESSED, CSV_DELIMITER, CSV_ENCODING,
     PROTOCOL_TAKE_RATE, PROTOCOL_TAKE_RATE_HIGH_PERF,
+    AOT_REBATE_PCT, AOT_VALIDATOR_BONUS_PCT,
 )
 
 OUTPUT_FILE = DATA_PROCESSED / "aot_revenue_scenarios.csv"
@@ -131,7 +136,15 @@ def top_down_model(db_rows):
             for capture in capture_rates:
                 addressable = total_fees_usd * lat_share
                 gross = addressable * capture
-                protocol_rev = gross * PROTOCOL_TAKE_RATE
+
+                # Waterfall: rebate + bonus funded from protocol pool
+                take = PROTOCOL_TAKE_RATE
+                pool = gross * take
+                rebate_rate = min(AOT_REBATE_PCT, take) if take > 0 else 0
+                bonus_rate = min(AOT_VALIDATOR_BONUS_PCT, take - rebate_rate) if take > 0 else 0
+                rebate = gross * rebate_rate
+                bonus = gross * bonus_rate
+                treasury = pool - rebate - bonus
 
                 results.append({
                     "model": "top_down",
@@ -144,17 +157,20 @@ def top_down_model(db_rows):
                     "fee_per_cu_lamports": "",
                     "archetype": "",
                     "gross_revenue_usd": round(gross),
-                    "validator_revenue_usd": round(gross * 0.95),
-                    "protocol_revenue_usd": round(protocol_rev),
-                    "protocol_revenue_monthly": round(protocol_rev / 12),
+                    "validator_revenue_usd": round(gross * (1 - take)),
+                    "protocol_pool_usd": round(pool),
+                    "aot_rebate_usd": round(rebate),
+                    "validator_bonus_usd": round(bonus),
+                    "treasury_usd": round(treasury),
+                    "treasury_monthly": round(treasury / 12),
                 })
 
     # Print key scenarios
-    print("\n    Key top-down scenarios (5% protocol fee):")
+    print("\n    Key top-down scenarios (5% take rate):")
     for r in results:
         if r["latency_sensitive_pct"] == "40%" and r["raiku_capture_pct"] in ["5%", "10%", "15%"]:
             print(f"      {r['total_market_source']:<30} | Latency-sensitive 40% | Capture {r['raiku_capture_pct']:>4} | "
-                  f"Protocol ${r['protocol_revenue_usd']:>10,}/yr")
+                  f"Treasury ${r['treasury_usd']:>10,}/yr")
 
     return results
 
@@ -303,7 +319,15 @@ def bottom_up_model(db_rows):
                                      ("mid", arch["num_customers_mid"]),
                                      ("high", arch["num_customers_high"])]:
                     gross = annual_per_customer_usd * count
-                    protocol_rev = gross * PROTOCOL_TAKE_RATE
+
+                    # Waterfall: rebate + bonus funded from protocol pool
+                    take = PROTOCOL_TAKE_RATE
+                    pool = gross * take
+                    rebate_rate = min(AOT_REBATE_PCT, take) if take > 0 else 0
+                    bonus_rate = min(AOT_VALIDATOR_BONUS_PCT, take - rebate_rate) if take > 0 else 0
+                    rebate = gross * rebate_rate
+                    bonus = gross * bonus_rate
+                    treasury = pool - rebate - bonus
 
                     results.append({
                         "model": "bottom_up",
@@ -316,17 +340,20 @@ def bottom_up_model(db_rows):
                         "fee_per_cu_lamports": arch["fee_per_cu_lamports"],
                         "archetype": arch["name"],
                         "gross_revenue_usd": round(gross),
-                        "validator_revenue_usd": round(gross * 0.95),
-                        "protocol_revenue_usd": round(protocol_rev),
-                        "protocol_revenue_monthly": round(protocol_rev / 12),
+                        "validator_revenue_usd": round(gross * (1 - take)),
+                        "protocol_pool_usd": round(pool),
+                        "aot_rebate_usd": round(rebate),
+                        "validator_bonus_usd": round(bonus),
+                        "treasury_usd": round(treasury),
+                        "treasury_monthly": round(treasury / 12),
                     })
 
     # Aggregate bottom-up by scenario (sum across archetypes)
-    print("\n    Bottom-up aggregate by stake % × CU % (mid customers, 5% protocol fee):")
+    print("\n    Bottom-up aggregate by stake % × CU % (mid customers, 5% take rate):")
     for stake_pct in stake_pcts:
         for cu_pct in cu_reserved_pcts:
             scenario_total = sum(
-                r["protocol_revenue_usd"] for r in results
+                r["treasury_usd"] for r in results
                 if r["stake_pct"] == f"{stake_pct*100:.0f}%"
                 and r["cu_reserved_pct"] == f"{cu_pct*100:.0f}%"
                 and "mid" in r["total_market_source"]
@@ -355,7 +382,8 @@ def model():
         "model", "total_market_source", "total_market_usd", "latency_sensitive_pct", "raiku_capture_pct",
         "stake_pct", "cu_reserved_pct", "fee_per_cu_lamports", "archetype",
         "gross_revenue_usd", "validator_revenue_usd",
-        "protocol_revenue_usd", "protocol_revenue_monthly",
+        "protocol_pool_usd", "aot_rebate_usd", "validator_bonus_usd",
+        "treasury_usd", "treasury_monthly",
     ]
 
     DATA_PROCESSED.mkdir(parents=True, exist_ok=True)
@@ -374,15 +402,15 @@ def model():
                 and "Avg" in r["total_market_source"]]
     # Bottom-up base case: 5% stake, 10% CU, mid customers (sum all archetypes)
     bu_base = sum(
-        r["protocol_revenue_usd"] for r in bu_results
+        r["treasury_usd"] for r in bu_results
         if r["stake_pct"] == "5%" and r["cu_reserved_pct"] == "10%"
         and "mid" in r["total_market_source"]
     )
 
     if td_base:
-        td_val = td_base[0]["protocol_revenue_usd"]
-        print(f"    Top-Down (40% addr, 10% capture):  ${td_val:>10,}/yr protocol")
-        print(f"    Bottom-Up (5% stake, 10% CU, mid): ${bu_base:>10,}/yr protocol")
+        td_val = td_base[0]["treasury_usd"]
+        print(f"    Top-Down (40% addr, 10% capture):  ${td_val:>10,}/yr treasury")
+        print(f"    Bottom-Up (5% stake, 10% CU, mid): ${bu_base:>10,}/yr treasury")
         if td_val > 0 and bu_base > 0:
             ratio = td_val / bu_base
             print(f"    Ratio TD/BU: {ratio:.1f}x", end="")

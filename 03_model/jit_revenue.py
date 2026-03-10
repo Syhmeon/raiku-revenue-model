@@ -1,14 +1,22 @@
 """
 JIT Revenue Model — Raiku Protocol
 ====================================
-JIT_Revenue = Total_Jito_Tips × RAIKU_Market_Share × Protocol_Fee
+JIT_Revenue = Total_Jito_Tips × RAIKU_Market_Share × Protocol_Take_Rate
+
+Revenue waterfall:
+  Step 1: Validator Base = Gross × (1 - Take Rate)
+          Protocol Pool  = Gross × Take Rate
+  Step 2: JIT Rebate     = funded from Protocol Pool (% of gross, clamped)
+          Treasury       = Protocol Pool - Rebate
 
 Terminology:
   - total_market: Total Jito MEV tips on Solana (all players combined)
   - market_share: % of that total that RAIKU captures
   - gross_revenue: total_market × market_share (before protocol/validator split)
-  - protocol_revenue: gross × 5% fee (what RAIKU treasury keeps)
-  - validator_revenue: gross × 95% (what validators keep)
+  - protocol_pool: gross × take rate (total protocol share before redistributions)
+  - jit_rebate: customer rebate funded from protocol pool
+  - treasury: protocol pool - rebate (what RAIKU treasury keeps)
+  - validator_revenue: gross × (1 - take rate)
 
 Uses real Trillium data (total_mev_earned per epoch, annualized).
 Also references Jito 2025 benchmarks from Post-TGE Design doc.
@@ -27,6 +35,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from config import (
     DATA_PROCESSED, CSV_DELIMITER, CSV_ENCODING,
     PROTOCOL_TAKE_RATE, PROTOCOL_TAKE_RATE_HIGH_PERF,
+    JIT_REBATE_PCT,
     JITO_2025_TOTAL_TIPS_USD, JITO_Q4_2025_ANNUALIZED_USD,
     SCENARIOS,
 )
@@ -162,7 +171,12 @@ def model():
             for fee_label, fee_rate in protocol_fees:
                 gross_revenue = total_mkt * share
                 validator_revenue = gross_revenue * (1 - fee_rate)
-                protocol_revenue = gross_revenue * fee_rate
+                protocol_pool = gross_revenue * fee_rate
+
+                # Waterfall: rebate funded from protocol pool, clamped
+                rebate_rate = min(JIT_REBATE_PCT, fee_rate) if fee_rate > 0 else 0
+                jit_rebate = gross_revenue * rebate_rate
+                treasury = protocol_pool - jit_rebate
 
                 results.append({
                     "total_market_source": src_info["label"],
@@ -173,8 +187,10 @@ def model():
                     "protocol_fee": fee_rate,
                     "gross_revenue_usd": round(gross_revenue),
                     "validator_revenue_usd": round(validator_revenue),
-                    "protocol_revenue_usd": round(protocol_revenue),
-                    "protocol_revenue_monthly": round(protocol_revenue / 12),
+                    "protocol_pool_usd": round(protocol_pool),
+                    "jit_rebate_usd": round(jit_rebate),
+                    "treasury_usd": round(treasury),
+                    "treasury_monthly": round(treasury / 12),
                 })
 
     # Save results
@@ -183,7 +199,8 @@ def model():
         "raiku_market_share_pct", "raiku_market_share",
         "protocol_fee_pct", "protocol_fee",
         "gross_revenue_usd", "validator_revenue_usd",
-        "protocol_revenue_usd", "protocol_revenue_monthly",
+        "protocol_pool_usd", "jit_rebate_usd",
+        "treasury_usd", "treasury_monthly",
     ]
 
     DATA_PROCESSED.mkdir(parents=True, exist_ok=True)
@@ -195,13 +212,13 @@ def model():
     print(f"  Saved: {OUTPUT_FILE} ({len(results)} scenarios)")
 
     # Print key scenarios
-    print("\n  === Key JIT Scenarios (5% protocol fee) ===")
-    print("  Total market = all Jito MEV tips/yr | Share = RAIKU's slice | Protocol = 5% kept by RAIKU treasury")
+    print("\n  === Key JIT Scenarios (5% take rate) ===")
+    print("  Total market = all Jito MEV tips/yr | Share = RAIKU's slice | Treasury = pool - rebate")
     for r in results:
         if r["protocol_fee"] == PROTOCOL_TAKE_RATE and r["raiku_market_share"] in [0.05, 0.10, 0.15]:
             print(f"    {r['total_market_source']:<45} | Share {r['raiku_market_share_pct']:>4} | "
-                  f"Gross ${r['gross_revenue_usd']:>12,} | Protocol ${r['protocol_revenue_usd']:>10,}/yr "
-                  f"(${r['protocol_revenue_monthly']:>8,}/mo)")
+                  f"Gross ${r['gross_revenue_usd']:>12,} | Treasury ${r['treasury_usd']:>10,}/yr "
+                  f"(${r['treasury_monthly']:>8,}/mo)")
 
 
 if __name__ == "__main__":

@@ -114,7 +114,7 @@ def run():
     # 3. TOP-DOWN AOT MODEL
     # ──────────────────────────────────────────────────────
     section("2. AOT TOP-DOWN MODEL")
-    print("\n  Formula: Total_Priority_Fees × Latency_Sensitive% × RAIKU_Capture% × Protocol_Fee")
+    print("\n  Formula: Total_Priority_Fees × Latency_Sensitive% × RAIKU_Capture% × Take_Rate")
 
     subsection("Base case: Avg 10 epochs, 40% latency-sensitive")
     print(f"  Total priority fees (annualized): ${avg_fees:,.0f}")
@@ -128,8 +128,8 @@ def run():
             r = matches[0]
             addressable = int(r["total_market_usd"]) * 0.40
             gross = int(r["gross_revenue_usd"])
-            prot = int(r["protocol_revenue_usd"])
-            print(f"  Capture {capture_str:>3}: addressable ${addressable:>12,.0f} → gross ${gross:>10,} → protocol ${prot:>8,}/yr (${prot//12:>7,}/mo)")
+            treas = int(r["treasury_usd"])
+            print(f"  Capture {capture_str:>3}: addressable ${addressable:>12,.0f} → gross ${gross:>10,} → treasury ${treas:>8,}/yr (${treas//12:>7,}/mo)")
 
     # ──────────────────────────────────────────────────────
     # 4. BOTTOM-UP AOT MODEL
@@ -149,13 +149,13 @@ def run():
         if r["stake_pct"] == "5%" and r["cu_reserved_pct"] == "10%" and "mid" in r["total_market_source"]:
             arch = r["archetype"]
             gross = int(r["gross_revenue_usd"])
-            prot = int(r["protocol_revenue_usd"])
-            archetype_details[arch] = {"gross": gross, "protocol": prot, "fee_cu": r["fee_per_cu_lamports"]}
+            treas = int(r["treasury_usd"])
+            archetype_details[arch] = {"gross": gross, "treasury": treas, "fee_cu": r["fee_per_cu_lamports"]}
             total_bu_gross += gross
-            print(f"    {arch:<25} fee/CU={float(r['fee_per_cu_lamports']):>8.3f} L/CU  gross=${gross:>8,}  protocol=${prot:>6,}/yr")
+            print(f"    {arch:<25} fee/CU={float(r['fee_per_cu_lamports']):>8.3f} L/CU  gross=${gross:>8,}  treasury=${treas:>6,}/yr")
 
-    total_bu_prot = sum(v["protocol"] for v in archetype_details.values())
-    print(f"    {'TOTAL':<25} {'':>18}  gross=${total_bu_gross:>8,}  protocol=${total_bu_prot:>6,}/yr")
+    total_bu_treas = sum(v["treasury"] for v in archetype_details.values())
+    print(f"    {'TOTAL':<25} {'':>18}  gross=${total_bu_gross:>8,}  treasury=${total_bu_treas:>6,}/yr")
 
     # All stake scenarios
     subsection("Bottom-up by stake% (10% CU, mid customers)")
@@ -163,10 +163,10 @@ def run():
     for sp in ["1%", "3%", "5%", "10%", "20%"]:
         gross = sum(int(r["gross_revenue_usd"]) for r in bu_rows
                     if r["stake_pct"] == sp and r["cu_reserved_pct"] == "10%" and "mid" in r["total_market_source"])
-        prot = sum(int(r["protocol_revenue_usd"]) for r in bu_rows
-                   if r["stake_pct"] == sp and r["cu_reserved_pct"] == "10%" and "mid" in r["total_market_source"])
-        bu_by_stake[sp] = {"gross": gross, "protocol": prot}
-        print(f"    Stake {sp:>3}: gross=${gross:>10,}  protocol=${prot:>8,}/yr (${prot//12:>6,}/mo)")
+        treas = sum(int(r["treasury_usd"]) for r in bu_rows
+                    if r["stake_pct"] == sp and r["cu_reserved_pct"] == "10%" and "mid" in r["total_market_source"])
+        bu_by_stake[sp] = {"gross": gross, "treasury": treas}
+        print(f"    Stake {sp:>3}: gross=${gross:>10,}  treasury=${treas:>8,}/yr (${treas//12:>6,}/mo)")
 
     # ──────────────────────────────────────────────────────
     # 5. TOP-DOWN vs BOTTOM-UP COMPARISON
@@ -181,16 +181,16 @@ def run():
     # TD 10% capture of 40% addressable = 4% of total priority fees
     # BU 5% stake = 5% of slots, but only CU that archetypes consume
 
-    subsection("Direct comparison (protocol revenue, 5% take rate)")
+    subsection("Direct comparison (treasury revenue, 5% take rate)")
     td_40_10 = [r for r in td_rows if r["latency_sensitive_pct"] == "40%" and r["raiku_capture_pct"] == "10%" and "Avg" in r["total_market_source"]]
     td_gross = int(td_40_10[0]["gross_revenue_usd"]) if td_40_10 else 0
-    td_prot = int(td_40_10[0]["protocol_revenue_usd"]) if td_40_10 else 0
+    td_treas = int(td_40_10[0]["treasury_usd"]) if td_40_10 else 0
 
     bu_5_10_gross = bu_by_stake.get("5%", {}).get("gross", 0)
-    bu_5_10_prot = bu_by_stake.get("5%", {}).get("protocol", 0)
+    bu_5_10_treas = bu_by_stake.get("5%", {}).get("treasury", 0)
 
-    print(f"  Top-Down  (40% addr, 10% capture):  gross=${td_gross:>10,}  protocol=${td_prot:>8,}/yr")
-    print(f"  Bottom-Up (5% stake, 10% CU, mid):  gross=${bu_5_10_gross:>10,}  protocol=${bu_5_10_prot:>8,}/yr")
+    print(f"  Top-Down  (40% addr, 10% capture):  gross=${td_gross:>10,}  treasury=${td_treas:>8,}/yr")
+    print(f"  Bottom-Up (5% stake, 10% CU, mid):  gross=${bu_5_10_gross:>10,}  treasury=${bu_5_10_treas:>8,}/yr")
     if bu_5_10_gross > 0:
         ratio = td_gross / bu_5_10_gross
         print(f"\n  Ratio TD/BU: {ratio:.1f}x")
@@ -289,21 +289,21 @@ def run():
     # ──────────────────────────────────────────────────────
     section("5. JIT MODEL SUMMARY")
 
-    subsection("Key scenarios (5% protocol fee)")
+    subsection("Key scenarios (5% take rate)")
     for r in jit:
         if r["protocol_fee_pct"] == "5.0%" and r["raiku_market_share_pct"] in ["5%", "10%", "15%"]:
             print(f"  {r['total_market_source']:<45} share={r['raiku_market_share_pct']:>4}  "
-                  f"gross=${int(r['gross_revenue_usd']):>12,}  protocol=${int(r['protocol_revenue_usd']):>8,}/yr")
+                  f"gross=${int(r['gross_revenue_usd']):>12,}  treasury=${int(r['treasury_usd']):>8,}/yr")
 
     # ──────────────────────────────────────────────────────
     # 7. UNIFIED REVENUE TABLE
     # ──────────────────────────────────────────────────────
-    section("6. UNIFIED REVENUE TABLE (Protocol Revenue, 5% take rate)")
+    section("6. UNIFIED REVENUE TABLE (Treasury Revenue, 5% take rate)")
     print("\n  Combining AOT + JIT for key scenarios:\n")
 
     # Define combined scenarios
     report_rows = []
-    header = f"  {'Scenario':<50} {'AOT Protocol':>14} {'JIT Protocol':>14} {'TOTAL':>14} {'Monthly':>10}"
+    header = f"  {'Scenario':<50} {'AOT Treasury':>14} {'JIT Treasury':>14} {'TOTAL':>14} {'Monthly':>10}"
     print(header)
     print("  " + "-" * (len(header) - 2))
 
@@ -312,44 +312,44 @@ def run():
         # (label, aot_prot, jit_prot)
         # Conservative: BU 5% stake / JIT on-chain 5% share
         ("Y1 Conservative (BU 5%stk + JIT 5%shr, on-chain)",
-         bu_by_stake.get("5%", {}).get("protocol", 0),
-         next((int(r["protocol_revenue_usd"]) for r in jit if r["protocol_fee_pct"] == "5.0%" and r["raiku_market_share_pct"] == "5%" and "avg 10" in r["total_market_source"]), 0)),
+         bu_by_stake.get("5%", {}).get("treasury", 0),
+         next((int(r["treasury_usd"]) for r in jit if r["protocol_fee_pct"] == "5.0%" and r["raiku_market_share_pct"] == "5%" and "avg 10" in r["total_market_source"]), 0)),
 
         ("Y1 Base (BU 5%stk + JIT 10%shr, on-chain)",
-         bu_by_stake.get("5%", {}).get("protocol", 0),
-         next((int(r["protocol_revenue_usd"]) for r in jit if r["protocol_fee_pct"] == "5.0%" and r["raiku_market_share_pct"] == "10%" and "avg 10" in r["total_market_source"]), 0)),
+         bu_by_stake.get("5%", {}).get("treasury", 0),
+         next((int(r["treasury_usd"]) for r in jit if r["protocol_fee_pct"] == "5.0%" and r["raiku_market_share_pct"] == "10%" and "avg 10" in r["total_market_source"]), 0)),
 
         ("Y1 Optimistic (BU 10%stk + JIT 15%shr, on-chain)",
-         bu_by_stake.get("10%", {}).get("protocol", 0),
-         next((int(r["protocol_revenue_usd"]) for r in jit if r["protocol_fee_pct"] == "5.0%" and r["raiku_market_share_pct"] == "15%" and "avg 10" in r["total_market_source"]), 0)),
+         bu_by_stake.get("10%", {}).get("treasury", 0),
+         next((int(r["treasury_usd"]) for r in jit if r["protocol_fee_pct"] == "5.0%" and r["raiku_market_share_pct"] == "15%" and "avg 10" in r["total_market_source"]), 0)),
 
         ("", 0, 0),  # separator
 
         ("Mature Conservative (TD 40%×5% + JIT Q4 5%shr)",
-         next((int(r["protocol_revenue_usd"]) for r in td_rows if r["latency_sensitive_pct"] == "40%" and r["raiku_capture_pct"] == "5%" and "Avg" in r["total_market_source"]), 0),
-         next((int(r["protocol_revenue_usd"]) for r in jit if r["protocol_fee_pct"] == "5.0%" and r["raiku_market_share_pct"] == "5%" and "Q4-2025" in r["total_market_source"]), 0)),
+         next((int(r["treasury_usd"]) for r in td_rows if r["latency_sensitive_pct"] == "40%" and r["raiku_capture_pct"] == "5%" and "Avg" in r["total_market_source"]), 0),
+         next((int(r["treasury_usd"]) for r in jit if r["protocol_fee_pct"] == "5.0%" and r["raiku_market_share_pct"] == "5%" and "Q4-2025" in r["total_market_source"]), 0)),
 
         ("Mature Base (TD 40%×10% + JIT Q4 10%shr)",
-         td_prot,
-         next((int(r["protocol_revenue_usd"]) for r in jit if r["protocol_fee_pct"] == "5.0%" and r["raiku_market_share_pct"] == "10%" and "Q4-2025" in r["total_market_source"]), 0)),
+         td_treas,
+         next((int(r["treasury_usd"]) for r in jit if r["protocol_fee_pct"] == "5.0%" and r["raiku_market_share_pct"] == "10%" and "Q4-2025" in r["total_market_source"]), 0)),
 
         ("Mature Optimistic (TD 40%×15% + JIT Q4 15%shr)",
-         next((int(r["protocol_revenue_usd"]) for r in td_rows if r["latency_sensitive_pct"] == "40%" and r["raiku_capture_pct"] == "15%" and "Avg" in r["total_market_source"]), 0),
-         next((int(r["protocol_revenue_usd"]) for r in jit if r["protocol_fee_pct"] == "5.0%" and r["raiku_market_share_pct"] == "15%" and "Q4-2025" in r["total_market_source"]), 0)),
+         next((int(r["treasury_usd"]) for r in td_rows if r["latency_sensitive_pct"] == "40%" and r["raiku_capture_pct"] == "15%" and "Avg" in r["total_market_source"]), 0),
+         next((int(r["treasury_usd"]) for r in jit if r["protocol_fee_pct"] == "5.0%" and r["raiku_market_share_pct"] == "15%" and "Q4-2025" in r["total_market_source"]), 0)),
 
         ("", 0, 0),  # separator
 
         ("Bull Conservative (TD 50%×10% + JIT 2025 5%shr)",
-         next((int(r["protocol_revenue_usd"]) for r in td_rows if r["latency_sensitive_pct"] == "50%" and r["raiku_capture_pct"] == "10%" and "Avg" in r["total_market_source"]), 0),
-         next((int(r["protocol_revenue_usd"]) for r in jit if r["protocol_fee_pct"] == "5.0%" and r["raiku_market_share_pct"] == "5%" and "2025 full" in r["total_market_source"]), 0)),
+         next((int(r["treasury_usd"]) for r in td_rows if r["latency_sensitive_pct"] == "50%" and r["raiku_capture_pct"] == "10%" and "Avg" in r["total_market_source"]), 0),
+         next((int(r["treasury_usd"]) for r in jit if r["protocol_fee_pct"] == "5.0%" and r["raiku_market_share_pct"] == "5%" and "2025 full" in r["total_market_source"]), 0)),
 
         ("Bull Base (TD 50%×15% + JIT 2025 10%shr)",
-         next((int(r["protocol_revenue_usd"]) for r in td_rows if r["latency_sensitive_pct"] == "50%" and r["raiku_capture_pct"] == "15%" and "Avg" in r["total_market_source"]), 0),
-         next((int(r["protocol_revenue_usd"]) for r in jit if r["protocol_fee_pct"] == "5.0%" and r["raiku_market_share_pct"] == "10%" and "2025 full" in r["total_market_source"]), 0)),
+         next((int(r["treasury_usd"]) for r in td_rows if r["latency_sensitive_pct"] == "50%" and r["raiku_capture_pct"] == "15%" and "Avg" in r["total_market_source"]), 0),
+         next((int(r["treasury_usd"]) for r in jit if r["protocol_fee_pct"] == "5.0%" and r["raiku_market_share_pct"] == "10%" and "2025 full" in r["total_market_source"]), 0)),
 
         ("Bull Optimistic (TD 60%×20% + JIT 2025 15%shr)",
-         next((int(r["protocol_revenue_usd"]) for r in td_rows if r["latency_sensitive_pct"] == "60%" and r["raiku_capture_pct"] == "20%" and "Avg" in r["total_market_source"]), 0),
-         next((int(r["protocol_revenue_usd"]) for r in jit if r["protocol_fee_pct"] == "5.0%" and r["raiku_market_share_pct"] == "15%" and "2025 full" in r["total_market_source"]), 0)),
+         next((int(r["treasury_usd"]) for r in td_rows if r["latency_sensitive_pct"] == "60%" and r["raiku_capture_pct"] == "20%" and "Avg" in r["total_market_source"]), 0),
+         next((int(r["treasury_usd"]) for r in jit if r["protocol_fee_pct"] == "5.0%" and r["raiku_market_share_pct"] == "15%" and "2025 full" in r["total_market_source"]), 0)),
     ]
 
     for label, aot_p, jit_p in combos:
@@ -360,17 +360,17 @@ def run():
         monthly = total // 12
         report_rows.append({
             "scenario": label,
-            "aot_protocol_revenue_usd": aot_p,
-            "jit_protocol_revenue_usd": jit_p,
-            "total_protocol_revenue_usd": total,
+            "aot_treasury_usd": aot_p,
+            "jit_treasury_usd": jit_p,
+            "total_treasury_usd": total,
             "total_monthly_usd": monthly,
         })
         print(f"  {label:<50} ${aot_p:>12,} ${jit_p:>12,} ${total:>12,} ${monthly:>8,}/mo")
 
     # Save report
     DATA_PROCESSED.mkdir(parents=True, exist_ok=True)
-    cols = ["scenario", "aot_protocol_revenue_usd", "jit_protocol_revenue_usd",
-            "total_protocol_revenue_usd", "total_monthly_usd"]
+    cols = ["scenario", "aot_treasury_usd", "jit_treasury_usd",
+            "total_treasury_usd", "total_monthly_usd"]
     with open(OUTPUT_FILE, "w", encoding=CSV_ENCODING, newline="") as f:
         writer = csv.DictWriter(f, fieldnames=cols, delimiter=CSV_DELIMITER)
         writer.writeheader()
@@ -403,10 +403,10 @@ def run():
      current on-chain rates — shows high sensitivity to market cycle.
 """.format(
         td_gross / bu_5_10_gross if bu_5_10_gross > 0 else 0,
-        report_rows[0]["total_protocol_revenue_usd"], report_rows[0]["total_monthly_usd"],
-        report_rows[1]["total_protocol_revenue_usd"], report_rows[1]["total_monthly_usd"],
-        report_rows[4]["total_protocol_revenue_usd"], report_rows[4]["total_monthly_usd"],
-        report_rows[5]["total_protocol_revenue_usd"], report_rows[5]["total_monthly_usd"],
+        report_rows[0].get("total_treasury_usd", 0), report_rows[0].get("total_monthly_usd", 0),
+        report_rows[1].get("total_treasury_usd", 0), report_rows[1].get("total_monthly_usd", 0),
+        report_rows[4].get("total_treasury_usd", 0), report_rows[4].get("total_monthly_usd", 0),
+        report_rows[5].get("total_treasury_usd", 0), report_rows[5].get("total_monthly_usd", 0),
     ))
 
 

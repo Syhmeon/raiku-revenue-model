@@ -81,10 +81,14 @@ PROTOCOL_TAKE_RATE_HIGH_PERF = 0.035  # 3.5% for qualifying validators
 VALIDATOR_SHARE = 0.95             # 95% to validators
 VALIDATOR_SHARE_HIGH_PERF = 0.965  # 96.5% for high performers
 
-# Revenue waterfall (% of total revenue)
-CUSTOMER_REBATE_PCT = 0.005        # ~0.5% (0.25-1% AOT, 0-0.5% JIT)
-VALIDATOR_ENHANCEMENT_PCT = 0.015  # ~1.5% (if qualifying)
-PROTOCOL_REMAINDER_PCT = 0.03     # ~3% → operations, growth, buyback
+# Revenue waterfall — redistributions as % of gross revenue
+# These are funded from the protocol pool (= gross × take rate).
+# Guard: if take rate = 0, all redistributions must = 0.
+# Guard: rebate + bonus must not exceed take rate.
+AOT_REBATE_PCT = 0.0025           # 0.25% of gross (default, = 5% of protocol pool at 5% take)
+JIT_REBATE_PCT = 0.0025           # 0.25% of gross (default)
+AOT_VALIDATOR_BONUS_PCT = 0.01    # 1.0% of gross (AOT only, = 20% of protocol pool at 5% take)
+# Treasury = protocol pool - rebate - bonus (derived, not a constant)
 
 # ── AOT Model Parameters ──────────────────────────────
 # From Opportunity Cost doc + Mainnet doc

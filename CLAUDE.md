@@ -326,16 +326,24 @@ Per archetype (6 types defined in docs/raiku_usecases.txt):
 
 Fee/CU values per archetype come from extracted data (dune_fee_per_cu_by_program.csv), NOT hardcoded.
 
-### Revenue Split (apply LAST)
+### Revenue Waterfall (apply LAST)
 ```
-Total Revenue (100%)
-├── Validators: 95% (protocol constant, governance range 95-99%)
-└── RAIKU Protocol: 5% (governance range 1-5%)
-    ├── Customer rebates
-    ├── Validator enhancement
-    └── Remainder → operations
+Gross Revenue = 100%
+
+Step 1 — Split gross revenue:
+  Validator Base    = Gross × (1 - Protocol Take Rate)     e.g. 95%
+  Protocol Pool     = Gross × Protocol Take Rate            e.g. 5%
+
+Step 2 — Protocol redistributes from its own pool:
+  Customer Rebate   = funded from Protocol Pool (% of gross, clamped)
+  Validator Bonus   = funded from Protocol Pool (AOT only, clamped)
+  Raiku Treasury    = Protocol Pool − Rebate − Bonus
+
+Guard: if Take Rate = 0 → Rebate = 0 and Bonus = 0 (enforced in code)
+Guard: Rebate + Bonus ≤ Take Rate (clamped, never exceeds protocol pool)
 ```
-Exact sub-split percentages are scenario parameters in the Sheet, not constants.
+AOT and JIT have **separate** parameter panels — JIT has no validator bonus.
+Exact sub-split percentages are scenario parameters in the simulator, not constants.
 
 ---
 
@@ -515,38 +523,13 @@ Use these agents instead of working directly in the main conversation:
 
 ---
 
-## ⚠️ Staged Model Correction — Revenue Waterfall (implement after agent setup)
+## ✅ Revenue Waterfall Correction — IMPLEMENTED (2026-03-10)
 
-**Recorded: 2026-03-10. NOT YET IMPLEMENTED. Must be first implementation task after setup.**
+Waterfall logic corrected across all files. See `tasks/lessons.md` for the full specification.
 
-The revenue allocation waterfall in the simulator and Python models is conceptually wrong and must be corrected.
-
-### Correct Waterfall Logic
-
-```
-Gross Revenue = 100
-
-Step 1:  Validator Base = Gross Revenue × (1 - Protocol Take Rate)
-         Protocol Pool  = Gross Revenue × Protocol Take Rate
-
-Step 2:  Customer Rebate  ← funded from Protocol Pool
-         Validator Bonus  ← funded from Protocol Pool (AOT only, not JIT)
-         Raiku Treasury   = Protocol Pool − Rebate − Validator Bonus
-```
-
-### Rules
-
-- Rebates and validator bonus come OUT OF the protocol pool, never from gross revenue directly
-- If Protocol Take Rate = 0 → Rebate must = 0 and Validator Bonus must = 0 (enforced by model)
-- AOT and JIT must have separate parameter panels — JIT has no validator bonus
-- Rename "commission" → "Protocol Take Rate" everywhere
-
-### Files to update when implementing
-
-- `raiku_revenue_simulator.html` — labels, sliders, waterfall formula, guard, AOT/JIT separation
-- `03_model/jit_revenue.py` and `aot_revenue.py` — waterfall logic
-- `CLAUDE.md` Protocol Constants section
-- `DATA_LINEAGE.md` if column names change
-
-Full specification in `tasks/lessons.md` → "Revenue Model — Core Waterfall Correction".
+Changes made:
+- Simulator: renamed "commission" → "Protocol Take Rate", added guard logic, separate AOT/JIT panels
+- Python models: `jit_revenue.py`, `aot_revenue.py`, `sanity_check.py` — full waterfall with rebate/bonus
+- `config.py`: renamed waterfall constants
+- CSV output columns: `protocol_revenue_usd` → `treasury_usd` (+ `protocol_pool_usd`, `jit_rebate_usd`, `aot_rebate_usd`, `validator_bonus_usd`)
 

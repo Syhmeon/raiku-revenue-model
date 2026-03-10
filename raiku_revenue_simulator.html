@@ -466,25 +466,9 @@ details[open] summary::before { transform:rotate(90deg); }
     <div class="controls-grid">
         <div class="section-label">Protocol</div>
         <div class="control">
-            <label>Protocol Commission</label>
+            <label>Protocol Take Rate</label>
             <div class="slider-row"><input type="range" id="sl-comm" min="0" max="10" step="0.5" value="5"><span class="val" id="v-comm">5.0%</span></div>
             <div class="note">Governance range 1-5%. 0% = all revenue to validators. Up to 10% for sensitivity.</div>
-        </div>
-        <div class="section-label">Revenue Distribution</div>
-        <div class="control">
-            <label>AOT Customer Rebate (%)</label>
-            <div class="slider-row"><input type="range" id="sl-rebate-aot" min="0" max="1" step="0.05" value="0.25"><span class="val" id="v-rebate-aot">0.25%</span></div>
-            <div class="note">% of AOT gross returned to users as loyalty rebates. Reduces AOT protocol revenue.</div>
-        </div>
-        <div class="control">
-            <label>JIT Customer Rebate (%)</label>
-            <div class="slider-row"><input type="range" id="sl-rebate-jit" min="0" max="0.5" step="0.05" value="0.25"><span class="val" id="v-rebate-jit">0.25%</span></div>
-            <div class="note">% of JIT gross returned to users as loyalty rebates. Reduces JIT protocol revenue.</div>
-        </div>
-        <div class="control">
-            <label>AOT Validator Bonus (%) <span style="font-size:9px;color:var(--clr-val-bonus);font-weight:400;">(AOT only)</span></label>
-            <div class="slider-row"><input type="range" id="sl-val-bonus" min="0" max="2" step="0.1" value="1"><span class="val" id="v-val-bonus">1.0%</span></div>
-            <div class="note">% of AOT gross as bonus to validators who respect AOT ordering/inclusion rules. Does not apply to JIT.</div>
         </div>
         <div class="control">
             <label>SOL Price (USD)</label>
@@ -492,7 +476,28 @@ details[open] summary::before { transform:rotate(90deg); }
             <div class="note">Default: real average from last 36 epochs ($109).</div>
         </div>
 
+        <div class="section-label">AOT (Ahead-of-Time) &mdash; Revenue Distribution</div>
+        <div class="control">
+            <label>AOT Customer Rebate (%)</label>
+            <div class="slider-row"><input type="range" id="sl-rebate-aot" min="0" max="1" step="0.05" value="0.25"><span class="val" id="v-rebate-aot">0.25%</span></div>
+            <div class="note">% of AOT gross returned to users. Funded from protocol pool.</div>
+            <div class="note" id="ratio-rebate-aot" style="color:var(--text2);font-style:italic;margin-top:-2px;"></div>
+        </div>
+        <div class="control">
+            <label>AOT Validator Bonus (%)</label>
+            <div class="slider-row"><input type="range" id="sl-val-bonus" min="0" max="2" step="0.1" value="1"><span class="val" id="v-val-bonus">1.0%</span></div>
+            <div class="note">Bonus to validators who respect AOT ordering rules. Funded from protocol pool.</div>
+            <div class="note" id="ratio-val-bonus" style="color:var(--text2);font-style:italic;margin-top:-2px;"></div>
+        </div>
+        <div id="waterfall-guard-msg" class="note" style="color:#F5A623;font-weight:600;display:none;margin-top:-6px;"></div>
+
         <div class="section-label">JIT (Just-in-Time) &mdash; Real-time tip-based ordering</div>
+        <div class="control">
+            <label>JIT Customer Rebate (%)</label>
+            <div class="slider-row"><input type="range" id="sl-rebate-jit" min="0" max="0.5" step="0.05" value="0.25"><span class="val" id="v-rebate-jit">0.25%</span></div>
+            <div class="note">% of JIT gross returned to users. Funded from protocol pool.</div>
+            <div class="note" id="ratio-rebate-jit" style="color:var(--text2);font-style:italic;margin-top:-2px;"></div>
+        </div>
         <div class="control">
             <label>JIT Total Market (SOL/yr)</label>
             <div class="slider-row"><input type="range" id="sl-jit-market" min="100000" max="10000000" step="1000" value="813000"><span class="val blue" id="v-jit-market">813K</span></div>
@@ -966,8 +971,8 @@ details[open] summary::before { transform:rotate(90deg); }
             <strong>CU/block (CB):</strong> 60,000,000 (Solana max compute units per block)<br>
             <strong>Lamports/SOL (LS):</strong> 1,000,000,000<br>
             <strong>SOL price default:</strong> Real average from last 36 epochs (~$109)<br>
-            <strong>Commission:</strong> Dynamic from slider (default 5%). Validator base = 1 – commission.<br>
-            <strong>Two-waterfall model:</strong> AOT and JIT streams are calculated independently, then aggregated. Validator bonus applies only to AOT.
+            <strong>Protocol Take Rate:</strong> Dynamic from slider (default 5%). Validator base = 1 – take rate. Rebates and validator bonus are funded from the protocol pool (= gross &times; take rate), never from gross revenue directly.<br>
+            <strong>Two-waterfall model:</strong> AOT and JIT streams are calculated independently, then aggregated. Validator bonus applies only to AOT. If take rate = 0%, all redistributions are forced to 0.
         </div>
     </details>
 </div>
@@ -1249,7 +1254,7 @@ function applyScenario(n){
 });
 
 function gp(){return{
-    c:+document.getElementById('sl-comm').value,       // commission % (raw, e.g. 5)
+    c:+document.getElementById('sl-comm').value,       // protocol take rate % (raw, e.g. 5)
     ra:+document.getElementById('sl-rebate-aot').value, // AOT rebate % (raw, e.g. 0.25)
     rj:+document.getElementById('sl-rebate-jit').value, // JIT rebate % (raw, e.g. 0.25)
     vb:+document.getElementById('sl-val-bonus').value,  // AOT validator bonus % (raw, e.g. 1.0)
@@ -1296,28 +1301,33 @@ function calc(p){
     const cR = p.c / 100;
     const vR = 1 - cR;
 
+    // Guard: rebates and bonus are funded from protocol pool — clamp to take rate
+    const jitRebateRate = cR > 0 ? Math.min(p.rj / 100, cR) : 0;
+    const aotRebateRate = cR > 0 ? Math.min(p.ra / 100, cR) : 0;
+    const aotBonusRate  = cR > 0 ? Math.min(p.vb / 100, cR - aotRebateRate) : 0;
+
     // JIT waterfall (jitMarket comes from the JIT total market slider)
-    const jitMarket     = p.jm;
+    const jitMarket        = p.jm;
     const jitGross         = jitMarket * p.j;
     const jitValidatorBase = jitGross * vR;
-    const jitRebate        = jitGross * (p.rj / 100);
+    const jitRebate        = jitGross * jitRebateRate;
     const jitValBonus      = 0;
-    const jitProtocol      = Math.max(0, jitGross * cR - jitRebate);
+    const jitProtocol      = jitGross * cR - jitRebate;
 
     // AOT waterfall
     const ls       = p.s * SY, cu = p.b * CB;
     const aotGross         = (ls * cu * p.f) / LS;
     const aotValidatorBase = aotGross * vR;
-    const aotRebate        = aotGross * (p.ra / 100);
-    const aotValBonus      = aotGross * (p.vb / 100);
-    const aotProtocol      = Math.max(0, aotGross * cR - aotRebate - aotValBonus);
+    const aotRebate        = aotGross * aotRebateRate;
+    const aotValBonus      = aotGross * aotBonusRate;
+    const aotProtocol      = aotGross * cR - aotRebate - aotValBonus;
 
     // Aggregated
     const totalGross     = jitGross + aotGross;
     const totalValBase   = jitValidatorBase + aotValidatorBase;
     const totalValRev    = totalValBase + aotValBonus;
     const totalRebates   = jitRebate + aotRebate;
-    const totalProtocol  = Math.max(0, jitProtocol + aotProtocol);
+    const totalProtocol  = jitProtocol + aotProtocol;
 
     return {
         jitGross, jitValidatorBase, jitRebate, jitValBonus, jitProtocol, jitMarket,
@@ -1707,6 +1717,40 @@ function update(){
     document.getElementById('v-rebate-aot').textContent=p.ra.toFixed(2)+'%';
     document.getElementById('v-rebate-jit').textContent=p.rj.toFixed(2)+'%';
     document.getElementById('v-val-bonus').textContent=p.vb.toFixed(1)+'%';
+
+    // Show ratio as % of protocol take
+    if (p.c > 0) {
+        document.getElementById('ratio-rebate-aot').textContent = '= ' + (p.ra / p.c * 100).toFixed(0) + '% of protocol take at ' + p.c.toFixed(1) + '% take rate';
+        document.getElementById('ratio-rebate-jit').textContent = '= ' + (p.rj / p.c * 100).toFixed(0) + '% of protocol take at ' + p.c.toFixed(1) + '% take rate';
+        document.getElementById('ratio-val-bonus').textContent = '= ' + (p.vb / p.c * 100).toFixed(0) + '% of protocol take at ' + p.c.toFixed(1) + '% take rate';
+    } else {
+        document.getElementById('ratio-rebate-aot').textContent = '';
+        document.getElementById('ratio-rebate-jit').textContent = '';
+        document.getElementById('ratio-val-bonus').textContent = '';
+    }
+
+    // Waterfall guard info
+    const guardMsg = document.getElementById('waterfall-guard-msg');
+    if (p.c === 0 && (p.ra > 0 || p.rj > 0 || p.vb > 0)) {
+        guardMsg.style.display = 'block';
+        guardMsg.style.color = '#F5A623';
+        guardMsg.style.fontWeight = '600';
+        guardMsg.textContent = '\u26a0 Take rate = 0%: rebates and bonus forced to 0 (no protocol pool).';
+    } else if (p.c > 0 && (p.ra + p.rj + p.vb) > p.c) {
+        guardMsg.style.display = 'block';
+        guardMsg.style.color = '#F5A623';
+        guardMsg.style.fontWeight = '600';
+        guardMsg.textContent = '\u26a0 Rebates + bonus (' + (p.ra + p.rj + p.vb).toFixed(2) + '%) exceed take rate (' + p.c.toFixed(1) + '%). Values clamped.';
+    } else if (p.c > 0) {
+        const poolUsed = ((p.ra + p.rj + p.vb) / p.c * 100).toFixed(0);
+        guardMsg.style.display = 'block';
+        guardMsg.style.color = 'var(--text2)';
+        guardMsg.style.fontWeight = '400';
+        guardMsg.textContent = 'Protocol pool: ' + poolUsed + '% redistributed \u2192 ' + (100 - poolUsed) + '% treasury.';
+    } else {
+        guardMsg.style.display = 'none';
+    }
+
     document.getElementById('v-jit-market').textContent=fmt(p.jm,'S');
     document.getElementById('v-jit-market-usd').textContent='\u2248 '+fmt(p.jm*p.p,'$')+'/yr';
     document.getElementById('v-jit').textContent=Math.round(p.j*100)+'%';
