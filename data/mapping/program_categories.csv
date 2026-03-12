@@ -9,24 +9,24 @@ PhoeNiXZ8ByJGLkxNfZRnkUfjvmuYqLR89jjFHGqdXY;Phoenix;dex;orderbook;both;manual;On
 srmqPvymJeFKQ4zGQed1GFppgkRHL9kaELCbyksJtPX;Serum/OpenBook;dex;orderbook;potential;manual;Legacy orderbook - same logic as Phoenix but legacy
 opnb2LAfJYbRMAHHvqjCwQxanZn7ReEHp1k81EQMQf8;OpenBook V2;dex;orderbook;both;manual;Orderbook DEX - market makers (AOT) + traders (JIT)
 FLUXubRmkEi2q6K3Y9kBPg9248ggaZVsoSFhtJHSOfk;FluxBeam;dex;amm;potential;manual;DEX - traders could benefit from guaranteed execution
-T1pyyaTNZsKv2WcRAB8oVnk93mLJw2XzjtVYqCsaHqt;Jito Tip Payment;mev;tips;jit;solscan;Jito MEV tips - JIT searcher activity (Solscan: Jito Tip Payment)
-Jito4APyf642JPZPx3hGc6WWJ8zPKtRbRs4P3e9pVSc;Jito Restaking;mev;restaking;potential;manual;Staking ops may need reliable execution for stake rebalancing
+T1pyyaTNZsKv2WcRAB8oVnk93mLJw2XzjtVYqCsaHqt;Jito Tip Payment;arb_bot;tips;jit;solscan;Jito MEV tips - JIT searcher activity (Solscan: Jito Tip Payment)
+Jito4APyf642JPZPx3hGc6WWJ8zPKtRbRs4P3e9pVSc;Jito Restaking;cranker;restaking;potential;manual;Staking ops may need reliable execution for stake rebalancing
 dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH;Drift Protocol;perps;perpetuals;both;manual;Cranking/funding settlement = AOT + traders/liquidators = JIT
 ZETAxsqBRek56DhiGXrn75yj2NHU3aYUnxvHXRas1EQ;Zeta Markets;perps;perpetuals;both;manual;Options/perps - cranking = AOT + traders = JIT
 PERPHjGBqRHArX4DySjwM6UJHiR3sWAatqfdBS2qQJu;Jupiter Perpetuals;perps;perpetuals;both;solscan;Jupiter Perps ($264M 24h vol) - crankers/keepers = AOT + traders/liquidators = JIT
 So1endDq2YkqhipRh3WViPa8hFMUpXRQrETEgTcKSaJ;Solend;lending;pool;aot;manual;Lending - liquidation bots and keepers = AOT
 KLend2g3cP87ber41GtWkPjXCVRKyomUr11Hpe26LhL3;Kamino Lend;lending;pool;aot;manual;Kamino - rebalance keeper = AOT
 MFv2hWf31Z9kbCa1snEPYctwafyhdvnV7FZnsebVacA;Marginfi;lending;pool;aot;manual;Lending - liquidation keepers = AOT
-JupSoLaHXQiZZTSfEWMTRRgpnyFm8f6sZdosWBjx93v;Jupiter Staking;staking;liquid;potential;manual;Staking ops - rebalancing could benefit from guaranteed execution
-mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So;Marinade;staking;liquid;aot;manual;Marinade - rebalance cranker = AOT (confirmed in usecases doc)
-CgntPoLka5pD5fesJYhGmUCF8KU1QS1ZmZiuAuMZr2az;Sanctum Router;staking;liquid;aot;sanctum_docs;Sanctum LST router - manages 25+ LSTs ($2.2B total MCap) - stake rebalancing = AOT
+JupSoLaHXQiZZTSfEWMTRRgpnyFm8f6sZdosWBjx93v;Jupiter Staking;cranker;liquid;potential;manual;Staking ops - rebalancing could benefit from guaranteed execution
+mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So;Marinade;cranker;liquid;aot;manual;Marinade - rebalance cranker = AOT (confirmed in usecases doc)
+CgntPoLka5pD5fesJYhGmUCF8KU1QS1ZmZiuAuMZr2az;Sanctum Router;cranker;liquid;aot;sanctum_docs;Sanctum LST router - manages 25+ LSTs ($2.2B total MCap) - stake rebalancing = AOT
 BSwp6bEBihVLdqJRKGgzjcGLHkcTuzmSo1TQkHepzH8p;BonkSwap;dex;amm;potential;manual;DEX - traders could benefit from guaranteed execution
 jCebN34bUfdeUYJT13J1yG16XWQpt5PDx6Mse9GUqhR;Jupiter DCA;cranker;dca;aot;manual;DCA = predictable scheduled execution = AOT (confirmed in usecases doc)
-ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL;Associated Token;system;token;neither;solana_docs;SPL token accounts - system infrastructure
-TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA;Token Program;system;token;neither;solana_docs;SPL token program - system infrastructure
-11111111111111111111111111111111;System Program;system;core;neither;solana_docs;Solana system program - system infrastructure
-ComputeBudget111111111111111111111111111111;ComputeBudget;system;core;neither;solana_docs;Compute budget program - system infrastructure
-Vote111111111111111111111111111111111111111;Vote Program;system;vote;neither;solana_docs;Validator voting - system infrastructure
+ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL;Associated Token;other;token;neither;solana_docs;SPL token accounts - system infrastructure
+TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA;Token Program;other;token;neither;solana_docs;SPL token program - system infrastructure
+11111111111111111111111111111111;System Program;other;core;neither;solana_docs;Solana system program - system infrastructure
+ComputeBudget111111111111111111111111111111;ComputeBudget;other;core;neither;solana_docs;Compute budget program - system infrastructure
+Vote111111111111111111111111111111111111111;Vote Program;other;vote;neither;solana_docs;Validator voting - system infrastructure
 FsJ3A3u2vn5cTVofAjvy6y5kwABJAqYWpe4975bi2epH;Pyth Oracle;oracle;price_feed;aot;manual;Oracle updates = scheduled/predictable = AOT (confirmed in usecases doc)
 7UVimffxr9ow1uXYxsr4LHAcV58mLzhmwaeKvJ1pjLiE;Pyth SOL/USD Price Feed;oracle;price_feed;aot;solscan;Solscan: Pythnet Custody Price (SOL) - Pyth data feed account = AOT
 GDDMwNyyx8uB6zrqwBFHjLLG3TBYk2F8Az4yrQC5RzMp;Orca Legacy;dex;amm;potential;manual;Legacy DEX - LPs could benefit from execution guarantees
@@ -37,190 +37,190 @@ SoLXmnP9JWfhGMCSWUQPcDkd4byAEGiiV7aSG6iGMRz;Solax;dex;amm;potential;manual;DEX -
 HQ2UUt18uJqKaQFJhgV9zaTdQxUZjNrsKFKRMIBZga1c;Hadeswap;nft;marketplace;potential;manual;NFT AMM - could benefit from guaranteed execution during high-demand mints
 M2mx93ekt1fmXSVkTrUL9xVFHkmME8HTUi5Cyc5aF7K;Magic Eden V2;nft;marketplace;potential;manual;NFT marketplace - minting/trading during congestion
 TSWAPaqyCSx2KABk68Shruf4rp7CxcNi8hAsbdwmHbN;Tensor;nft;marketplace;potential;manual;NFT marketplace - same logic
-BiSoNHVpsVZW2F7rx2eQ59yQwKxzU5NvBcmKshCSUypi;BisonFi;dex;prop_amm;aot;bisonfi_docs;PropAMM by Forward Industries - confirmed AOT (oracle/quote updates)
-TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb;Token-2022;system;token_extension;neither;solana_docs;SPL Token-2022 (Token Extensions) - system infrastructure
-Ed25519SigVerify111111111111111111111111111;Ed25519 Sig Verify;system;signature_verify;neither;solana_docs;Native Solana Ed25519 signature verification precompile
-MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr;Memo Program;system;metadata;neither;solana_docs;SPL Memo program - system infrastructure
+BiSoNHVpsVZW2F7rx2eQ59yQwKxzU5NvBcmKshCSUypi;BisonFi;prop_amm;prop_amm;aot;bisonfi_docs;PropAMM by Forward Industries - confirmed AOT (oracle/quote updates)
+TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb;Token-2022;other;token_extension;neither;solana_docs;SPL Token-2022 (Token Extensions) - system infrastructure
+Ed25519SigVerify111111111111111111111111111;Ed25519 Sig Verify;other;signature_verify;neither;solana_docs;Native Solana Ed25519 signature verification precompile
+MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr;Memo Program;other;metadata;neither;solana_docs;SPL Memo program - system infrastructure
 pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA;Pump.fun AMM;dex;amm;potential;manual;Pump.fun graduated AMM pools - snipers during launches could need JIT
-BPFLoaderUpgradeab1e11111111111111111111111;BPF Loader;system;program_deployment;neither;solana_docs;Native Solana program deployment - system infrastructure
+BPFLoaderUpgradeab1e11111111111111111111111;BPF Loader;other;program_deployment;neither;solana_docs;Native Solana program deployment - system infrastructure
 routeUGWgWzqBWFcrCfv8tritsqukccJPu3q5GPP3xS;Jupiter Route;dex;aggregator;both;jupiter_docs;Jupiter aggregator routing - same logic as Jupiter V6
-KeccakSecp256k11111111111111111111111111111;Keccak Secp256k1;system;signature_verify;neither;solana_docs;Native Solana secp256k1 verification - system infrastructure
+KeccakSecp256k11111111111111111111111111111;Keccak Secp256k1;other;signature_verify;neither;solana_docs;Native Solana secp256k1 verification - system infrastructure
 BGUMAp9Gq7iTEuizy4pqaxsTyUCBK68MDfK752saRPUY;Bubblegum;nft;compressed_nft;potential;metaplex_docs;Compressed NFT protocol - minting during congestion
 KLend2g3cP87fffoy8q1mQqGKjrxjC8boSyAYavgmjD;Kamino Lending v2;lending;pool;aot;kamino_docs;Kamino K-Lend - liquidation keepers = AOT
 pythWSnswVUd12oZpeFP8e9CVaEqJg25g1Vtc2biRsT;Pyth Push Oracle;oracle;price_feed;aot;pyth_docs;Pyth push oracle - scheduled updates = AOT
 SAGE2HAwep459SNq61LHvjxPk4pLPEJLoMETef7f7EE;Star Atlas SAGE;gaming;game;potential;staratlas_docs;Gaming - raiku.com lists gaming as a vertical (multiplayer coordination)
-Stake11111111111111111111111111111111111111;Stake Program;system;staking;neither;solana_docs;Native Solana stake program - system infrastructure
-AddressLookupTab1e1111111111111111111111111;Address Lookup Table;system;address_lookup;neither;solana_docs;Native Solana address lookup table - system infrastructure
+Stake11111111111111111111111111111111111111;Stake Program;other;staking;neither;solana_docs;Native Solana stake program - system infrastructure
+AddressLookupTab1e1111111111111111111111111;Address Lookup Table;other;address_lookup;neither;solana_docs;Native Solana address lookup table - system infrastructure
 FLASHX8DrLbgeR8FcfNV1F5krxYcYMUdBkrP1EPBtxB9;Flash Trade;perps;perpetuals;both;flash_trade_docs;Perps DEX - crankers/keepers = AOT + traders/liquidators = JIT
-9H6tua7jkLhdm3w8BvgpTn5LZNU7g4ZynDmCiNN3q6Rp;HumidiFi;dex;prop_amm;aot;solscan;Solscan: HumidiFi - PropAMM (documented in raiku_exec_problems.txt)
-King7ki4SKMBPb3iupnQwTyjsq294jaXsgLmJo8cb7T;Arbitrage Bot (King7);trading_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - DEX-DEX arb = JIT
-8Ue7UGaqgk9GR3YphyDMe9TX4rdUqsbVXfPcFbzM5LDE;Arbitrage Bot (8Ue7U);trading_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - DEX-DEX arb = JIT
+9H6tua7jkLhdm3w8BvgpTn5LZNU7g4ZynDmCiNN3q6Rp;HumidiFi;prop_amm;prop_amm;aot;solscan;Solscan: HumidiFi - PropAMM (documented in raiku_exec_problems.txt)
+King7ki4SKMBPb3iupnQwTyjsq294jaXsgLmJo8cb7T;Arbitrage Bot (King7);arb_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - DEX-DEX arb = JIT
+8Ue7UGaqgk9GR3YphyDMe9TX4rdUqsbVXfPcFbzM5LDE;Arbitrage Bot (8Ue7U);arb_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - DEX-DEX arb = JIT
 EtrnLzgbS7nMMy5fbD42kXiUzGg8XQzJ972Xtk1cjWih;Phoenix Eternal;dex;orderbook;both;solscan;Solscan: Phoenix Eternal - orderbook MMs (AOT) + traders (JIT)
 phDEVv4w6BcfkLrLNeXr8HhhgQxnxziVGXpGPcaadMf;Phoenix Perpetuals Program;perps;perpetuals;both;solscan;Solscan: Phoenix Perpetuals - crankers (AOT) + traders (JIT)
-MEXkeo4BPUCZuEJ4idUUwMPu4qvc9nkqtLn3yAyZLxg;Swissborg;system;exchange;potential;solscan;Solscan: Swissborg - crypto exchange may need reliable execution
+MEXkeo4BPUCZuEJ4idUUwMPu4qvc9nkqtLn3yAyZLxg;Swissborg;other;exchange;potential;solscan;Solscan: Swissborg - crypto exchange may need reliable execution
 HDwcJBJXjL9FpJ7UBsYBtaDjsBUhuLCUYoz3zr8SWWaQ;Wormhole Program;bridge;cross_chain;potential;solscan;Solscan: Wormhole Program - bridge may need guaranteed timing
-vBoNdEvzMrSai7is21XgVYik65mqtaKXuSdMBJ1xkW4;Marinade Bond program;staking;bond;potential;solscan;Solscan: Marinade Bond - staking operations could use AOT
+vBoNdEvzMrSai7is21XgVYik65mqtaKXuSdMBJ1xkW4;Marinade Bond program;other;staking;potential;solscan;Solscan: Marinade Bond - staking operations could use AOT
 SKRskrmtL83pcL4YqLWt6iPefDqwXQWHSw9S9vz94BZ;Solana Seeker;gaming;mobile;potential;solscan;Solscan: Solana Seeker - mobile gaming
 HFn8GnPADiny6XqUoWE8uRPPxb29ikn4yTuPa9MF2fWJ;Kamino Scope Price;oracle;price_feed;aot;solscan;Solscan: Kamino Scope Price - oracle = scheduled updates = AOT
-CroWg74XNDF8UMnAZVbXx49iVj7iJ7b4CsqTCVWF7aK;Arbitrage Bot (CroWg);trading_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - DEX-DEX arb = JIT
-G3z6yQqLP1q2JqFqEwND6rTX3vsnzzr3Vv16pMoSdkcx;SolPump Crash Program;gambling;crash;potential;solscan;Solscan: SolPump Crash - gaming/gambling could need reliable execution
+CroWg74XNDF8UMnAZVbXx49iVj7iJ7b4CsqTCVWF7aK;Arbitrage Bot (CroWg);arb_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - DEX-DEX arb = JIT
+G3z6yQqLP1q2JqFqEwND6rTX3vsnzzr3Vv16pMoSdkcx;SolPump Crash Program;gaming;crash;potential;solscan;Solscan: SolPump Crash - gaming/gambling could need reliable execution
 cpamdpZCGKUy5JxQXB4dcpGPiikHawvSWAd6mEn1sGG;Meteora DAMM v2;dex;amm;both;solscan;Solscan: Meteora DAMM v2 - LPs (AOT) + traders (JIT)
-PdMDrKEMaX8q7CCJb7NvUCxerBCcsFUa4LjBEynTtEd;pumpup.ai;trading_bot;sniper;jit;solscan;Solscan: pumpup.ai - token sniper bot needs fast execution = JIT
+PdMDrKEMaX8q7CCJb7NvUCxerBCcsFUa4LjBEynTtEd;pumpup.ai;arb_bot;sniper;jit;solscan;Solscan: pumpup.ai - token sniper bot needs fast execution = JIT
 1avaAUcjccXCjSZzwUvB2gS3DzkkieV2Mw8CjdN65uu;Lavarage USDC Leverage;lending;leverage;potential;solscan;Solscan: Lavarage - leverage/liquidation defense could use AOT
-4pjbtQCpaXFrmT7wcfuCQnAWLCUhRuK9CKQyvou1F5xo;Luck.io Program;gambling;casino;potential;solscan;Solscan: Luck.io - on-chain casino could need reliable execution
-jesterKqzZ7hWfNLnUDeB8WtMrm7a44g2vSyhs7WmyT;Trading Bot (jester);trading_bot;mev;jit;behavioral;557 SOL fees / 86K txs / 38.03 fee/CU = very high-fee MEV bot pattern
-Bgo4vNe3vxRv37j8mmQarJo8vbjHEKgkhJDZzxiizBid;Trading Bot (Bgo4v);trading_bot;mev;jit;behavioral;16.9 SOL / 28K txs / 150K CU / 3.98 fee/CU = high-value MEV bot pattern
-FtyzXdj1NRexpX3WJqxs4qaqo2S2LehiRPyPY9hWDarn;Trading Bot (Ftyz);trading_bot;arbitrage;jit;behavioral;17.2 SOL / 611K txs / 20K CU / 1.52 fee/CU = high-volume arb bot
-45fCmmKfFjZ1bYu7zHyUPYsfPauQAD1RVinUmBp8DbSb;Trading Bot (45fC);trading_bot;arbitrage;jit;behavioral;7.0 SOL / 228K txs / 85K CU / 0.41 fee/CU = moderate arb bot
-CoqTVH4YViufSd8idZ7WwndUQUDWnTT6yERGjXfjQd52;Trading Bot (CoqT);trading_bot;arbitrage;jit;behavioral;0.45 SOL / 41K txs / 164K CU / 0.07 fee/CU = volume arb bot
-DT3X9y2w3S13M4GiQNbMtsrYeA9eEZpLg6frM4V28at5;Automated Bot (DT3X);trading_bot;keeper;aot;behavioral;22.3 SOL / 1.1M txs / 8K CU / 2.42 fee/CU = very consistent fee = keeper/crank bot
-D4aBeFn9DBhU41kFNvr9kVKRuBy858ATxwTevmJCCJYL;Automated Bot (D4aB);trading_bot;keeper;aot;behavioral;10.2 SOL / 1M txs / 3.5K CU / 3.13 fee/CU = consistent fee = keeper/crank bot
-8jaLKWLJAj5jVCZbxpe3zRUvLB3LD48MRtaQ2AjfCfxa;Trading Bot (8jaL);trading_bot;arbitrage;jit;behavioral;7.2 SOL / 1.4M txs / 76K CU / 0.07 fee/CU = high-volume bot
-9VX8EKBg6vM6tA68xaDsPkbrx26XConZjkQmhVApUptc;MEV Bot (9VX8);trading_bot;mev;jit;behavioral;9.1 SOL / 1.6M txs / 532 CU / 10.75 fee/CU = extreme fee/CU ratio = MEV tip program
-5bsFrMYiXMEEkVny2x37J1kK3U6h6RbtYGqxNAAFeSV7;Trading Bot (5bsFr);trading_bot;arbitrage;jit;behavioral;83.1% fail = trading bot
-GH8Ya8jNnovpKH6r4YUiZGmfmv2t4onak1D4Bng4Vudw;Unknown DeFi (GH8Ya);defi;unknown;potential;behavioral;23.9B CU / 0% fail
-StenDH7EmnXdcniwsXgTWtN1ogfQksZ1C5UGBr7dNBG;MEV Bot (StenDH7);trading_bot;mev;jit;behavioral;399 SOL / 87K txs / 152K CU / 27.84 fee/CU = extreme fees = whale MEV bot
-9i7QdbBHx7fjLAAaFfcDRgkdS4oNfKv8duzyE27a1kJ6;MEV Bot (9i7Qd);trading_bot;mev;jit;behavioral;118 SOL / 5.9K txs / 151K CU / 121.33 fee/CU = highest fee/CU = whale MEV bot
-Ceu4aCcSV624aRGUoWt2pPd5YuLZM4gyos7kyrPrpGG1;Arbitrage Bot (Ceu4a);trading_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - DEX-DEX arb = JIT
-LiMoM9rMhrdYrfzUCxQppvxCSG1FcrUK9G8uLq4A1GF;Trading Bot (LiMoM);trading_bot;arbitrage;jit;behavioral;77.9% fail = trading bot
-brzp8fNvHCBRi8UcCnTQUgQ2bQ4JnJTJtCvPzpKf2ty;Breeze Program;defi;unknown;potential;solscan;Solscan: Breeze Program
-pudgeNoz4YrkpwZr8dYmhkHJz87yRHsJeyxZhQChetj;Trading Bot (pudge);trading_bot;arbitrage;jit;behavioral;85.1% fail = aggressive trading bot
-CRSeeBqjDnm3UPefJ9gxrtngTsnQRhEJiTA345Q83X3v;Unknown Bot (CRSee);trading_bot;trading;jit;behavioral;5.4 SOL / 79K txs / 18K CU / 3.73 fee/CU = elevated fee/CU suggests trading bot
-7SyiQ664tWYCyWyKDftkfLspE85pJrUR4kJQwb6brYb9;Keeper Bot (7SyiQ);trading_bot;keeper;aot;behavioral;5.3 SOL / 523K txs / 2.5K CU / 4.09 fee/CU = tiny CU + consistent = keeper pattern
-sa12qbQyuQqEaDcEqEPKmZEGTdzSMaqj87nKRYbE3QE;OKX Smart Account;infrastructure;exchange;neither;solscan;Solscan: OKX Smart Account
-FdDd6eCKiRTUDnQ9o466pDnpcks6kwPCVc1uqcMdScAf;Unknown Bot (FdDd6);trading_bot;trading;jit;behavioral;4.2 SOL / 342K txs / 13K CU / 1.10 fee/CU = moderate fee bot
-FTV1kbDLaeVM4LG4vHrVu2qdt2cXazYTXWWUi1xFAJdK;Unknown DeFi (FTV1k);defi;unknown;potential;behavioral;64.4B CU / 0.3% fail = high-volume DeFi
-4R3gSG8BpU4t19KYj8CfnbtRpnT8gtk4dvTHxVRwc2r7;Jito Tip Distribution;mev;tips_distribution;neither;solscan;Solscan: Jito Tip Distribution - infrastructure
-FDF8AxHB8UK7RS6xay6aBvwS3h7kez9gozqz14JyfKsg;Trading Bot (FDF8A);trading_bot;mev;jit;behavioral;3.6 SOL / 16K txs / 28K CU / 7.86 fee/CU = high fee/CU = MEV bot
-AEyodoBDx5vgvEpWLUbNRMYHrSJ113uW2A8avE3GEB7X;Unknown DeFi (AEyod);defi;unknown;potential;behavioral;9.9B CU / 0.1% fail
+4pjbtQCpaXFrmT7wcfuCQnAWLCUhRuK9CKQyvou1F5xo;Luck.io Program;gaming;casino;potential;solscan;Solscan: Luck.io - on-chain casino could need reliable execution
+jesterKqzZ7hWfNLnUDeB8WtMrm7a44g2vSyhs7WmyT;Trading Bot (jester);arb_bot;mev;jit;behavioral;557 SOL fees / 86K txs / 38.03 fee/CU = very high-fee MEV bot pattern
+Bgo4vNe3vxRv37j8mmQarJo8vbjHEKgkhJDZzxiizBid;Trading Bot (Bgo4v);arb_bot;mev;jit;behavioral;16.9 SOL / 28K txs / 150K CU / 3.98 fee/CU = high-value MEV bot pattern
+FtyzXdj1NRexpX3WJqxs4qaqo2S2LehiRPyPY9hWDarn;Trading Bot (Ftyz);arb_bot;arbitrage;jit;behavioral;17.2 SOL / 611K txs / 20K CU / 1.52 fee/CU = high-volume arb bot
+45fCmmKfFjZ1bYu7zHyUPYsfPauQAD1RVinUmBp8DbSb;Trading Bot (45fC);arb_bot;arbitrage;jit;behavioral;7.0 SOL / 228K txs / 85K CU / 0.41 fee/CU = moderate arb bot
+CoqTVH4YViufSd8idZ7WwndUQUDWnTT6yERGjXfjQd52;Trading Bot (CoqT);arb_bot;arbitrage;jit;behavioral;0.45 SOL / 41K txs / 164K CU / 0.07 fee/CU = volume arb bot
+DT3X9y2w3S13M4GiQNbMtsrYeA9eEZpLg6frM4V28at5;Automated Bot (DT3X);cranker;keeper;aot;behavioral;22.3 SOL / 1.1M txs / 8K CU / 2.42 fee/CU = very consistent fee = keeper/crank bot
+D4aBeFn9DBhU41kFNvr9kVKRuBy858ATxwTevmJCCJYL;Automated Bot (D4aB);cranker;keeper;aot;behavioral;10.2 SOL / 1M txs / 3.5K CU / 3.13 fee/CU = consistent fee = keeper/crank bot
+8jaLKWLJAj5jVCZbxpe3zRUvLB3LD48MRtaQ2AjfCfxa;Trading Bot (8jaL);arb_bot;arbitrage;jit;behavioral;7.2 SOL / 1.4M txs / 76K CU / 0.07 fee/CU = high-volume bot
+9VX8EKBg6vM6tA68xaDsPkbrx26XConZjkQmhVApUptc;MEV Bot (9VX8);arb_bot;mev;jit;behavioral;9.1 SOL / 1.6M txs / 532 CU / 10.75 fee/CU = extreme fee/CU ratio = MEV tip program
+5bsFrMYiXMEEkVny2x37J1kK3U6h6RbtYGqxNAAFeSV7;Trading Bot (5bsFr);arb_bot;arbitrage;jit;behavioral;83.1% fail = trading bot
+GH8Ya8jNnovpKH6r4YUiZGmfmv2t4onak1D4Bng4Vudw;Unknown DeFi (GH8Ya);unknown;unknown;potential;behavioral;23.9B CU / 0% fail
+StenDH7EmnXdcniwsXgTWtN1ogfQksZ1C5UGBr7dNBG;MEV Bot (StenDH7);arb_bot;mev;jit;behavioral;399 SOL / 87K txs / 152K CU / 27.84 fee/CU = extreme fees = whale MEV bot
+9i7QdbBHx7fjLAAaFfcDRgkdS4oNfKv8duzyE27a1kJ6;MEV Bot (9i7Qd);arb_bot;mev;jit;behavioral;118 SOL / 5.9K txs / 151K CU / 121.33 fee/CU = highest fee/CU = whale MEV bot
+Ceu4aCcSV624aRGUoWt2pPd5YuLZM4gyos7kyrPrpGG1;Arbitrage Bot (Ceu4a);arb_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - DEX-DEX arb = JIT
+LiMoM9rMhrdYrfzUCxQppvxCSG1FcrUK9G8uLq4A1GF;Trading Bot (LiMoM);arb_bot;arbitrage;jit;behavioral;77.9% fail = trading bot
+brzp8fNvHCBRi8UcCnTQUgQ2bQ4JnJTJtCvPzpKf2ty;Breeze;cranker;yield;potential;solscan;Solscan: Breeze Program
+pudgeNoz4YrkpwZr8dYmhkHJz87yRHsJeyxZhQChetj;Trading Bot (pudge);arb_bot;arbitrage;jit;behavioral;85.1% fail = aggressive trading bot
+CRSeeBqjDnm3UPefJ9gxrtngTsnQRhEJiTA345Q83X3v;Unknown Bot (CRSee);arb_bot;trading;jit;behavioral;5.4 SOL / 79K txs / 18K CU / 3.73 fee/CU = elevated fee/CU suggests trading bot
+7SyiQ664tWYCyWyKDftkfLspE85pJrUR4kJQwb6brYb9;Keeper Bot (7SyiQ);cranker;keeper;aot;behavioral;5.3 SOL / 523K txs / 2.5K CU / 4.09 fee/CU = tiny CU + consistent = keeper pattern
+sa12qbQyuQqEaDcEqEPKmZEGTdzSMaqj87nKRYbE3QE;OKX Smart Account;other;infrastructure;neither;solscan;Solscan: OKX Smart Account
+FdDd6eCKiRTUDnQ9o466pDnpcks6kwPCVc1uqcMdScAf;Unknown Bot (FdDd6);arb_bot;trading;jit;behavioral;4.2 SOL / 342K txs / 13K CU / 1.10 fee/CU = moderate fee bot
+FTV1kbDLaeVM4LG4vHrVu2qdt2cXazYTXWWUi1xFAJdK;Unknown DeFi (FTV1k);unknown;unknown;potential;behavioral;64.4B CU / 0.3% fail = high-volume DeFi
+4R3gSG8BpU4t19KYj8CfnbtRpnT8gtk4dvTHxVRwc2r7;Jito Tip Distribution;other;tips_distribution;neither;solscan;Solscan: Jito Tip Distribution - infrastructure
+FDF8AxHB8UK7RS6xay6aBvwS3h7kez9gozqz14JyfKsg;Trading Bot (FDF8A);arb_bot;mev;jit;behavioral;3.6 SOL / 16K txs / 28K CU / 7.86 fee/CU = high fee/CU = MEV bot
+AEyodoBDx5vgvEpWLUbNRMYHrSJ113uW2A8avE3GEB7X;Unknown DeFi (AEyod);unknown;unknown;potential;behavioral;9.9B CU / 0.1% fail
 dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN;Meteora Dynamic Bonding Curve;dex;bonding_curve;both;solscan;Solscan: Meteora DBC - LPs (AOT) + traders (JIT)
-jupgfSgfuAXv4B6R2Uxu85Z1qdzgju79s6MfZekN6XS;Jupiter Governance;dex;governance;neither;jupiter_prefix;jup prefix + 3.3K txs + 383K CU = Jupiter governance/admin operations
-nosJhNRqr2bc9g1nfGDcXXTXvYUmxD4cVwy2pMWhrYM;Nosana Jobs;compute;gpu_marketplace;potential;nosana_docs;Nosana GPU compute marketplace - job scheduling could need AOT
-riptK81hDxhe5pW5jSzSM9iRA8azgEgLJ4dXkPtBS7j;Tip Bot (riptK);trading_bot;tips;jit;behavioral;2.5 SOL / 505K txs / 344 CU / 14.58 fee/CU = tiny CU + high fee = tip/MEV routing
+jupgfSgfuAXv4B6R2Uxu85Z1qdzgju79s6MfZekN6XS;Jupiter Governance;other;governance;neither;jupiter_prefix;jup prefix + 3.3K txs + 383K CU = Jupiter governance/admin operations
+nosJhNRqr2bc9g1nfGDcXXTXvYUmxD4cVwy2pMWhrYM;Nosana Jobs;depin;gpu_marketplace;potential;nosana_docs;Nosana GPU compute marketplace - job scheduling could need AOT
+riptK81hDxhe5pW5jSzSM9iRA8azgEgLJ4dXkPtBS7j;Tip Bot (riptK);arb_bot;tips;jit;behavioral;2.5 SOL / 505K txs / 344 CU / 14.58 fee/CU = tiny CU + high fee = tip/MEV routing
 metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s;Metaplex Token Metadata;nft;metadata;neither;metaplex_docs;Metaplex NFT metadata standard - system infrastructure
-vanshF62ku4jVVdf8DS47SXuJC1rq8qokGSANAomhey;Trading Bot (vansh);trading_bot;mev;jit;behavioral;2.2 SOL / 3.9K txs / 84K CU / 3.60 fee/CU = low volume high fee = whale bot
+vanshF62ku4jVVdf8DS47SXuJC1rq8qokGSANAomhey;Trading Bot (vansh);arb_bot;mev;jit;behavioral;2.2 SOL / 3.9K txs / 84K CU / 3.60 fee/CU = low volume high fee = whale bot
 ENicYBBNZQ91toN7ggmTxnDGZW14uv9UkumN7XBGeYJ4;Helio Program;payments;processing;aot;solscan;Solscan: Helio - payment processing = AOT
 CPMMoo8L3F4NbTegBCKVNunggL7H1ZpdTHKxQB5qKP1C;Raydium CPMM;dex;amm;both;raydium_docs;Raydium Constant Product MM - LPs need rebalancing (AOT) + traders (JIT)
-6m9TTqMk9RoJxNjGMrTeNAmjewMWfmk2gRYubPDE8x6k;Trading Bot (6m9TT);trading_bot;arbitrage;jit;behavioral;74.5% fail = trading bot
-hi5iKPdHrk15joDZcfTio8vw5SnYnvrXQMv2qESCrJj;Trading Bot (hi5iK);trading_bot;mev;jit;behavioral;2.0 SOL / 7.9K txs / 218K CU / 1.24 fee/CU = low volume complex trades
-7TAvuPyU7cDMhhfXs1yCDZPEEbPuynd7zVeUtQLjfLmZ;Trading Bot (7TAvuP);trading_bot;mev;jit;behavioral;2.0 SOL / 8.6K txs / 97K CU / 3.86 fee/CU = high fee/CU = MEV bot
-boreXQWsKpsJz5RR9BMtN8Vk4ndAk23sutj8spWYhwk;Ore Blue Program;mining;pow;neither;solscan;Solscan: Ore Blue - PoW mining
-9m7YMBgQaxYpUwrjLvS6AA3FmGH83qXgifA5aF5VbEue;Unknown DeFi (9m7YM);defi;unknown;potential;behavioral;6.1B CU
-oreV3EG1i9BEgiAJ8b177Z2S2rMarzak4NMv1kULvWv;ORE Mining;mining;pow;neither;ore_docs;ORE proof-of-work mining on Solana - not a RAIKU target
-SMRTzfY6DfH5ik3TKiyLFfXexV8uSG3d2UksSCYdunG;Unknown Bot (SMRT);trading_bot;trading;jit;behavioral;1.7 SOL / 14K txs / 35K CU / 4.47 fee/CU = high fee/CU trading bot
-6WPHMhYD7JLAF1HEtC6Ddkn93ADbGtyC93HUh7wy75m2;Keeper Bot (6WPHMh);trading_bot;keeper;aot;behavioral;1.5 SOL / 300K txs / 14K CU / 0.37 fee/CU = consistent high-volume = keeper pattern
-RangohQxaWip6i1twAAnRVLmob9j88fid7sq2DMAATW;Range Protocol;defi;vault;aot;behavioral;1.5 SOL / 10K txs / 190K CU = vault rebalancing = AOT keeper pattern
-EmTX93xYtDE3h7G5EF2m9VRPE1UT1XBoohpVmEzE4oEU;Keeper Bot (EmTX9);trading_bot;keeper;aot;behavioral;1.5 SOL / 148K txs / 7K CU / 1.91 fee/CU = small CU consistent = keeper
-idemJL67fKhpev5vKcxHrosuVyTat6wVC9sFfoPVg3Y;Unknown DeFi (idemJ);defi;unknown;potential;behavioral;1.8B CU
+6m9TTqMk9RoJxNjGMrTeNAmjewMWfmk2gRYubPDE8x6k;Trading Bot (6m9TT);arb_bot;arbitrage;jit;behavioral;74.5% fail = trading bot
+hi5iKPdHrk15joDZcfTio8vw5SnYnvrXQMv2qESCrJj;Trading Bot (hi5iK);arb_bot;mev;jit;behavioral;2.0 SOL / 7.9K txs / 218K CU / 1.24 fee/CU = low volume complex trades
+7TAvuPyU7cDMhhfXs1yCDZPEEbPuynd7zVeUtQLjfLmZ;Trading Bot (7TAvuP);arb_bot;mev;jit;behavioral;2.0 SOL / 8.6K txs / 97K CU / 3.86 fee/CU = high fee/CU = MEV bot
+boreXQWsKpsJz5RR9BMtN8Vk4ndAk23sutj8spWYhwk;Ore Blue Program;depin;pow;neither;solscan;Solscan: Ore Blue - PoW mining
+9m7YMBgQaxYpUwrjLvS6AA3FmGH83qXgifA5aF5VbEue;Unknown DeFi (9m7YM);unknown;unknown;potential;behavioral;6.1B CU
+oreV3EG1i9BEgiAJ8b177Z2S2rMarzak4NMv1kULvWv;ORE Mining;depin;pow;neither;ore_docs;ORE proof-of-work mining on Solana - not a RAIKU target
+SMRTzfY6DfH5ik3TKiyLFfXexV8uSG3d2UksSCYdunG;Unknown Bot (SMRT);arb_bot;trading;jit;behavioral;1.7 SOL / 14K txs / 35K CU / 4.47 fee/CU = high fee/CU trading bot
+6WPHMhYD7JLAF1HEtC6Ddkn93ADbGtyC93HUh7wy75m2;Keeper Bot (6WPHMh);cranker;keeper;aot;behavioral;1.5 SOL / 300K txs / 14K CU / 0.37 fee/CU = consistent high-volume = keeper pattern
+RangohQxaWip6i1twAAnRVLmob9j88fid7sq2DMAATW;Range Protocol;cranker;vault;aot;behavioral;1.5 SOL / 10K txs / 190K CU = vault rebalancing = AOT keeper pattern
+EmTX93xYtDE3h7G5EF2m9VRPE1UT1XBoohpVmEzE4oEU;Keeper Bot (EmTX9);cranker;keeper;aot;behavioral;1.5 SOL / 148K txs / 7K CU / 1.91 fee/CU = small CU consistent = keeper
+idemJL67fKhpev5vKcxHrosuVyTat6wVC9sFfoPVg3Y;Unknown DeFi (idemJ);unknown;unknown;potential;behavioral;1.8B CU
 FLASH6Lo6h3iasJKWDs2F8TkW2UKf3s15C8PMGuVfgBn;Flash Loan Protocol;lending;flash_loan;both;behavioral;1.4 SOL / 75K txs / 117K CU - flash loans used by arb (JIT) and liquidations (AOT)
-7xiamgXLjjKPsAJMWq7UHCyjJWCgqY4oBXTieqzd8Te1;Unknown DeFi (7xiam);defi;unknown;potential;behavioral;26.1B CU / 0% fail = large DeFi
-F6KwbonKLyLNbD1SfWDwKN3T3BUxK3Pguy3yxWtxo9w9;Whale Bot (F6Kwb);trading_bot;mev;jit;behavioral;1.4 SOL / 1.2K txs / 131K CU / 8.44 fee/CU = very few txs very high fee = whale
+7xiamgXLjjKPsAJMWq7UHCyjJWCgqY4oBXTieqzd8Te1;Unknown DeFi (7xiam);unknown;unknown;potential;behavioral;26.1B CU / 0% fail = large DeFi
+F6KwbonKLyLNbD1SfWDwKN3T3BUxK3Pguy3yxWtxo9w9;Whale Bot (F6Kwb);arb_bot;mev;jit;behavioral;1.4 SOL / 1.2K txs / 131K CU / 8.44 fee/CU = very few txs very high fee = whale
 SHARKobtfF1bHhxD2eqftjHBdVSCbKo9JtgK71FhELP;Sharky.fi;lending;nft_lending;potential;sharky_docs;NFT lending - liquidation keepers could use AOT
-SBondMDrcV3K4kxZR1HNVT7osZxAHVHgYXL5Ze1oMUv;SBond (Marinade);staking;bond;potential;behavioral;1.3 SOL / 258K txs / 27K CU = staking bonds operations
-HLCorec4bsTSiyzskDuAqrqD5NXDZeLhdvWqs7wjWRx5;Helium Core;iot;network;potential;behavioral;1.3 SOL / 25K txs / 65K CU = Helium IoT network state updates
+SBondMDrcV3K4kxZR1HNVT7osZxAHVHgYXL5Ze1oMUv;SBond (Marinade);other;staking;potential;behavioral;1.3 SOL / 258K txs / 27K CU = staking bonds operations
+HLCorec4bsTSiyzskDuAqrqD5NXDZeLhdvWqs7wjWRx5;Helium Core;depin;network;potential;behavioral;1.3 SOL / 25K txs / 65K CU = Helium IoT network state updates
 CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d;Metaplex Core;nft;infrastructure;neither;solscan;Solscan: Mpl Core (Metaplex) - NFT standard
-7FaMyGiTVdjm8dd3PxpjjCX15ibbmuE1zWVFX2PHxYUK;Unknown DeFi (7FaMy);defi;unknown;potential;behavioral;9.2B CU / 0.2% fail
-F2rSwpfYCTWiBGmPTkk2zbMMiF6A1wRGjBUB1XxzoGBf;Unknown DeFi (F2rSw);defi;unknown;potential;behavioral;3.7B CU
-FHKBuiohcYB5n636h7UmHahRGU5UCHX8CSb6DNSUqX65;RevShare Vault;defi;vault;aot;solscan;Solscan: RevShare Vault Program
-6sbWW8qnrXoNXVMcTGLBQJefuaNcJsuqxztXUegHi4Wq;Unknown Bot (6sbWW);trading_bot;keeper;aot;behavioral;1.2 SOL / 118K txs / 9K CU / 1.24 fee/CU = small CU consistent = keeper
-FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr;Farms Protocol;defi;yield;aot;behavioral;1.1 SOL / 33K txs / 90K CU = yield farming auto-compound = keeper/cranker AOT
-G77G9wS9JzkzWNGwQjUhRswbA5N8hYKpCK4TZRj9G1Pw;Keeper Bot (G77G9);trading_bot;keeper;aot;behavioral;1.1 SOL / 76K txs / 11K CU / 2.71 fee/CU = small CU consistent = keeper
-Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo;Memo Program Legacy;system;metadata;neither;solana_docs;Legacy SPL Memo program - system infrastructure
-CRSHdMVmWgRsarrRWnRXWKMxJhLEUheiU6SEhqCLS4Gm;Unknown Bot (CRSHd);trading_bot;trading;jit;behavioral;1.0 SOL / 100K txs / 4.8K CU / 2.27 fee/CU = small CU elevated fee = trading bot
-C7QLEmDz81Usvy2sYa4xZSdA8EwEcYvZo8iuYZMaqXmj;Unknown DeFi (C7QLE);defi;unknown;potential;behavioral;9.1B CU / 0.2% fail
-ARBTRGgcwmy3VS2W9YaauL7FSMBmB41cJ8EkfWGo8D6c;Arbitrage Bot (ARBTR);trading_bot;arbitrage;jit;prefix_match;ARBTR prefix = arbitrage bot - 193K txs / 207K CU
-25uXrrL4p6xd9Uk6jQPiFQoipg4nH48Jk7RNUGEcqbg8;Keeper Bot (25uXr);trading_bot;keeper;aot;behavioral;0.97 SOL / 193K txs / 13K CU / 0.38 fee/CU = consistent keeper pattern
-Yt3A8KLfo7JEz8RGHw2zbaQE6MVcf9duKmb24dgXbsD;Trading Bot (Yt3A8);trading_bot;mev;jit;behavioral;0.95 SOL / 38K txs / 5K CU / 5.24 fee/CU = high fee/CU MEV
-AZipysY3PXDM61RJzdnP4UtWR3tVgM9kGdxXwLbjP41S;Unknown Bot (AZipy);trading_bot;trading;jit;behavioral;0.94 SOL / 29K txs / 19K CU / 2.66 fee/CU = elevated fee trading bot
-pjwLcQDbzybW1FrHVbvkLzzk836S4TvXmtsqvYWC967;Unknown DeFi (pjwLc);defi;unknown;potential;behavioral;3.1B CU / 0.3% fail
-APR1MEny25pKupwn72oVqMH4qpDouArsX8zX4VwwfoXD;APR Protocol;defi;yield;aot;behavioral;0.90 SOL / 76K txs / 139K CU - yield optimization = keeper/rebalancer AOT
-8aquaCPqbpsWvHdpfhTgfBg8eJWqNZKQgyYzzFXCdRkH;Aqua Protocol;defi;vault;potential;behavioral;0.88 SOL / 175K txs / 136K CU = DeFi vault protocol
-2o5Mab8XFN4BYcfrquLJaPGyNiFbUgwNKYBmRVn4UTqj;Unknown DeFi (2o5Ma);defi;unknown;potential;behavioral;5.6B CU / 0% fail
+7FaMyGiTVdjm8dd3PxpjjCX15ibbmuE1zWVFX2PHxYUK;Unknown DeFi (7FaMy);unknown;unknown;potential;behavioral;9.2B CU / 0.2% fail
+F2rSwpfYCTWiBGmPTkk2zbMMiF6A1wRGjBUB1XxzoGBf;Unknown DeFi (F2rSw);unknown;unknown;potential;behavioral;3.7B CU
+FHKBuiohcYB5n636h7UmHahRGU5UCHX8CSb6DNSUqX65;RevShare Vault;cranker;vault;aot;solscan;Solscan: RevShare Vault Program
+6sbWW8qnrXoNXVMcTGLBQJefuaNcJsuqxztXUegHi4Wq;Unknown Bot (6sbWW);cranker;keeper;aot;behavioral;1.2 SOL / 118K txs / 9K CU / 1.24 fee/CU = small CU consistent = keeper
+FarmsPZpWu9i7Kky8tPN37rs2TpmMrAZrC7S7vJa91Hr;Farms Protocol;cranker;yield;aot;behavioral;1.1 SOL / 33K txs / 90K CU = yield farming auto-compound = keeper/cranker AOT
+G77G9wS9JzkzWNGwQjUhRswbA5N8hYKpCK4TZRj9G1Pw;Keeper Bot (G77G9);cranker;keeper;aot;behavioral;1.1 SOL / 76K txs / 11K CU / 2.71 fee/CU = small CU consistent = keeper
+Memo1UhkJRfHyvLMcVucJwxXeuD728EqVDDwQDxFMNo;Memo Program Legacy;other;metadata;neither;solana_docs;Legacy SPL Memo program - system infrastructure
+CRSHdMVmWgRsarrRWnRXWKMxJhLEUheiU6SEhqCLS4Gm;Unknown Bot (CRSHd);arb_bot;trading;jit;behavioral;1.0 SOL / 100K txs / 4.8K CU / 2.27 fee/CU = small CU elevated fee = trading bot
+C7QLEmDz81Usvy2sYa4xZSdA8EwEcYvZo8iuYZMaqXmj;Unknown DeFi (C7QLE);unknown;unknown;potential;behavioral;9.1B CU / 0.2% fail
+ARBTRGgcwmy3VS2W9YaauL7FSMBmB41cJ8EkfWGo8D6c;Arbitrage Bot (ARBTR);arb_bot;arbitrage;jit;prefix_match;ARBTR prefix = arbitrage bot - 193K txs / 207K CU
+25uXrrL4p6xd9Uk6jQPiFQoipg4nH48Jk7RNUGEcqbg8;Keeper Bot (25uXr);cranker;keeper;aot;behavioral;0.97 SOL / 193K txs / 13K CU / 0.38 fee/CU = consistent keeper pattern
+Yt3A8KLfo7JEz8RGHw2zbaQE6MVcf9duKmb24dgXbsD;Trading Bot (Yt3A8);arb_bot;mev;jit;behavioral;0.95 SOL / 38K txs / 5K CU / 5.24 fee/CU = high fee/CU MEV
+AZipysY3PXDM61RJzdnP4UtWR3tVgM9kGdxXwLbjP41S;Unknown Bot (AZipy);arb_bot;trading;jit;behavioral;0.94 SOL / 29K txs / 19K CU / 2.66 fee/CU = elevated fee trading bot
+pjwLcQDbzybW1FrHVbvkLzzk836S4TvXmtsqvYWC967;Unknown DeFi (pjwLc);unknown;unknown;potential;behavioral;3.1B CU / 0.3% fail
+APR1MEny25pKupwn72oVqMH4qpDouArsX8zX4VwwfoXD;APR Protocol;cranker;yield;aot;behavioral;0.90 SOL / 76K txs / 139K CU - yield optimization = keeper/rebalancer AOT
+8aquaCPqbpsWvHdpfhTgfBg8eJWqNZKQgyYzzFXCdRkH;Aqua Protocol;cranker;vault;potential;behavioral;0.88 SOL / 175K txs / 136K CU = DeFi vault protocol
+2o5Mab8XFN4BYcfrquLJaPGyNiFbUgwNKYBmRVn4UTqj;Unknown DeFi (2o5Ma);unknown;unknown;potential;behavioral;5.6B CU / 0% fail
 CCTPmbSD7gX1bxKPAmg77w8oFzNFpaQiQUWD43TKaecd;Circle CCTP;bridge;cross_chain;potential;circle_docs;Circle Cross-Chain Transfer Protocol - bridge message relay could use AOT
-PRPLUgjCUxCEzNPP6x7XJVK1WR5XX28Zu8MEyTqvGjF;Unknown DeFi (PRPL);defi;unknown;potential;behavioral;23.3B CU / 1.7% fail
-vVoLTRjQmtFpiYoegx285Ze4gsLJ8ZxgFKVcuvmG1a8;Volt Protocol;defi;structured_products;potential;behavioral;0.81 SOL / 57K txs / 201K CU = structured products vault
-AnCCJjheynmGqPp6Vgat9DTirGKD4CtQzP8cwTYV8qKH;Whale Bot (AnCCJ);trading_bot;mev;jit;behavioral;0.79 SOL / 831 txs / 118K CU / 7.92 fee/CU = very few txs very high fee = whale
-2qGyiNeWyZxNdkvWHc2jT5qkCnYa1j1gDLSSUmyoWMh8;Elixir Program;defi;liquidity;both;solscan;Solscan: Elixir - cross-chain liquidity
-MYstiCRQrXvJAp3DGUdguaZjn7Zq1kwUYRe2sRK2RFY;Mystic DAO;governance;dao;neither;solscan;Solscan: Mystic DAO
-7wuFcHkbVckS6nMqZ5pg6ykmw5uWTqzvqK1gdb8xGdp4;Unknown DeFi (7wuFc);defi;unknown;potential;behavioral;1.6B CU
+PRPLUgjCUxCEzNPP6x7XJVK1WR5XX28Zu8MEyTqvGjF;Unknown DeFi (PRPL);unknown;unknown;potential;behavioral;23.3B CU / 1.7% fail
+vVoLTRjQmtFpiYoegx285Ze4gsLJ8ZxgFKVcuvmG1a8;Volt Protocol;lending;structured_products;potential;behavioral;0.81 SOL / 57K txs / 201K CU = structured products vault
+AnCCJjheynmGqPp6Vgat9DTirGKD4CtQzP8cwTYV8qKH;Whale Bot (AnCCJ);arb_bot;mev;jit;behavioral;0.79 SOL / 831 txs / 118K CU / 7.92 fee/CU = very few txs very high fee = whale
+2qGyiNeWyZxNdkvWHc2jT5qkCnYa1j1gDLSSUmyoWMh8;Elixir Program;dex;liquidity;both;solscan;Solscan: Elixir - cross-chain liquidity
+MYstiCRQrXvJAp3DGUdguaZjn7Zq1kwUYRe2sRK2RFY;Mystic DAO;other;dao;neither;solscan;Solscan: Mystic DAO
+7wuFcHkbVckS6nMqZ5pg6ykmw5uWTqzvqK1gdb8xGdp4;Unknown DeFi (7wuFc);unknown;unknown;potential;behavioral;1.6B CU
 CCTPiPYPc6AsJuwueEnWgSgucamXDZwBd53dQ11YiKX3;Circle CCTP v2;bridge;cross_chain;potential;circle_docs;Circle CCTP version 2 - cross-chain transfer relay
-n1brh2AaBbnMPEjpoCDFs1fzWb5Pa8FC1o8yXp2fAqM;Unknown DeFi (n1brh);defi;unknown;potential;behavioral;6.3B CU / 13.3% fail
-FR1SDyLUj7PrMbtkUCkDrBymk5eWrRmr3UvWFb5Kjbmd;Trading Bot (FR1SD);trading_bot;mev;jit;behavioral;0.63 SOL / 3.8K txs / 38K CU / 4.82 fee/CU = high fee/CU = MEV bot
-FL1PkYoxafDzNSHBR48GNnkX54bk6V5YXewiz81ZcWos;Unknown DeFi (FL1Pk);defi;unknown;potential;behavioral;1.4B CU
+n1brh2AaBbnMPEjpoCDFs1fzWb5Pa8FC1o8yXp2fAqM;Unknown DeFi (n1brh);unknown;unknown;potential;behavioral;6.3B CU / 13.3% fail
+FR1SDyLUj7PrMbtkUCkDrBymk5eWrRmr3UvWFb5Kjbmd;Trading Bot (FR1SD);arb_bot;mev;jit;behavioral;0.63 SOL / 3.8K txs / 38K CU / 4.82 fee/CU = high fee/CU = MEV bot
+FL1PkYoxafDzNSHBR48GNnkX54bk6V5YXewiz81ZcWos;Unknown DeFi (FL1Pk);unknown;unknown;potential;behavioral;1.4B CU
 99vQwtBwYtrqqD9YSXbdum3KBdxPAVxYTaQ3cfnJSrN2;Relay Bridge;bridge;cross_chain;aot;solscan;Solscan: Relay Bridge
-Q72w4coozA552keKDdeeh2EyQw32qfMFsHPu6cbatom;Tip Bot (Q72w4);trading_bot;tips;jit;behavioral;0.62 SOL / 124K txs / 36 CU / 142.82 fee/CU = 36 CU!! extreme fee/CU = pure tip program
+Q72w4coozA552keKDdeeh2EyQw32qfMFsHPu6cbatom;Tip Bot (Q72w4);arb_bot;tips;jit;behavioral;0.62 SOL / 124K txs / 36 CU / 142.82 fee/CU = 36 CU!! extreme fee/CU = pure tip program
 wMNFSTkir3HgyZTsB7uqu3i7FA73grFCptPXgrZjksL;Manifest Order Book;dex;orderbook;both;solscan;Solscan: Manifest - orderbook MMs (AOT) + traders (JIT)
-9KuRi5CasX6XWCK846nhfRQmW32g6uuFdfaBkfxjgMpG;Unknown DeFi (9KuRi);defi;unknown;potential;behavioral;6.5B CU / 0.1% fail
-SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf;Squads Multisig v4;system;multisig;neither;squads_docs;Squads multisig protocol - treasury management infrastructure
-SpLtnk7AMeg3WC8smGfPw43zFdeNeiYQSiecZM5tPBQ;Unknown Protocol (SpLtn);unknown;defi;potential;behavioral;0.54 SOL / 107K txs / 8K CU
-CyahQUBnG86tAjrjCefx7gJWfbmvG7YVMooaMmCxDLva;Unknown DeFi (CyahQ);unknown;defi;potential;behavioral;0.53 SOL / 13K txs / 74K CU
+9KuRi5CasX6XWCK846nhfRQmW32g6uuFdfaBkfxjgMpG;Unknown DeFi (9KuRi);unknown;unknown;potential;behavioral;6.5B CU / 0.1% fail
+SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf;Squads Multisig v4;other;multisig;neither;squads_docs;Squads multisig protocol - treasury management infrastructure
+SpLtnk7AMeg3WC8smGfPw43zFdeNeiYQSiecZM5tPBQ;SPL Utility;other;infrastructure;potential;behavioral;0.54 SOL / 107K txs / 8K CU
+CyahQUBnG86tAjrjCefx7gJWfbmvG7YVMooaMmCxDLva;Unknown DeFi (CyahQ);unknown;unknown;potential;behavioral;0.53 SOL / 13K txs / 74K CU
 wormDTUJ6AWPNvk59vGQbDvGJmqbDTdgWgAqcLBCgUb;Wormhole Core;bridge;cross_chain;potential;wormhole_docs;Wormhole core bridge - cross-chain message relay
 DEGNpUs8DhLSdDiU25BAmCQn2U6eN8nMAYwbLb41BPqY;DeGods/DeLabs;nft;marketplace;potential;behavioral;0.51 SOL / 12K txs / 64K CU = NFT protocol operations
 So1endDq2YkqhipRh3WViPa8hdiSpxWy6z3Z6tMCpAo;Solend v2;lending;pool;aot;solend_docs;Solend v2 lending pool - liquidation keepers = AOT
 zapvX9M3uf5pvy4wRPAbQgdQsM1xmuiFnkfHKPvwMiz;Meteora Zap;dex;aggregator;both;solscan;Solscan: Meteora Zap - LP aggregation
-FsWxHsafrajWKW5YZTT76D8sYCAVfbA4iNoPxNFQqUet;Arbitrage Bot (FsWxH);trading_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot
-KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd;Kvault Program;defi;vault;aot;solscan;Solscan: Kvault - vault rebalancing = AOT
+FsWxHsafrajWKW5YZTT76D8sYCAVfbA4iNoPxNFQqUet;Arbitrage Bot (FsWxH);arb_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot
+KvauGMspG5k6rtzrqqn7WNn3oZdyKqLKwK2XWQ8FLjd;Kvault Program;cranker;vault;aot;solscan;Solscan: Kvault - vault rebalancing = AOT
 HuTkmnrv4zPnArMqpbMbFhfwzTR7xfWQZHH1aQKzDKFZ;Liquid Mesh Router;dex;aggregator;both;solscan;Solscan: Liquid Mesh Router
-AQZdYsg36tEn8ZJ7RKSSLbUSLoGPBi71TCLruCDepYom;Luck.io Program;gambling;casino;potential;solscan;Solscan: Luck.io
+AQZdYsg36tEn8ZJ7RKSSLbUSLoGPBi71TCLruCDepYom;Luck.io Program;gaming;casino;potential;solscan;Solscan: Luck.io
 G1gWiF8QpAYsBr55RzPR2QLJ4xesaKv67aZeo9zUrtix;TIX Program;nft;ticketing;neither;solscan;Solscan: TIX - NFT ticketing
 MNFSTqtC93rEfYHB6hF82sKdZpUDFWkViLByLd1k1Ms;Manifest;dex;orderbook;both;solscan;Solscan: Manifest - orderbook
 MAyhSmzXzV1pTf7LsNkrNwkWKTo4ougAJ1PPg47MD4e;Pump Mayhem;dex;launchpad;potential;solscan;Solscan: Pump Mayhem - token launch
-AtomCf57Gdp49TDf2q6w7ypqEwPEaCCpxbpTdD4RmDQt;Arbitrage Bot (AtomC);trading_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot
+AtomCf57Gdp49TDf2q6w7ypqEwPEaCCpxbpTdD4RmDQt;Arbitrage Bot (AtomC);arb_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot
 Eo7WjKq67rjJQSZxS6z3YkapzY3eMj6Xy8X5EQVn5UaB;Meteora Pools;dex;amm;both;solscan;Solscan: Meteora Pools
-TRDwq3BN4mP3m9KsuNUWSN6QDff93VKGSwE95Jbr9Ss;Triad Prediction Market;defi;prediction;potential;solscan;Solscan: Triad Prediction Market
+TRDwq3BN4mP3m9KsuNUWSN6QDff93VKGSwE95Jbr9Ss;Triad Prediction Market;gaming;prediction;potential;solscan;Solscan: Triad Prediction Market
 DF1ow4tspfHX9JwWJsAb9epbkA8hmpSEAtxXy1V27QBH;DFlow Aggregator v4;dex;aggregator;both;programs_ts;Solana Explorer: DFlow DEX aggregation
-SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy;Stake Pool Program;staking;pool;aot;programs_ts;SPL Stake Pool - staking management = AOT
-L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95;Lighthouse Program;system;validation;neither;programs_ts;Lighthouse - assertion/validation
+SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy;Stake Pool Program;other;staking;aot;programs_ts;SPL Stake Pool - staking management = AOT
+L2TExMFKdjpN9kozasaurPirfHy9P8sbXoAN1qA3S95;Lighthouse Program;other;validation;neither;programs_ts;Lighthouse - assertion/validation
 jup3YeL8QhtSx1e253b2FDvsMNC87fDrgQZivbrndc9;Jupiter Lend Earn;lending;yield;aot;agent;Jupiter lending/yield = rebalancing = AOT
-MevFXXGBgBMbr2c9G6GWE9Vo8qo8GCVed4jn1npP5tG;MEV Bot (MevFXX);trading_bot;mev;jit;prefix;Mev prefix = MEV bot
-mineyqqBfrwxpHdgjrp7rKeA3QsnpjtLeYo9bbbzQq3;Mining Program (miney);mining;pow;neither;prefix;mine prefix = PoW mining
-mineWsRs2Rmw2jPMkVbgAbDjV1E23yQ8TEodaX3iza4;Mining Program (mineW);mining;pow;neither;prefix;mine prefix = PoW mining
-strmRqUCoQUgGUan5YhzUZa6KqdzwX5L6FpUxfmKg5m;Streamflow;defi;vesting;aot;prefix;strm prefix = token vesting/streaming = AOT
-GovaE4iu227srtG2s3tZzB4RmWBzw8sTwrCLZz7kN7rY;Governance Program (Gova);governance;dao;neither;prefix;Gova prefix = governance
+MevFXXGBgBMbr2c9G6GWE9Vo8qo8GCVed4jn1npP5tG;MEV Bot (MevFXX);arb_bot;mev;jit;prefix;Mev prefix = MEV bot
+mineyqqBfrwxpHdgjrp7rKeA3QsnpjtLeYo9bbbzQq3;Mining Program (miney);depin;pow;neither;prefix;mine prefix = PoW mining
+mineWsRs2Rmw2jPMkVbgAbDjV1E23yQ8TEodaX3iza4;Mining Program (mineW);depin;pow;neither;prefix;mine prefix = PoW mining
+strmRqUCoQUgGUan5YhzUZa6KqdzwX5L6FpUxfmKg5m;Streamflow;other;vesting;aot;prefix;strm prefix = token vesting/streaming = AOT
+GovaE4iu227srtG2s3tZzB4RmWBzw8sTwrCLZz7kN7rY;Governance Program (Gova);other;dao;neither;prefix;Gova prefix = governance
 Swap2Ex1jbDx4c2kDVgCrUX3GWCHZsFn4n8vecY5ycf;Swap Program;dex;swap;potential;prefix;Swap prefix + 56% fail rate
-3AQz4t3ShixZWw5vhvkAindHhMco3s12gxgvGuMeh2Yg;Trading Bot (3AQz4);trading_bot;arbitrage;jit;behavioral;91.1% fail = aggressive trading bot
-BwRZQcpiqQrQkpfWJDxzcpojPRmTB21FoVQYkcZBBReo;Trading Bot (BwRZQ);trading_bot;arbitrage;jit;behavioral;92.8% fail = aggressive trading bot
-2M86GVGn3AHgAX9afQrYeSEETJBs9qmDtxb3f6kEa87H;Trading Bot (2M86G);trading_bot;arbitrage;jit;behavioral;97.8% fail = aggressive trading bot
-G2E4eoenFMirpFKRfHNo2koDP7mrhnNWVwxyHASSpjQD;Trading Bot (G2E4e);trading_bot;arbitrage;jit;behavioral;99.6% fail = aggressive trading bot
-BzKgd9G8JXPPC91yrYfSQcHfQsgiARwGETH4VQYfGB8p;Trading Bot (BzKgd);trading_bot;arbitrage;jit;behavioral;85.7% fail = aggressive trading bot
-9GCBb4NsSDRuEkkGfQkN37oppmMVPops5sXDWhAKAvQQ;Trading Bot (9GCBb);trading_bot;arbitrage;jit;behavioral;99.8% fail = aggressive trading bot
-Sea3VpnUhM9WqWqUqVGxjqqxzFvkb8abkXaPVKdmyiR;Trading Bot (Sea3V);trading_bot;arbitrage;jit;behavioral;100% fail = aggressive spam bot
-VisTAPABATtyG5FGQ3twF7Hk6xAi6qBPS5BLuGoSQ3i;Trading Bot (VisTAP);trading_bot;arbitrage;jit;behavioral;78.3% fail = trading bot
-3Wn9MScovnLzVB4B8DxtchiPrX7jSanSgvUqSQfBM3MW;Trading Bot (3Wn9M);trading_bot;arbitrage;jit;behavioral;45.7% fail = borderline trading bot
-DGgwXnCW9ERZoqEbk47Z1Ny7tHmpptFLzBmq9ydua259;Trading Bot (DGgwX);trading_bot;arbitrage;jit;behavioral;27.7% fail + high CU = trading bot
-ajXj7hMUguMEwF2oAsQR7wyV54UcqpubHUAvMGKnHDh;Unknown DeFi (ajXj7);defi;unknown;potential;behavioral;6.2B CU / 1.1% fail
-5ifgd2hU3y8k1EhuEW2DZRTkFGHCZ3WHsQ1JHL5MCvxZ;Unknown DeFi (5ifgd);defi;unknown;potential;behavioral;3.6B CU / 0% fail
-JB3iGFeeT1K8mWmdVzypBowsyG28DYTSSvdQgcdTfF7P;Unknown DeFi (JB3iG);defi;unknown;potential;behavioral;2.6B CU / 0% fail
-MNRytDTTpyyKbHuUCax5ZP5ZJf2X6iErjuBtS5sn2kc;Unknown DeFi (MNRyt);defi;unknown;potential;behavioral;2.6B CU / 0% fail
-65VKabrEQy6UDtcrZKmRGpizaZWw3aANKV5XMb3geJng;Unknown DeFi (65VKa);defi;unknown;potential;behavioral;2.5B CU / 5.9% fail
-BhJiMfRrxYXDhm73tL5neTJbWkkyfH6DbR8od2smYtJj;Unknown DeFi (BhJiM);defi;unknown;potential;behavioral;2.4B CU / 0% fail
-SAbErai3UvzycbkooTMoQkD3Y7JVr5aEf7tEHBW1AWf;Unknown DeFi (SAbEr);defi;unknown;potential;behavioral;2.0B CU
-BqYjRiMGYHMfKTwwra7Lg8eMxEKF3oJiTkPEwir1hw3s;Unknown DeFi (BqYjR);defi;unknown;potential;behavioral;1.9B CU
-4TGVS3XzavdmjdEU6axw2Wtzc7iV94HoQo55eHteqrd7;Unknown DeFi (4TGVS);defi;unknown;potential;behavioral;1.9B CU
-8kJBErpatzi1AapVvF1AfwspAJ3k611WdQqE48JmVxAv;Unknown DeFi (8kJBE);defi;unknown;potential;behavioral;1.7B CU
-741nYipMruTkSC2N1F38yXfMWTDywSCAAhddpXmw6KiX;Unknown DeFi (741nY);defi;unknown;potential;behavioral;1.6B CU
-L6pUpkHtq3CLtJRTrZ9GsBxfweZ8iPS6CnDQMdmcbad;Unknown DeFi (L6pUp);defi;unknown;potential;behavioral;1.5B CU
-CdqN1SG856NhbZ9EW3RZRkPi7trjHfNx9RKZPUcgqjqf;Unknown DeFi (CdqN1);defi;unknown;potential;behavioral;1.5B CU
-HbPEwwAbEqbTJ3H8gJc7VYw1VB7ZMTRAm5u1QvQiUk4E;Unknown DeFi (HbPEw);defi;unknown;potential;behavioral;1.5B CU
-3Hm8UuHLTrPFU8tvUYDX8ZkzYRszYbVLEJozTBGsXYDJ;Unknown DeFi (3Hm8U);defi;unknown;potential;behavioral;1.3B CU
-79NiGoTLeZUH5YUVDJmyiqFHwDUJFUxSpFxbQpacx7RZ;Unknown DeFi (79NiG);defi;unknown;potential;behavioral;1.3B CU
-GnsXPmmSVJoUS9dB4m9a3819jpZNY7pS4jVUtCfutTwY;Unknown DeFi (GnsXP);defi;unknown;potential;behavioral;1.2B CU
-9ddjzqYhSTMHaBrrKukRXRfy4WzHUPjdX88uPXZ7MXyn;Unknown DeFi (9ddjz);defi;unknown;potential;behavioral;1.2B CU
-oBNKAcrLhfRhYn7QnmjevGAvR7cCs47CAufBSJGhwt3;Unknown DeFi (oBNKA);defi;unknown;potential;behavioral;1.2B CU
-GekCNWDH4dMHZ8RWgN4w9KycNfb7AdM5cLe6w4E39Y46;Unknown DeFi (GekCN);defi;unknown;potential;behavioral;1.2B CU
-Vk8So9iUmmJeuWhdDmdGox8xono1UJ7KUPA5vWq7MAA;Unknown DeFi (Vk8So);defi;unknown;potential;behavioral;1.1B CU
-gdrpGjVffourzkdDRrQmySw4aTHr8a3xmQzzxSwFD1a;Unknown DeFi (gdrpG);defi;unknown;potential;behavioral;1.1B CU
-4Wbqb1mAPFfR3oQPfyWJ4vsntNECWXMn8aS7LybkwhWo;Unknown DeFi (4Wbqb);defi;unknown;potential;behavioral;1.1B CU
-3SPZe4P7h5Jjn2cuS5WXS2GpnyLHUQPzAxNLXBGuEb3S;Unknown DeFi (3SPZe);defi;unknown;potential;behavioral;1.1B CU
-ALPHAQmeA7bjrVuccPsYPiCvsi428SNwte66Srvs4pHA;AlphaQ;dex;prop_amm;aot;dune_spellbook;PropAMM stableswap by unknown team - oracle/quote updates = AOT (spellbook start: 2025-08-29)
-AQU1FRd7papthgdrwPTTq5JacJh8YtwEXaBfKU3bTz45;Aquifer;dex;prop_amm;aot;dune_spellbook;PropAMM - oracle/quote updates = AOT (spellbook start: 2025-06-26)
-goonuddtQRrWqqn5nFyczVKaie28f3KDkHWkHtURSLE;GoonFi V2;dex;prop_amm;aot;dune_spellbook;PropAMM by unknown team - oracle/quote updates = AOT (spellbook V2 start: 2025-12-12)
-obriQD1zbpyLz95G5n7nJe6a4DPjpFwa5XYPoNm113y;Obric V2;dex;prop_amm;aot;dune_spellbook;PropAMM by Obric team (ex-Aptos) - oracle/quote updates = AOT (spellbook start: 2024-06-04)
-SCoRcH8c2dpjvcJD6FiPbCSQyQgu3PcUAWj2Xxx3mqn;Scorch;dex;prop_amm;aot;dune_spellbook;PropAMM - oracle/quote updates = AOT (spellbook start: 2025-11-28)
-SV2EYYJyRz2YhfXwXnhNAevDEui5Q6yrfyo13WtupPF;SolFi V2;dex;prop_amm;aot;dune_spellbook;PropAMM by Ellipsis Labs (Phoenix team) - oracle/quote updates = AOT (spellbook V2 start: 2025-08-07)
-TessVdML9pBGgG9yGks7o4HewRaXVAMuoVj4x83GLQH;Tessera V;dex;prop_amm;aot;dune_spellbook;PropAMM by Wintermute - oracle/quote updates = AOT (spellbook start: 2025-06-12)
-FW6zUqn4iKRaeopwwhwsquTY6ABWLLgjxtrC3VPnaWBf;WhaleStreet;dex;prop_amm;aot;dune_spellbook;PropAMM - oracle/quote updates = AOT (spellbook start: 2025-11-20)
-ZERor4xhbUycZ6gb9ntrhqscUcZmAbQDjEAtCf4hbZY;ZeroFi;dex;prop_amm;aot;dune_spellbook;PropAMM by unknown team - oracle/quote updates = AOT (spellbook start: 2024-12-12)
+3AQz4t3ShixZWw5vhvkAindHhMco3s12gxgvGuMeh2Yg;Trading Bot (3AQz4);arb_bot;arbitrage;jit;behavioral;91.1% fail = aggressive trading bot
+BwRZQcpiqQrQkpfWJDxzcpojPRmTB21FoVQYkcZBBReo;Trading Bot (BwRZQ);arb_bot;arbitrage;jit;behavioral;92.8% fail = aggressive trading bot
+2M86GVGn3AHgAX9afQrYeSEETJBs9qmDtxb3f6kEa87H;Trading Bot (2M86G);arb_bot;arbitrage;jit;behavioral;97.8% fail = aggressive trading bot
+G2E4eoenFMirpFKRfHNo2koDP7mrhnNWVwxyHASSpjQD;Trading Bot (G2E4e);arb_bot;arbitrage;jit;behavioral;99.6% fail = aggressive trading bot
+BzKgd9G8JXPPC91yrYfSQcHfQsgiARwGETH4VQYfGB8p;Trading Bot (BzKgd);arb_bot;arbitrage;jit;behavioral;85.7% fail = aggressive trading bot
+9GCBb4NsSDRuEkkGfQkN37oppmMVPops5sXDWhAKAvQQ;Trading Bot (9GCBb);arb_bot;arbitrage;jit;behavioral;99.8% fail = aggressive trading bot
+Sea3VpnUhM9WqWqUqVGxjqqxzFvkb8abkXaPVKdmyiR;Trading Bot (Sea3V);arb_bot;arbitrage;jit;behavioral;100% fail = aggressive spam bot
+VisTAPABATtyG5FGQ3twF7Hk6xAi6qBPS5BLuGoSQ3i;Trading Bot (VisTAP);arb_bot;arbitrage;jit;behavioral;78.3% fail = trading bot
+3Wn9MScovnLzVB4B8DxtchiPrX7jSanSgvUqSQfBM3MW;Trading Bot (3Wn9M);arb_bot;arbitrage;jit;behavioral;45.7% fail = borderline trading bot
+DGgwXnCW9ERZoqEbk47Z1Ny7tHmpptFLzBmq9ydua259;Trading Bot (DGgwX);arb_bot;arbitrage;jit;behavioral;27.7% fail + high CU = trading bot
+ajXj7hMUguMEwF2oAsQR7wyV54UcqpubHUAvMGKnHDh;Unknown DeFi (ajXj7);unknown;unknown;potential;behavioral;6.2B CU / 1.1% fail
+5ifgd2hU3y8k1EhuEW2DZRTkFGHCZ3WHsQ1JHL5MCvxZ;Unknown DeFi (5ifgd);unknown;unknown;potential;behavioral;3.6B CU / 0% fail
+JB3iGFeeT1K8mWmdVzypBowsyG28DYTSSvdQgcdTfF7P;Unknown DeFi (JB3iG);unknown;unknown;potential;behavioral;2.6B CU / 0% fail
+MNRytDTTpyyKbHuUCax5ZP5ZJf2X6iErjuBtS5sn2kc;Unknown DeFi (MNRyt);unknown;unknown;potential;behavioral;2.6B CU / 0% fail
+65VKabrEQy6UDtcrZKmRGpizaZWw3aANKV5XMb3geJng;Unknown DeFi (65VKa);unknown;unknown;potential;behavioral;2.5B CU / 5.9% fail
+BhJiMfRrxYXDhm73tL5neTJbWkkyfH6DbR8od2smYtJj;Unknown DeFi (BhJiM);unknown;unknown;potential;behavioral;2.4B CU / 0% fail
+SAbErai3UvzycbkooTMoQkD3Y7JVr5aEf7tEHBW1AWf;Unknown DeFi (SAbEr);unknown;unknown;potential;behavioral;2.0B CU
+BqYjRiMGYHMfKTwwra7Lg8eMxEKF3oJiTkPEwir1hw3s;Unknown DeFi (BqYjR);unknown;unknown;potential;behavioral;1.9B CU
+4TGVS3XzavdmjdEU6axw2Wtzc7iV94HoQo55eHteqrd7;Unknown DeFi (4TGVS);unknown;unknown;potential;behavioral;1.9B CU
+8kJBErpatzi1AapVvF1AfwspAJ3k611WdQqE48JmVxAv;Unknown DeFi (8kJBE);unknown;unknown;potential;behavioral;1.7B CU
+741nYipMruTkSC2N1F38yXfMWTDywSCAAhddpXmw6KiX;Unknown DeFi (741nY);unknown;unknown;potential;behavioral;1.6B CU
+L6pUpkHtq3CLtJRTrZ9GsBxfweZ8iPS6CnDQMdmcbad;Unknown DeFi (L6pUp);unknown;unknown;potential;behavioral;1.5B CU
+CdqN1SG856NhbZ9EW3RZRkPi7trjHfNx9RKZPUcgqjqf;Unknown DeFi (CdqN1);unknown;unknown;potential;behavioral;1.5B CU
+HbPEwwAbEqbTJ3H8gJc7VYw1VB7ZMTRAm5u1QvQiUk4E;Unknown DeFi (HbPEw);unknown;unknown;potential;behavioral;1.5B CU
+3Hm8UuHLTrPFU8tvUYDX8ZkzYRszYbVLEJozTBGsXYDJ;Unknown DeFi (3Hm8U);unknown;unknown;potential;behavioral;1.3B CU
+79NiGoTLeZUH5YUVDJmyiqFHwDUJFUxSpFxbQpacx7RZ;Unknown DeFi (79NiG);unknown;unknown;potential;behavioral;1.3B CU
+GnsXPmmSVJoUS9dB4m9a3819jpZNY7pS4jVUtCfutTwY;Unknown DeFi (GnsXP);unknown;unknown;potential;behavioral;1.2B CU
+9ddjzqYhSTMHaBrrKukRXRfy4WzHUPjdX88uPXZ7MXyn;Unknown DeFi (9ddjz);unknown;unknown;potential;behavioral;1.2B CU
+oBNKAcrLhfRhYn7QnmjevGAvR7cCs47CAufBSJGhwt3;Unknown DeFi (oBNKA);unknown;unknown;potential;behavioral;1.2B CU
+GekCNWDH4dMHZ8RWgN4w9KycNfb7AdM5cLe6w4E39Y46;Unknown DeFi (GekCN);unknown;unknown;potential;behavioral;1.2B CU
+Vk8So9iUmmJeuWhdDmdGox8xono1UJ7KUPA5vWq7MAA;Unknown DeFi (Vk8So);unknown;unknown;potential;behavioral;1.1B CU
+gdrpGjVffourzkdDRrQmySw4aTHr8a3xmQzzxSwFD1a;Unknown DeFi (gdrpG);unknown;unknown;potential;behavioral;1.1B CU
+4Wbqb1mAPFfR3oQPfyWJ4vsntNECWXMn8aS7LybkwhWo;Unknown DeFi (4Wbqb);unknown;unknown;potential;behavioral;1.1B CU
+3SPZe4P7h5Jjn2cuS5WXS2GpnyLHUQPzAxNLXBGuEb3S;Unknown DeFi (3SPZe);unknown;unknown;potential;behavioral;1.1B CU
+ALPHAQmeA7bjrVuccPsYPiCvsi428SNwte66Srvs4pHA;AlphaQ;prop_amm;prop_amm;aot;dune_spellbook;PropAMM stableswap by unknown team - oracle/quote updates = AOT (spellbook start: 2025-08-29)
+AQU1FRd7papthgdrwPTTq5JacJh8YtwEXaBfKU3bTz45;Aquifer;prop_amm;prop_amm;aot;dune_spellbook;PropAMM - oracle/quote updates = AOT (spellbook start: 2025-06-26)
+goonuddtQRrWqqn5nFyczVKaie28f3KDkHWkHtURSLE;GoonFi V2;prop_amm;prop_amm;aot;dune_spellbook;PropAMM by unknown team - oracle/quote updates = AOT (spellbook V2 start: 2025-12-12)
+obriQD1zbpyLz95G5n7nJe6a4DPjpFwa5XYPoNm113y;Obric V2;prop_amm;prop_amm;aot;dune_spellbook;PropAMM by Obric team (ex-Aptos) - oracle/quote updates = AOT (spellbook start: 2024-06-04)
+SCoRcH8c2dpjvcJD6FiPbCSQyQgu3PcUAWj2Xxx3mqn;Scorch;prop_amm;prop_amm;aot;dune_spellbook;PropAMM - oracle/quote updates = AOT (spellbook start: 2025-11-28)
+SV2EYYJyRz2YhfXwXnhNAevDEui5Q6yrfyo13WtupPF;SolFi V2;prop_amm;prop_amm;aot;dune_spellbook;PropAMM by Ellipsis Labs (Phoenix team) - oracle/quote updates = AOT (spellbook V2 start: 2025-08-07)
+TessVdML9pBGgG9yGks7o4HewRaXVAMuoVj4x83GLQH;Tessera V;prop_amm;prop_amm;aot;dune_spellbook;PropAMM by Wintermute - oracle/quote updates = AOT (spellbook start: 2025-06-12)
+FW6zUqn4iKRaeopwwhwsquTY6ABWLLgjxtrC3VPnaWBf;WhaleStreet;prop_amm;prop_amm;aot;dune_spellbook;PropAMM - oracle/quote updates = AOT (spellbook start: 2025-11-20)
+ZERor4xhbUycZ6gb9ntrhqscUcZmAbQDjEAtCf4hbZY;ZeroFi;prop_amm;prop_amm;aot;dune_spellbook;PropAMM by unknown team - oracle/quote updates = AOT (spellbook start: 2024-12-12)
 mv3ekLzLbnVPNxjSKvqBpU3ZeZXPQdEC3bp5MDEBG68;Mango Markets V3;perps;perpetuals;both;dune_query_2656722;Perps DEX - crankers/keepers = AOT + traders/liquidators = JIT
 5fNfvyp5czQVX77yoACa3JJVEhdRaWjPuazuWgjhTqEH;Mango Markets V2;perps;perpetuals;both;dune_query_2656722;Mango V2 (legacy) - same logic as V3
 JD3bq9hGdy38PuWQ4h2YJpELmHVGPPfFSuFkpzAd9zfu;Mango Markets V1;perps;perpetuals;neither;dune_query_2656722;Mango V1 (deprecated) - no longer active
@@ -234,9 +234,9 @@ AMM55ShdkoGRB5jVYPjWziwk8m5MpwyDgsMWHaMSQWH6;Aldrin AMM;dex;amm;potential;dune_q
 CURVGoZn8zycx6FXwwevgBTB2gVvdbGTEpvMJDbgs2t4;Aldrin AMM V2;dex;amm;potential;dune_query_2656722;Aldrin AMM V2 - low volume DEX
 RVKd61ztZW9GUwhRbbLoYVRE5Xf1B2tVscKqwZqXgEr;Raydium V2;dex;amm;neither;dune_query_2656722;Raydium V2 (deprecated) - superseded by V4
 27haf8L6oxUeXrHrgEgsexjSY5hbVUWEmvv9Nyxg8vQv;Raydium V3;dex;amm;neither;dune_query_2656722;Raydium V3 (deprecated) - superseded by V4
-EhhTKczWMGQt46ynNeRX1WfeagwwJd7ufHvCDjRxjo5Q;Raydium Stake;staking;farming;neither;dune_query_2656722;Raydium staking/farming (legacy)
-CBuCnLe26faBpcBP2fktp4rp8abpcAnTWft6ZrP5Q4T;Raydium Stake V4;staking;farming;potential;dune_query_2656722;Raydium farming V4 - auto-compound keepers could use AOT
-9KEPoZmtHUrBbhWN1v1KWLMkkvwY6WLtAVUCPRtRjP4z;Raydium Stake V5;staking;farming;potential;dune_query_2656722;Raydium farming V5 - auto-compound keepers could use AOT
+EhhTKczWMGQt46ynNeRX1WfeagwwJd7ufHvCDjRxjo5Q;Raydium Stake;cranker;farming;neither;dune_query_2656722;Raydium staking/farming (legacy)
+CBuCnLe26faBpcBP2fktp4rp8abpcAnTWft6ZrP5Q4T;Raydium Stake V4;cranker;farming;potential;dune_query_2656722;Raydium farming V4 - auto-compound keepers could use AOT
+9KEPoZmtHUrBbhWN1v1KWLMkkvwY6WLtAVUCPRtRjP4z;Raydium Stake V5;cranker;farming;potential;dune_query_2656722;Raydium farming V5 - auto-compound keepers could use AOT
 SSwpkEEcbUqx4vtoEByFjSkhKdCT862DNVb52nZg1UZ;Saber Stable Swap;dex;stableswap;potential;dune_query_2656722;Saber stableswap - legacy but may still have volume
 Crt7UoUR6QgrFrN7j8rmSQpUTNWNSitSwWvsWGf1qZ5t;Saber Router;dex;stableswap;potential;dune_query_2656722;Saber routing - same logic as Saber
 MERLuDFBMmsHnsBPZw2sDQZHvXFMwp8EdjudcU2HKky;Mercurial Stable Swap;dex;stableswap;neither;dune_query_2656722;Mercurial (deprecated - merged into Meteora)
@@ -247,31 +247,31 @@ DjVE6JNiYqPL2QXyCUUh8rNjHrbz9hXHNYt99MQ59qw1;Orca Token Swap;dex;amm;neither;dun
 SSwpMgqNDsyV7mAgN9ady4bDVu5ySjmmXejXvy2vLt1;Step Finance Swap;dex;amm;potential;dune_query_2656722;Step Finance DEX aggregator - may route through RAIKU
 SwaPpA9LAaLfeLi3a68M4DjnLqgtticKg6CnyNwgAC8;Swap Program SPL;dex;swap;neither;dune_query_2656722;SPL Token Swap standard - system infrastructure
 Dooar9JkhdZ7J3LHN3A7YCuoGRUggXhQaG4kijfLGU2j;Dooar Swap;dex;amm;potential;dune_query_2656722;StepN DEX - may still have some volume
-MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD;Marinade Finance;staking;liquid;aot;dune_query_2656722;Marinade staking program - stake rebalance = AOT (same as mSoLz entry)
-EewxydAPCCVuNEyrVN68PuSYdQ7wKn27V9Gjeoi8dy3S;Lifinity;dex;proactive_mm;aot;dune_query_2656722;Lifinity proactive MM DEX - oracle-driven rebalancing like PropAMMs = AOT
+MarBmsSgKXdrN1egZf5sqe1TMai9K1rChYNDJgjq7aD;Marinade Finance;cranker;liquid;aot;dune_query_2656722;Marinade staking program - stake rebalance = AOT (same as mSoLz entry)
+EewxydAPCCVuNEyrVN68PuSYdQ7wKn27V9Gjeoi8dy3S;Lifinity;prop_amm;proactive_mm;aot;dune_query_2656722;Lifinity proactive MM DEX - oracle-driven rebalancing like PropAMMs = AOT
 JUP2jxvXaqu7NQY1GmNF4m1vodw12LVXYxbFL2uJvfo;Jupiter V2;dex;aggregator;neither;dune_query_2656722;Jupiter V2 (deprecated)
 JUP3c2Uh3WA4Ng34tw6kPd2G4C5BB21Xo36Je1s32Ph;Jupiter V3;dex;aggregator;neither;dune_query_2656722;Jupiter V3 (deprecated)
 JUP4Fb2cqiRUcaTHdrPC8h2gNsA2ETXiPDD33WcGuJB;Jupiter V4;dex;aggregator;both;dune_query_2656722;Jupiter V4 - aggregator routing reliability (AOT) + fast fills (JIT)
 JUP5pEAZeHdHrLxh5UCwAbpjGwYKKoquCpda2hfP4u8;Jupiter V5;dex;aggregator;both;dune_query_2656722;Jupiter V5 - same logic as V4 + limit orders
 ZETAxsqBRek56DhiGXrn75yj2NHU3aYUnxvHXpkf3aD;ZetaDex;dex;orderbook;both;dune_query_2656722;Zeta DEX orderbook (distinct from ZetaMarkets perps) - MMs (AOT) + traders (JIT)
 ZDx8a8jBqGmJyxi1whFxxCo5vG6Q9t4hTzW2GSixMKK;01 DEX;dex;orderbook;both;dune_query_2656722;01 Exchange orderbook - MMs (AOT) + traders (JIT)
-FcfzrnurPFXwxbx332wScnD5P86DwhpLpBbQsnr6LcH5;Friktion;defi;structured_products;neither;dune_query_2656722;Friktion (shut down 2023) - no longer active
-R2y9ip6mxmWUj4pt54jP2hz2dgvMozy9VTSwMWE7evs;PsyOptions;defi;options;both;dune_query_2656722;Options protocol - settlement keepers = AOT + traders = JIT
+FcfzrnurPFXwxbx332wScnD5P86DwhpLpBbQsnr6LcH5;Friktion;lending;structured_products;neither;dune_query_2656722;Friktion (shut down 2023) - no longer active
+R2y9ip6mxmWUj4pt54jP2hz2dgvMozy9VTSwMWE7evs;PsyOptions;lending;options;both;dune_query_2656722;Options protocol - settlement keepers = AOT + traders = JIT
 6MLxLqiXaaSUpkgMnWDTuejNZEz3kE7k2woyHGVFw319;Crema Finance;dex;clmm;neither;dune_query_2656722;Crema Finance (exploited/shut down) - no longer active
-7vxeyaXGLqcp66fFShqUdHxdacp4k4kwUpRSSeoZLCZ4;Solfarm/Tulip;defi;yield;neither;dune_query_2656722;Tulip/Solfarm (shut down) - no longer active
+7vxeyaXGLqcp66fFShqUdHxdacp4k4kwUpRSSeoZLCZ4;Solfarm/Tulip;cranker;yield;neither;dune_query_2656722;Tulip/Solfarm (shut down) - no longer active
 Port7uDYB3wk6GJAw4KT1WpTeMtSu9bTcChBHkX2LfR;Port Finance;lending;pool;neither;dune_query_2656722;Port Finance (exploited/shut down) - no longer active
 CYPH3o83JX6jY6NkbproSpdmQ5VWJtxjfJ5P8veyYVu3;Cypher;perps;perpetuals;neither;dune_query_2656722;Cypher (exploited/shut down 2023) - no longer active
-HubbLeXBb7qyLHt3x7gvYaRrxQmmgExb7fCJgDqFuB6T;Hubble Protocol;defi;stablecoin;neither;dune_query_2656722;Hubble (shut down) - no longer active
+HubbLeXBb7qyLHt3x7gvYaRrxQmmgExb7fCJgDqFuB6T;Hubble Protocol;lending;stablecoin;neither;dune_query_2656722;Hubble (shut down) - no longer active
 PSwapMdSai8tjrEXcxFeQth87xC4rRsa4VA5mhGhXkP;Penguin Finance;dex;amm;neither;dune_query_2656722;Penguin Finance (shut down) - no longer active
-TWAPzC9xaeBpgDNF26z5VAcmxBowVz5uqmTx47LkWUy;LP Finance TWAP;defi;yield;potential;dune_query_2656722;LP Finance TWAP orders - scheduled execution = AOT potential
-8Hka1oR6uoNLqjpYXXDKpF6NwiYidD6L3ncQdfu11aWw;LP Finance;defi;yield;potential;dune_query_2656722;LP Finance yield protocol
-CrX7kMhLC3cSsXJdT7JDgqrRVWGnUpX3gfEfxxU2NVLi;Lido;staking;liquid;neither;dune_query_2656722;Lido on Solana (shut down/withdrawn) - no longer active
+TWAPzC9xaeBpgDNF26z5VAcmxBowVz5uqmTx47LkWUy;LP Finance TWAP;cranker;yield;potential;dune_query_2656722;LP Finance TWAP orders - scheduled execution = AOT potential
+8Hka1oR6uoNLqjpYXXDKpF6NwiYidD6L3ncQdfu11aWw;LP Finance;cranker;yield;potential;dune_query_2656722;LP Finance yield protocol
+CrX7kMhLC3cSsXJdT7JDgqrRVWGnUpX3gfEfxxU2NVLi;Lido;cranker;liquid;neither;dune_query_2656722;Lido on Solana (shut down/withdrawn) - no longer active
 SSwapUtytfBdBn1b9NUGG6foMVPtcWgpRU32HToDUZr;Saros;dex;amm;potential;dune_query_2656722;Saros DEX - low volume but active
-Jito4APyf642JPZPx3hGc6WWJ8zPKtRbRs4P815Awbb;Jito Stake Pool;staking;liquid;aot;dune_query_2656722;JitoSOL liquid staking - stake rebalancing = AOT
-bSo13r4TkiE4KumL71LsHTPpL2euBYLFx6h9HP3piy1;BlazeStake;staking;liquid;aot;dune_query_2656722;bSOL liquid staking by Solana Foundation - stake rebalancing = AOT
-5ocnV1qiCgaQR8Jb8xWnVbApfaygJ8tNoZfgPwsgx9kx;Sanctum Infinity;staking;liquid;aot;sanctum_docs;Sanctum Infinity multi-LST pool (INF token $191M MCap) - rebalancing = AOT
-he1iusmfkpAdwvxLNGV8Y1iSbj4rUy6yMhEA3fotn9A;Helius hSOL (token);staking;liquid;aot;solana_compass;Helius Staked SOL token mint ($30M MCap) - uses sanctum-pools program - rebalancing = AOT
-Dso1bDeDjCQxTrWHqUUi63oBvV7Mdm6WaobLbQ7gnPQ;Drift dSOL (token);staking;liquid;aot;solana_compass;Drift Staked SOL token mint ($2.4M MCap) - uses sanctum-pools program - rebalancing = AOT
+Jito4APyf642JPZPx3hGc6WWJ8zPKtRbRs4P815Awbb;Jito Stake Pool;cranker;liquid;aot;dune_query_2656722;JitoSOL liquid staking - stake rebalancing = AOT
+bSo13r4TkiE4KumL71LsHTPpL2euBYLFx6h9HP3piy1;BlazeStake;cranker;liquid;aot;dune_query_2656722;bSOL liquid staking by Solana Foundation - stake rebalancing = AOT
+5ocnV1qiCgaQR8Jb8xWnVbApfaygJ8tNoZfgPwsgx9kx;Sanctum Infinity;cranker;liquid;aot;sanctum_docs;Sanctum Infinity multi-LST pool (INF token $191M MCap) - rebalancing = AOT
+he1iusmfkpAdwvxLNGV8Y1iSbj4rUy6yMhEA3fotn9A;Helius hSOL (token);cranker;liquid;aot;solana_compass;Helius Staked SOL token mint ($30M MCap) - uses sanctum-pools program - rebalancing = AOT
+Dso1bDeDjCQxTrWHqUUi63oBvV7Mdm6WaobLbQ7gnPQ;Drift dSOL (token);cranker;liquid;aot;solana_compass;Drift Staked SOL token mint ($2.4M MCap) - uses sanctum-pools program - rebalancing = AOT
 13gDzEXCdocbj8iAiqrScGo47NiSuYENGsRqi3SEAwet;Adrena Protocol;perps;perpetuals;both;solana_explorer;Adrena perps DEX (up to 100x leverage) - keepers/crankers = AOT + traders/liquidators = JIT
 Gmso1uvJnLbawvw7yezdfCDcPydwW2s2iqG3w6MDucLo;GMTrade Store;perps;perpetuals;both;solscan;GMTrade (ex-GMXSOL) perps - GMX fork on Solana ($142M 24h vol) - keepers = AOT + traders = JIT
 GTuvYD5SxkTq4FLG6JV1FQ5dkczr1AfgDcBHaFsBdtBg;GMTrade Treasury;perps;perpetuals;neither;github_anchor;GMTrade treasury program - not directly a trading program
@@ -284,32 +284,334 @@ HyaB3W9q6XdA5xwpU4XnSZV94htfmbmqJXZcEbRaJutt;Invariant Swap;dex;clmm;both;solsca
 7Zb1bGi32pfsrBkzWdqd4dFhUXwp5Nybr1zuaEwN34hy;Larix Lending;lending;lending;both;solscan;Larix lending protocol - liquidators/crankers = AOT + borrowers = JIT
 6UeJYTLU1adaoHWeApWsoj1xNEDbWA2RhM2DLc8CrDDi;Apricot Finance Program;lending;lending;both;solscan;Apricot lending + leveraged yield farming - auto-deleverage = AOT + borrowers = JIT
 3parcLrT7WnXAcyPfkCz49oofuuf2guUKkjuFkAhZW8Y;Parcl V3;perps;synthetics;both;solscan;Parcl real estate perps - oracle updates/keepers = AOT + traders = JIT
-QMNeHCGYnLVDn1icRAfQZpjPLBNkfGbSKRB83G5d8KB;Quarry Mine;defi;yield;potential;solscan;Quarry liquidity mining - yield farming protocol - potential AOT for reward distribution
-3Katmm9dhvLQijAvomteYMo6rfVbY5NaCRNq9ZBqBgr6;Francium Lending Reward;defi;yield;potential;solscan;Francium lending reward program - leveraged yield aggregator
-2nAAsYdXF3eTQzaeUQS3fr4o782dDg8L28mX39Wr5j8N;Francium lyfRaydium;defi;yield;both;solscan;Francium leveraged yield farming on Raydium - auto-compound = AOT + farmers = JIT
-7bgvkyKyHvgHdNCTKhheHBYCnvu7BQsBKHAGWNX2jk7D;Arbitrage Bot (7bgvk);trading_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - 1.6M priority fees (48h) - DEX-DEX arb = JIT
-rexhfZLRRxRkPkw9izswgMFRPDb9U58jeinH7wqUVuw;Arbitrage Bot (rexhf);trading_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - 963K priority fees (48h) - DEX-DEX arb = JIT
-GMGNreQcJFufBiCTLDBgKhYEfEe9B454UjpDr5CaSLA1;Arbitrage Bot (GMGNr);trading_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - 264K priority + 768 jito (48h) = JIT
-FD1amxhTsDpwzoVX41dxp2ygAESURV2zdUACzxM1Dfw9;Arbitrage Bot (FD1am);trading_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - 263K priority fees (48h) = JIT
-MEViZt7uNtZs47XkjujUuMSAxxxVtQQ25SwToLcEckt;Arbitrage Bot (MEViZ);trading_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - 260K priority fees (48h) = JIT
-Crf6uiMVHpuqkQzE2FkWWces3xiYaTbTsFYPDSeNWksM;Arbitrage Bot (Crf6u);trading_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - 100K priority + 761 jito (48h) = JIT
+QMNeHCGYnLVDn1icRAfQZpjPLBNkfGbSKRB83G5d8KB;Quarry Mine;cranker;yield;potential;solscan;Quarry liquidity mining - yield farming protocol - potential AOT for reward distribution
+3Katmm9dhvLQijAvomteYMo6rfVbY5NaCRNq9ZBqBgr6;Francium Lending Reward;cranker;yield;potential;solscan;Francium lending reward program - leveraged yield aggregator
+2nAAsYdXF3eTQzaeUQS3fr4o782dDg8L28mX39Wr5j8N;Francium lyfRaydium;cranker;yield;both;solscan;Francium leveraged yield farming on Raydium - auto-compound = AOT + farmers = JIT
+7bgvkyKyHvgHdNCTKhheHBYCnvu7BQsBKHAGWNX2jk7D;Arbitrage Bot (7bgvk);arb_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - 1.6M priority fees (48h) - DEX-DEX arb = JIT
+rexhfZLRRxRkPkw9izswgMFRPDb9U58jeinH7wqUVuw;Arbitrage Bot (rexhf);arb_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - 963K priority fees (48h) - DEX-DEX arb = JIT
+GMGNreQcJFufBiCTLDBgKhYEfEe9B454UjpDr5CaSLA1;Arbitrage Bot (GMGNr);arb_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - 264K priority + 768 jito (48h) = JIT
+FD1amxhTsDpwzoVX41dxp2ygAESURV2zdUACzxM1Dfw9;Arbitrage Bot (FD1am);arb_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - 263K priority fees (48h) = JIT
+MEViZt7uNtZs47XkjujUuMSAxxxVtQQ25SwToLcEckt;Arbitrage Bot (MEViZ);arb_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - 260K priority fees (48h) = JIT
+Crf6uiMVHpuqkQzE2FkWWces3xiYaTbTsFYPDSeNWksM;Arbitrage Bot (Crf6u);arb_bot;arbitrage;jit;solscan;Solscan: Arbitrage Bot - 100K priority + 761 jito (48h) = JIT
 b1oomGGqPKGD6errbyfbVMBuzSC8WtAAYo8MwNafWW1;Bloom Router;dex;aggregator;both;solscan;Solscan: Bloom Router - DEX aggregator - routing reliability (AOT) + fast fills (JIT)
 1oopBoJG58DgkUVKkEzKgyG9dvRmpgeEm1AVjoHkF78;Loopscale;lending;modular;both;solscan;Solscan: Loopscale - modular lending protocol - liquidators/crankers = AOT + borrowers = JIT
-ExponentnaRg3CQbW6dqQNZKXp7gtZ9DGMp1cwC4HAS7;Exponent Finance;defi;yield_trading;both;solscan;Solscan: Exponent - yield trading (PT/YT like Pendle) - keepers = AOT + traders = JIT
+ExponentnaRg3CQbW6dqQNZKXp7gtZ9DGMp1cwC4HAS7;Exponent Finance;cranker;yield;both;solscan;Solscan: Exponent - yield trading (PT/YT like Pendle) - keepers = AOT + traders = JIT
 T1TANpTeScyeqVzzgNViGDNrkQ6qHz9KrSBS4aNXvGT;Titan Exchange Router;dex;aggregator;both;solscan;Solscan: Titan Exchange Router - 297K priority + 202K jito (48h) - aggregator routing
 tuna4uSQZncNeeiAMKbstuxA9CUkHH6HmC64wgmnogD;DefiTuna;lending;leverage;both;solscan;Solscan: DefiTuna - leveraged yield/lending - keepers = AOT + traders = JIT
 fUSioN9YKKSa3CUC2YUc4tPkHJ5Y6XW1yz8y6F7qWz9;DefiTuna Fusion AMM;dex;amm;both;solscan;Solscan: Fusion AMM (DefiTuna) - LPs rebalance (AOT) + traders (JIT)
 HpNfyc2Saw7RKkQd8nEL4khUcuPhQ7WwY1B2qjx8jxFq;PancakeSwap;dex;amm;both;solscan;Solscan: PancakeSwap Solana - AMM - LPs (AOT) + traders (JIT)
 KiNetiCAToLExLv5w7PrfiiKK1iYHNjrUM3RAF2V3A4;Kinetic Aggregator v4;dex;aggregator;both;solscan;Solscan: Kinetic Aggregator v4 - DEX aggregator routing
-BFYDcwRC2CqnvSpd3ES9WUieSYk4FtGJwhuyMVintbGQ;Unknown Bot (BFYDc);trading_bot;trading;jit;solscan;Unverified on Solscan - 90K priority (48h) - elevated fee pattern = trading bot
-NA247a7YE9S3p9CdKmMyETx8TTwbSdVbVYHHxpnHTUV;Unknown Bot (NA247);trading_bot;mev;jit;behavioral;7.3M priority + 2M jito (48h) = extreme fee/volume = MEV bot
-proVF4pMXVaYqmy4NjniPh4pqKNfMmsihgd4wdkCX3u;Unknown Bot (proVF);trading_bot;mev;jit;behavioral;7.5M priority + 20K jito (48h) = high-volume MEV bot
-MEViEnscUm6tsQRoGd9h6nLQaQspKj7DB2M5FwM3Xvz;MEV Bot (MEViE);trading_bot;mev;jit;prefix;MEV prefix + 5.97M priority + 798K jito (48h) = MEV bot
-XxXxXwJhqsCqZ5yzrykvjwVnUpqBUJP6g6cYjFt2dfW;Unknown Bot (XxXxX);trading_bot;mev;jit;behavioral;3.17M priority + 162K jito (48h) = high fee bot
-FsU1rcaEC361jBr9JE5wm7bpWRSTYeAMN4R2MCs11rNF;Unknown Bot (FsU1r);trading_bot;mev;jit;behavioral;2M priority + 468K jito (48h) = MEV bot
-2Z2EJavNVHpBgw8gVSdbtZ3E1kseANRrN8z57dE1BnGe;Unknown Bot (2Z2EJ);trading_bot;mev;jit;behavioral;1.3M priority + 110K jito (48h) = MEV bot
-MEVbit1CZN1oHXJkcKDNkFmFSMczHVZYnJQpYgGZSnF;MEV Bot (MEVbi);trading_bot;mev;jit;prefix;MEV prefix + 1.78M priority (48h) = MEV tip program
-okxHJ2MSs2qyGHpoTTYGPTefbVkDFUkqYCL2PdnqPzQ;OKX DEX;infrastructure;exchange;neither;dune_label;OKX exchange DEX operations - CEX infrastructure
-6m2CDdhRgxpH4WjvdzxAYbGxwdGUz5MziiL5jek2kBma;OKX DEX V2;infrastructure;exchange;neither;dune_label;OKX DEX V2 aggregator - CEX infrastructure
-TitanLozLMhczcwrioEguG2aAmiATAPXdYpBg3DbeKK;Titan Loz;trading_bot;mev;jit;behavioral;14K priority + 7.5K jito (48h) - secondary Titan program
-SoLFiHG9TfgtdUXUjWAxi3LtvYuFyDLVhBWxdMZxyCe;SolFi;dex;prop_amm;aot;dune_label;SolFi PropAMM - oracle/quote updates = AOT
+BFYDcwRC2CqnvSpd3ES9WUieSYk4FtGJwhuyMVintbGQ;Unknown Bot (BFYDc);arb_bot;trading;jit;solscan;Unverified on Solscan - 90K priority (48h) - elevated fee pattern = trading bot
+NA247a7YE9S3p9CdKmMyETx8TTwbSdVbVYHHxpnHTUV;Unknown Bot (NA247);arb_bot;mev;jit;behavioral;7.3M priority + 2M jito (48h) = extreme fee/volume = MEV bot
+proVF4pMXVaYqmy4NjniPh4pqKNfMmsihgd4wdkCX3u;Unknown Bot (proVF);arb_bot;mev;jit;behavioral;7.5M priority + 20K jito (48h) = high-volume MEV bot
+MEViEnscUm6tsQRoGd9h6nLQaQspKj7DB2M5FwM3Xvz;MEV Bot (MEViE);arb_bot;mev;jit;prefix;MEV prefix + 5.97M priority + 798K jito (48h) = MEV bot
+XxXxXwJhqsCqZ5yzrykvjwVnUpqBUJP6g6cYjFt2dfW;Unknown Bot (XxXxX);arb_bot;mev;jit;behavioral;3.17M priority + 162K jito (48h) = high fee bot
+FsU1rcaEC361jBr9JE5wm7bpWRSTYeAMN4R2MCs11rNF;Unknown Bot (FsU1r);arb_bot;mev;jit;behavioral;2M priority + 468K jito (48h) = MEV bot
+2Z2EJavNVHpBgw8gVSdbtZ3E1kseANRrN8z57dE1BnGe;Unknown Bot (2Z2EJ);arb_bot;mev;jit;behavioral;1.3M priority + 110K jito (48h) = MEV bot
+MEVbit1CZN1oHXJkcKDNkFmFSMczHVZYnJQpYgGZSnF;MEV Bot (MEVbi);arb_bot;mev;jit;prefix;MEV prefix + 1.78M priority (48h) = MEV tip program
+okxHJ2MSs2qyGHpoTTYGPTefbVkDFUkqYCL2PdnqPzQ;OKX DEX;other;infrastructure;neither;dune_label;OKX exchange DEX operations - CEX infrastructure
+6m2CDdhRgxpH4WjvdzxAYbGxwdGUz5MziiL5jek2kBma;OKX DEX V2;other;infrastructure;neither;dune_label;OKX DEX V2 aggregator - CEX infrastructure
+TitanLozLMhczcwrioEguG2aAmiATAPXdYpBg3DbeKK;Titan Loz;arb_bot;mev;jit;behavioral;14K priority + 7.5K jito (48h) - secondary Titan program
+SoLFiHG9TfgtdUXUjWAxi3LtvYuFyDLVhBWxdMZxyCe;SolFi;prop_amm;prop_amm;aot;dune_label;SolFi PropAMM - oracle/quote updates = AOT
+9cqmzK6tbYamubkrZFWANuuzzEGQkjQLEyKgUX8SNnt7;Arb Bot (9cqmz);arb_bot;arbitrage;;auto_classified;99% fail rate
+98DUyVx41ogvrJXi7svM8GbcwTgaitNF1pJ1vZZ6hPHS;Unknown (98DUy);unknown;unknown;;auto_classified;tx=6242 fail=18% fpc=0.6
+REFER4ZgmyYx9c6He5XfaTMiGfdLwRnkV4RPp9t9iF3;Trading Bot (REFER);arb_bot;trading;;auto_classified;25% fail
+A1oayh35gLkRG8fHcXtfdGJmbsubAeJA7URVVET3h8MZ;Arb Bot (A1oay);arb_bot;arbitrage;;auto_classified;73% fail rate
+DuvqY5mxjbyc7J8XqDfbGhHXCPdQfCohkr4W5P865fgh;Arb Bot (DuvqY);arb_bot;arbitrage;;auto_classified;86% fail rate
+Zen8888uiVAni7eYnYVgGpdUujDyrzrzjG4EXRHDZ5q;Unknown (Zen88);unknown;unknown;;auto_classified;tx=20048 fail=1% fpc=0.4
+magnaSHyv8zzKJJmr8NSz5JXmtdGDTTFPEADmvNAwbj;Magna V2;other;vesting;;auto_classified;tx=2569 fail=9% fpc=5.6
+voTpe3tHQ7AjQHMapgSue2HJFAh2cGsdokqN3XqmVSj;Unknown (voTpe);unknown;unknown;;auto_classified;tx=41364 fail=1% fpc=0.3
+7pz2QJ8RV11pKiKGmCFRonqFnz8UEj7ZJrFdKUA5K1Cp;Unknown (7pz2Q);unknown;unknown;;auto_classified;tx=31090 fail=0% fpc=0.3
+opnb2LAfJYbRMAHHvqjCwQxanZn7ReEHp1k81EohpZb;OpenBook V2;dex;orderbook;;auto_classified;tx=8756 fail=0% fpc=0.2
+DF6c7dTBdZ9cb59pywKAVwy5NMSXiSfmXzYNwYFPNz9F;OpenOcean;dex;aggregator;;auto_classified;high_cu=131964
+G2GMMDKkw3LXXNRNLyLMy3myki3yi7tjdyxbBbGrBqrg;DeFi Protocol (G2GMM);unknown;unknown;;auto_classified;high_cu=126137
+CWgkFB7ngUc9cGD1LryyhP7h6xYWtwrAjhSKKCoR1gkz;Unknown (CWgkF);unknown;unknown;;auto_classified;tx=21333 fail=0% fpc=0.3
+ECMijTJd3GQDiS5qtsKcaUZgXNyK6Z99UnDxwtdR9ech;Unknown (ECMij);unknown;unknown;;auto_classified;tx=42507 fail=0% fpc=0.0
+cardWArqhdV5jeRXXjUti7cHAa4mj41Nj3Apc6RPZH2;Card V2 (pump.fun);other;token;;auto_classified;tx=7596 fail=0% fpc=0.6
+3KHSHFpEK6bsjg3bqcxQ9qssJYtRCMi2S9TYVe4q6CQc;Unknown (3KHSH);unknown;unknown;;auto_classified;tx=4795 fail=0% fpc=2.4
+Exp715biUyVV6Gu8qdk5jjTWQatwSEvXHG4LPpZP761e;Unknown (Exp71);unknown;unknown;;auto_classified;tx=93 fail=10% fpc=8.7
+R6yPssVmTujhhE8QPUnVpmuz8yzQaFkkqQxBuxQX53R;MEV Bot (R6yPs);arb_bot;mev;;auto_classified;fpc=97.2 fail=22%
+CfRi7DTfAzDnU3NQzv2zwUksJ7mw98VQUdfErGo6gzMU;Unknown (CfRi7);unknown;unknown;;auto_classified;tx=34275 fail=0% fpc=0.0
+EhUtRgu9iEbZXXRpEvDj6n1wnQRjMi2SERDo3c6bmN2c;Unknown (EhUtR);unknown;unknown;;auto_classified;tx=3669 fail=1% fpc=8.7
+4mtdvZoV3bccQzx6HgGG3XYfffxMaTrHRPL8KqnTM243;Unknown (4mtdv);unknown;unknown;;auto_classified;tx=30266 fail=0% fpc=0.0
+LanMV9sAd7wArD4vJFi2qDdfnVhFxYSUg6eADduJ3uj;Trading Bot (LanMV);arb_bot;trading;;auto_classified;37% fail
+6xw9f54fZrCFyhRtNBfA9tzuvwzUfe4DUw33JD1uyyfd;Unknown (6xw9f);unknown;unknown;;auto_classified;tx=29646 fail=0% fpc=0.0
+5noZYmNbF6Y9btiFijLtacZTdLTNCoZ5yfbPKamHzTqA;Unknown (5noZY);unknown;unknown;;auto_classified;tx=29230 fail=0% fpc=0.0
+AeKgrTd7wEmuCbaJAbx22HKamgKdjTp9HujUy1oFd7VG;Unknown (AeKgr);unknown;unknown;;auto_classified;tx=28818 fail=0% fpc=0.0
+raffKWNrQvz5uhFGY4Dw64sn3hSZZjhC4AMtXmdUFy2;Unknown (raffK);unknown;unknown;;auto_classified;tx=24929 fail=0% fpc=0.0
+CCTPV2Sm4AdWt5296sk4P66VBZ7bEhcARwFaaS9YPbeC;Circle CCTP;bridge;cross_chain;;auto_classified;prefix:CCTPV2
+26DkA98jjctzPkBEteUsN935CR4dsKx3XvjrtE7MeL4a;Unknown (26DkA);unknown;unknown;;auto_classified;tx=12995 fail=0% fpc=0.2
+vaU6kP7iNEGkbmPkLmZfGwiGxd4Mob24QQCie5R9kd2;Unknown (vaU6k);unknown;unknown;;auto_classified;tx=23836 fail=1% fpc=0.0
+A85mbYhhsC5X8Qz1hJbt5RfD4uptLtkgkRQGvhgQ8AT7;Unknown (A85mb);unknown;unknown;;auto_classified;tx=25467 fail=0% fpc=0.0
+mERKcfxMC5SqJn4Ld4BUris3WKZZ1ojjWJ3A3J5CKxv;Merkle Distributor;other;token;;auto_classified;tx=25315 fail=2% fpc=0.0
+SP12tWFxD9oJsVWNavTTBZvMbA6gkAmxtVgxdqvyvhY;Trading Bot (SP12t);arb_bot;trading;;auto_classified;fpc=81.9 low_tx=93
+Ccip842gzYHhvdDkSyi2YVCoAWPbYJoApMFzSxQroE9C;Chainlink CCIP;bridge;cross_chain;;auto_classified;prefix:Ccip84
+A22URFxrKkdWaQ3q51NbzDc4pGjh29UNU9WdHna5QDa5;Arb Bot (A22UR);arb_bot;arbitrage;;auto_classified;96% fail rate
+CCTPV2vPZJS2u2BBsUoscuikbYjnpFmbFsvVuJdgUMQe;Circle CCTP;bridge;cross_chain;;auto_classified;prefix:CCTPV2
+85iDfUvr3HJyLM2zcq5BXSiDvUWfw6cSE1FfNBo8Ap29;Unknown (85iDf);unknown;unknown;;auto_classified;tx=22662 fail=0% fpc=0.0
+SpLtDgZYG9gn3UPjSsoBb4sjSbafT9ap9eXFU5UnScC;SPL Utility V2;other;infrastructure;;auto_classified;tx=22175 fail=12% fpc=0.0
+rateqk9kmMstT8SdVDyiV81Wuv4snjYyBjYoPkGqywK;Rate Program;other;infrastructure;;auto_classified;rate prefix
+DeJBGdMFa1uynnnKiwrVioatTuHmNLpyFKnmB5kaFdzQ;Unknown (DeJBG);unknown;unknown;;auto_classified;tx=21981 fail=12% fpc=0.0
+BLzDYkUcxzBv6ne24N2YyPECoYTvDTKaukbbEemKASc4;Arb Bot (BLzDY);arb_bot;arbitrage;;auto_classified;95% fail rate
+22z4B93dSqzBaAkC7GRkihYbW52EpDqHQULWP219W9LR;DeFi Protocol (22z4B);unknown;unknown;;auto_classified;high_cu=188420
+ECPPeiMVPo6BeoP67vkhLgDMbMtnVNzpGEQJb1kcTpbE;Arb Bot (ECPPe);arb_bot;arbitrage;;auto_classified;100% fail rate
+AeDvuJTj2ewCQdPZj7Y26hM89gcUETWaXHRGzcQgDUuz;Unknown (AeDvu);unknown;unknown;;auto_classified;tx=10653 fail=0% fpc=0.5
+B98Jqm7nogHiidnrLZZYvSwTtZScqmzmsEZdKtuddMkT;Unknown (B98Jq);unknown;unknown;;auto_classified;tx=10547 fail=11% fpc=0.1
+KeyspM2ssCJbqUhQ4k7sveSiY4WjnYsrXkC8oDbwde5;Unknown (Keysp);unknown;unknown;;auto_classified;tx=9978 fail=0% fpc=0.4
+8hNZpgaL74ozyYhKeFuipGioaoRRKKvS7oMjFBDATmzf;Unknown (8hNZp);unknown;unknown;;auto_classified;tx=9672 fail=0% fpc=0.2
+FTV2J5PDkJAJynkiDEvX3LXPQ7RTVaHuYGYRDRXoHpXE;Unknown (FTV2J);unknown;unknown;;auto_classified;tx=19205 fail=16% fpc=0.0
+Dpe4s2p9FfNPvCkQp58iwVVyAStC7JdRbSYSH1qvDFJY;Unknown (Dpe4s);unknown;unknown;;auto_classified;tx=9374 fail=0% fpc=0.3
+DLv3NggMiSaef97YCkew5xKUHDh13tVGZ7tydt3ZeAru;Unknown (DLv3N);unknown;unknown;;auto_classified;tx=18581 fail=2% fpc=0.0
+FCW1uBM3pZ7fQWvEL9sxTe4fNiH41bu9DWX4ErTZ6aMq;Unknown (FCW1u);unknown;unknown;;auto_classified;tx=2923 fail=0% fpc=0.6
+SMPLVC8MxZ5Bf5EfF7PaMiTCxoBAcmkbM2vkrvMK8ho;Unknown (SMPLV);unknown;unknown;;auto_classified;tx=2841 fail=2% fpc=1.0
+GKtyK68R4jAVDu9pZrZAdvHq8vo7R51WTRjU5SHt2fMa;Unknown (GKtyK);unknown;unknown;;auto_classified;tx=9169 fail=1% fpc=0.2
+FitAFk15vtx2PBjfr7QTnefaHRx6HwajRiZMt1DdSSKU;Unknown (FitAF);unknown;unknown;;auto_classified;tx=4848 fail=0% fpc=1.2
+FEeSA5Er5hR9B6GFnu59MGcWazERt7jfaCkzGuQxs2XT;Trading Bot (FEeSA);arb_bot;trading;;auto_classified;fpc=96.3 low_tx=21
+3ZZuTbwC6aJbvteyVxXUS7gtFYdf7AuXeitx6VyvjvUp;Unknown (3ZZuT);unknown;unknown;;auto_classified;tx=8959 fail=0% fpc=0.5
+5iF614oQbNriGr34jXMgKC2TUSxGFoqhYVipbn8awvyr;Unknown (5iF61);unknown;unknown;;auto_classified;tx=2793 fail=11% fpc=0.9
+swigypWHEksbC64pWKwah1WTeh9JXwx8H1rJHLdbQMB;Swig Wallet V2;other;infrastructure;;auto_classified;high_cu=150667
+9SmGhxjLJfnatg8Xu1Ff2QM7vNMDbsbLWFwBeEzXtnBX;Arb Bot (9SmGh);arb_bot;arbitrage;;auto_classified;100% fail rate
+RateFzvQT8Dz2HqDHAQj22ujp8B5kaBm2FUUkSoLgZm;Rate Program;other;infrastructure;;auto_classified;rate prefix
+6AXRaajKYrh6Q4tKkeD8hXB7D4uUr91wXjhYYHULeLZU;Arb Bot (6AXRa);arb_bot;arbitrage;;auto_classified;90% fail rate
+stakevLBn36MxF5qcjXFxChfFDhL9LrLqj4WC3HPpGT;Stake Program;other;staking;;auto_classified;prefix:stakev
+EXBuYPNgBUXMTsjCbezENRUtFQzjUNZxvPGTd11Pznk5;Unknown (EXBuY);unknown;unknown;;auto_classified;tx=900 fail=2% fpc=9.5
+8Ynw96G4yZQJ1NUX2ZKYmQkkmgXEAeGfkGrahGnWwtxM;Unknown (8Ynw9);unknown;unknown;;auto_classified;tx=15354 fail=0% fpc=0.0
+3Bd9sJ7oUhM3n71CyzFwsFVQW2cnNtLU68aR7kExZT16;Unknown (3Bd9s);unknown;unknown;;auto_classified;tx=11495 fail=0% fpc=0.0
+6yQ7xPWfRhzNJJLMLyRHXFWVNYPaihaJtMgmXBgFyAdx;Unknown (6yQ7x);unknown;unknown;;auto_classified;tx=228 fail=2% fpc=7.8
+DRSw8uSW9De7eCKSM9qXm7aD2QKrvcJnA7Hf4Uu3ezYM;Arb Bot (DRSw8);arb_bot;arbitrage;;auto_classified;100% fail rate
+9w1D9okTM8xNE7Ntb7LpaAaoLc6LfU9nHFs2h2KTpX1H;Unknown (9w1D9);unknown;unknown;;auto_classified;tx=14690 fail=0% fpc=0.0
+namesLPneVptA9Z5rqUDD9tMTWEJwofgaYwp8cawRkX;Solana Name Service;other;infrastructure;;auto_classified;prefix:namesL
+QuaNTM82oyFNjoJCZwCqJiynjndct7tcEntxPuWL1RL;Quant Protocol;unknown;unknown;;auto_classified;prefix:QuaNTM
+MashGQTqcKDZAMevJKST9RYqJTL2Ae9NpcSuCE9WYqK;Mash Protocol;unknown;unknown;;auto_classified;prefix:MashGQ
+Ewkv3JahEFRKkcJmpoKB7pXbnUHwjAyXiwEo4ZY2rezQ;Trading Bot (Ewkv3);arb_bot;trading;;auto_classified;62% fail
+oFrmsC5N3q3h96HW4dwn2LVNREaAXbgqkd45wVPAH8Y;Unknown (oFrms);unknown;unknown;;auto_classified;tx=13657 fail=0% fpc=0.0
+prgmQm7H9AiT1DmRJUeCQigJuCoL3gbzavxy8qLJMuN;Program Manager;other;program_deployment;;auto_classified;prefix:prgmQm
+24Uqj9JCLxUeoC3hGfh5W3s9FM9uCHDS2SG3LYwBpyTi;Meteora Vault;cranker;vault;;auto_classified;tx=4524 fail=0% fpc=0.3
+3vxKRPwUTiEkeUVyoZ9MXFe1V71sRLbLqu1gRYaWmehQ;Unknown (3vxKR);unknown;unknown;;auto_classified;tx=936 fail=0% fpc=2.8
+4fTHVZvo3mp9GvJmgYNtepnd2pJbPwfYuiZ7t6M476Uy;Unknown (4fTHV);unknown;unknown;;auto_classified;tx=6595 fail=0% fpc=0.3
+9KLLchQVJpGkw4jPuUmnvqESdR7mtNCYr3qS4iQLabs;Unknown (9KLLc);unknown;unknown;;auto_classified;tx=12829 fail=0% fpc=0.0
+6LtLpnUFNByNXLyCoK9wA2MykKAmQNZKBdY8s47dehDc;Kamino;cranker;vault;;auto_classified;high_cu=506278
+DKLsYHdYyeeQjyLTUDSRxswMTi1NhUUUWX2wqFHQDXpC;Unknown (DKLsY);unknown;unknown;;auto_classified;tx=6326 fail=0% fpc=4.7
+AURAsuSzLv3v8SX3Y7emMFzGTWiepJK3Sm4x77GB9n1G;MEV Bot (AURAs);arb_bot;mev;;auto_classified;fpc=259.1 fail=38%
+2KehYt3KsEQR53jYcxjbQp2d2kCp4AkuQW68atufRwSr;MEV Bot (2KehY);arb_bot;mev;;auto_classified;fpc=24.4 fail=41%
+5hdrbhMZ7qhAu4Jk7DriTQfrx4UC58cLnQ7MANKp2CoK;Unknown (5hdrb);unknown;unknown;;auto_classified;tx=344 fail=3% fpc=4.4
+GVGCNqUUrix5RLph9kVtzdMYkZLEvzvHEkYvC6vJ9dzZ;Unknown (GVGCN);unknown;unknown;;auto_classified;tx=12417 fail=0% fpc=0.0
+CSgoqaRA4ckXXDZRfS87hCSPsAuST7KSeyx8okT49cM;Unknown (CSgoq);unknown;unknown;;auto_classified;tx=4130 fail=0% fpc=0.6
+TESQvsR4TmYxiroPPQgZpVRoSFG8pru4fsYr67iv6kf;Unknown (TESQv);unknown;unknown;;auto_classified;tx=12172 fail=0% fpc=0.0
+EEEEoTnDmkwqpcxNMg4yoa9QFJpp4NEgzGykzi1cHrM9;Unknown (EEEEo);unknown;unknown;;auto_classified;tx=6086 fail=0% fpc=0.1
+2QKKmkEbkC1rakibHw1A6oRGWabw22W7jr143oVBti78;Trading Bot (2QKKm);arb_bot;trading;;auto_classified;fpc=52.5 low_tx=20
+progSgjc51c45gZ86VbJY2Msi2mN3KbHQPcLdgrJbsB;Program Deploy;other;program_deployment;;auto_classified;prefix:progSg
+EfRMrTJWU2CYm52kHmRYozQNdF8RH5aTi3xyeSuLAX2Y;Unknown (EfRMr);unknown;unknown;;auto_classified;tx=29 fail=0% fpc=6.1
+2K2374VEqxbFJWycxoj8ub2wBk7KwwnNn7M5V7QsL9r2;Unknown (2K237);unknown;unknown;;auto_classified;tx=6976 fail=0% fpc=0.0
+PCKjSaQaZb3AcmjTcb2fcLanh9Mky9ZvuaKqTBxsqWE;Unknown (PCKjS);unknown;unknown;;auto_classified;tx=5870 fail=0% fpc=0.2
+CrUptMreyezRbdHJbeZ5sMJ9idiSuMUJpdchQzY6NFjL;Unknown (CrUpt);unknown;unknown;;auto_classified;tx=11547 fail=0% fpc=0.0
+RouterBmuRBkPUbgEDMtdvTZ75GBdSREZR5uGUxxxpb;Router Program;dex;aggregator;;auto_classified;prefix:Router
+ogpTKmVzXDbSEfCr5mq2tq4pfeVHuSEHoRmWAU1fTp8;Unknown (ogpTK);unknown;unknown;;auto_classified;tx=7989 fail=0% fpc=0.1
+962kiGMxNLM6w1ZtozcJGZTWrBvqqQfWFZFCS6vHgKus;Unknown (962ki);unknown;unknown;;auto_classified;tx=1613 fail=0% fpc=1.5
+JCFRaPv7852ESRwJJGRy2mysUMydXZgVVhrMLmExvmVp;Unknown (JCFRa);unknown;unknown;;auto_classified;tx=7321 fail=0% fpc=0.1
+XXXXXXHm2pmmxyTeDyzvi4VUXZcLHGwzqvjZhJkbvPf;Unknown (XXXXX);unknown;unknown;;auto_classified;tx=11064 fail=0% fpc=0.0
+A1akazamWUPTYbXJyGPXDi27K8RqVXNAZ4g2KzYmw4hq;Unknown (A1aka);unknown;unknown;;auto_classified;tx=6658 fail=10% fpc=0.4
+2bag6xpshpvPe7SJ9nSDLHpxqhEAoHPGpEkjNSv7gxoF;Unknown (2bag6);unknown;unknown;;auto_classified;tx=10622 fail=1% fpc=0.0
+nTtWMBHa1LvWqPbuhS3uRGPmhxw9XNDKzFmjtwHY4cc;NTT Bridge;bridge;cross_chain;;auto_classified;NTT prefix
+8SDTDjFz1HmP7qzUZE6QaBuUqQ2eHwXabHJQwqDQok48;Unknown (8SDTD);unknown;unknown;;auto_classified;tx=9192 fail=0% fpc=0.0
+B9J9SDcXLBwpRq9JS9q9KJtsaYsermtddMeo9LojTLJQ;Unknown (B9J9S);unknown;unknown;;auto_classified;tx=9500 fail=0% fpc=0.0
+PCFA5iYgmqK6MqPhWNKg7Yv7auX7VZ4Cx7T1eJyrAMH;Unknown (PCFA5);unknown;unknown;;auto_classified;tx=7816 fail=0% fpc=0.0
+3NJyzGWjSHP4hZvsqakodi7jAtbufwd52vn1ek6EzQ35;Unknown (3NJyz);unknown;unknown;;auto_classified;tx=9164 fail=0% fpc=0.0
+3e4dEo9W7dKa2J2YdG9ymYuVSRn9UHnHXo7XiRtbTgXE;Unknown (3e4dE);unknown;unknown;;auto_classified;tx=8947 fail=0% fpc=0.0
+raTeAJ92EGM17TBENyDNvrsjmhhujvaanXCFKuxF494;Rate Program;other;infrastructure;;auto_classified;rate prefix
+DSzxC6BtqPfVmMCjNacNasdE6LgWYj1aB6VVoAaPubYL;Unknown (DSzxC);unknown;unknown;;auto_classified;tx=8836 fail=0% fpc=0.0
+pfeeUxB6jkeY1Hxd7CsFCAjcbHA9rWtchMGdZ6VojVZ;Priority Fee;other;infrastructure;;auto_classified;prefix:pfeeUx
+bidoyoucCtwvPJwmW4W9ysXWeesgvGxEYxkXmoXTaHy;Bid Protocol;unknown;unknown;;auto_classified;prefix:bidoyo
+TFPfZhKxtEBoz1um1LcnuzYeKKdHiNbCtmXVuVAFcMU;Unknown (TFPfZ);unknown;unknown;;auto_classified;tx=8658 fail=0% fpc=0.0
+UtyXF479UFC78u1ZV94JtXmnd7njb5FmSYZfFFdP1sT;Unknown (UtyXF);unknown;unknown;;auto_classified;tx=8576 fail=0% fpc=0.0
+ABysS3ZZpCoz3hy7d8HEaQMSBRE9Ykwb3NDBhj6B8FpB;Unknown (ABysS);unknown;unknown;;auto_classified;tx=8352 fail=0% fpc=0.0
+Fy1YwPariTjcEZMrmDaYDwxPKWTsR7z3HjqyS2zrr87g;Arb Bot (Fy1Yw);arb_bot;arbitrage;;auto_classified;100% fail rate
+6QwqgT13oVGhFkMhJwRV6f6nQq52Duy2HqovtiMHaNgs;Unknown (6Qwqg);unknown;unknown;;auto_classified;tx=7665 fail=0% fpc=0.0
+VybePyKgr1zqnwrvNPunahVE48G7BrBHqP8Ct89L5gC;Unknown (VybeP);unknown;unknown;;auto_classified;tx=3940 fail=6% fpc=0.4
+9zWqf5jhauvxMc9RETXD9xbaMBrJpzPzGB6PR34Ksq6Z;MEV Bot (9zWqf);arb_bot;mev;;auto_classified;fpc=18.7 fail=20%
+4H9AA9ekBHkh7S5nC9PsVdNcG96a3yeVVjisP6sDHGuo;Unknown (4H9AA);unknown;unknown;;auto_classified;tx=7898 fail=0% fpc=0.0
+snapNQkxsiqDWdbNfz8KVB7e3NPzLwtHHA6WV8kKgUc;Snapshot Program;other;infrastructure;;auto_classified;prefix:snapNQ
+HypvYnf7zWxy1oWsSFpuN4nRDuXNUi88AeEourc7mq4Z;Unknown (HypvY);unknown;unknown;;auto_classified;tx=7772 fail=0% fpc=0.0
+AAitAzLaqgPoLsEjdb6RaRbBShxPWpyJRHxokc2Zsat8;Unknown (AAitA);unknown;unknown;;auto_classified;tx=205 fail=1% fpc=4.7
+BanDz6p8Sy3gzm3r8VUNVGQhR8tzPJFbVgZjzspArU6;Unknown (BanDz);unknown;unknown;;auto_classified;tx=7345 fail=0% fpc=0.0
+trsrzhs1sRgiHcKhjMmRrgK3X8Wus3LBWogF7t13wzZ;Trading Bot (trsrz);arb_bot;trading;;auto_classified;fpc=21.6 low_tx=19
+HYTuofQSW1WQnBKGa7zJfccPjoveLKDxCUiZvjRB5ep7;Arb Bot (HYTuo);arb_bot;arbitrage;;auto_classified;91% fail rate
+DSTNyVLdoKxTYSjzCQ5191wozVChdVD8qCcFWZwMMX37;Unknown (DSTNy);unknown;unknown;;auto_classified;tx=7254 fail=0% fpc=0.0
+rec5EKMGg6MxZYaMdyBfgwp4d5rB9T1VQH5pJv5LtFJ;Receipt Program;unknown;unknown;;auto_classified;prefix:rec5EK
+9SFU2obpHc5rxsRPJuK2Rs6sVNmK5FVnEr4xwVCdgnqx;Unknown (9SFU2);unknown;unknown;;auto_classified;tx=18 fail=0% fpc=7.8
+CMACYFENjoBMHzapRXyo1JZkVS6EtaDDzkjMrmQLvr4J;Unknown (CMACY);unknown;unknown;;auto_classified;tx=7180 fail=0% fpc=0.0
+6YRZW57XsrT2DxSNLXHHQd4QmiqBode4d6btASkRqcFo;Unknown (6YRZW);unknown;unknown;;auto_classified;tx=1398 fail=0% fpc=0.5
+B1sFgxd4X7WSw9622AoWna7YoweSm9oXARL2Dk5vtBAs;Trading Bot (B1sFg);arb_bot;trading;;auto_classified;fpc=16.7 low_tx=34
+dzrevZC94tBLwuHw1dyynZxaXTWyp7yocsinyEVPtt4;Unknown (dzrev);unknown;unknown;;auto_classified;tx=6878 fail=0% fpc=0.0
+5HNxbq5TiMM8YgMHNtLzkMvR6YtJSfkTn857i52aRi1p;Unknown (5HNxb);unknown;unknown;;auto_classified;tx=17 fail=0% fpc=7.7
+FXMNBxE9r4o5SxMi8vJrKNp1CNgtwUspHiPrspTPn96P;Unknown (FXMNB);unknown;unknown;;auto_classified;tx=3403 fail=0% fpc=0.1
+BASKT7aKd8n7ibpUbwLP3Wiyxyi3yoiXsxBk4Hpumate;Basket Protocol;other;token;;auto_classified;prefix:BASKT7
+arb1pgEiYNYvJQJwQn8u4PKAnRpJGPSVdAPU5P4KtUX;Arbitrage Bot;arb_bot;arbitrage;;auto_classified;prefix:arb1pg
+EMBERpYNE6ehWmXymZZS2skiFmCa9V5dp14e1iduM5qy;Ember Protocol;unknown;unknown;;auto_classified;prefix:EMBERp
+inv1tEtSwRMtM44tbvJGNiTxMvDfPVnX9StyqXfDfks;Unknown (inv1t);unknown;unknown;;auto_classified;tx=2111 fail=1% fpc=0.6
+m72GJdX3FFrx3dJ6gnc4mDNe2a9SpmdsPEsquHP1Hcn;Unknown (m72GJ);unknown;unknown;;auto_classified;tx=6421 fail=1% fpc=0.0
+noteD9tEFTDH1Jn9B1HbpoC7Zu8L9QXRo7FjZj3PT93;Unknown (noteD);unknown;unknown;;auto_classified;tx=6388 fail=0% fpc=0.0
+BMvZumCsba7rdQZt2b8A2S1RyKgciqekKb4EwGYRUfyh;Unknown (BMvZu);unknown;unknown;;auto_classified;tx=3149 fail=0% fpc=0.1
+BXsPawZ6SgjwAKsDq5ZN39ApU7vphpr2nRvhz1y8P2WL;Unknown (BXsPa);unknown;unknown;;auto_classified;tx=5621 fail=0% fpc=0.0
+6bES2dKy1ee13HQ4uW4ycw4Kw4od9ziZeWMyAxVySYEd;Unknown (6bES2);unknown;unknown;;auto_classified;tx=6253 fail=1% fpc=0.0
+FQpPbY4Ny2wevcgw9v3bDu43S8V3cRwQuPtvg55dhqRS;Unknown (FQpPb);unknown;unknown;;auto_classified;tx=89 fail=0% fpc=1.3
+FmmpibCiLk5s9um96xmZGxFcXn5M7dvdZsduf3v4L4Rg;Unknown (Fmmpi);unknown;unknown;;auto_classified;tx=6098 fail=0% fpc=0.0
+nttLq3ZsKu9uAFWuBGksdZTPAjkMRyPkxp61CJPsntA;NTT Bridge;bridge;cross_chain;;auto_classified;NTT prefix
+AMMSgtnttAKx5Ad2Y1socKJ3CcQYCB2ctg8U2SAHcVEx;AMM Program;dex;amm;;auto_classified;prefix:AMMSgt
+GUAx5MKATvSf9udMT6TvZmomQ6Qyr85ZEdaEazk9kZiv;Unknown (GUAx5);unknown;unknown;;auto_classified;tx=3077 fail=0% fpc=0.5
+8p6MKtMGGugZMy2HGXtL3uBb11y7xuzXmbMbQgNmWVUQ;Trading Bot (8p6MK);arb_bot;trading;;auto_classified;26% fail
+2e4JmcfcGpLgH4wCWzYxnms5DEiMEJeyE2VbpY4HvMVN;Unknown (2e4Jm);unknown;unknown;;auto_classified;tx=3070 fail=2% fpc=0.1
+ChainWorksznk6gZyzGHUAxVUNuc79wznbf3DGnVxgyh;Unknown (Chain);unknown;unknown;;auto_classified;tx=574 fail=43% fpc=4.9
+Gx4uQRXudq7oacjfCoVMHY1pszPQEGn7BNwmdKX1XTa3;Unknown (Gx4uQ);unknown;unknown;;auto_classified;tx=5673 fail=12% fpc=0.0
+6jMi2CRpAA6uah3qzPpCR8SL8MsuAsB9MtCTKkufXkw2;Unknown (6jMi2);unknown;unknown;;auto_classified;tx=1190 fail=7% fpc=0.3
+43mTap3FzFV9ks5wEci9QmkFH23BGiiJPXzUyR5Ceot8;Unknown (43mTa);unknown;unknown;;auto_classified;tx=3853 fail=0% fpc=0.1
+SLendK7ySfcEzyaFqy93gDnD3RtrpXJcnRwb6zFHJSh;Solend v3;lending;lending;;auto_classified;prefix:SLendK
+BLocKecQFEYSaKyfXx9gbwqYnV1GqSD1VQZ1zLqFsSh;Blockworks;other;infrastructure;;auto_classified;prefix:BLocKe
+RSZE1NgJy3zdmyTWPeT4yKbsUrhAwrh4mXBL1rMvHt4;Unknown (RSZE1);unknown;unknown;;auto_classified;tx=5561 fail=0% fpc=0.0
+Priority6weCZ5HwDn29NxLFpb7TDp2iLZ6XKc5e8d3;Priority Fee Program;other;infrastructure;;auto_classified;prefix:Priori
+xpo8sHWHkfS6NpVsYwE2t5pTvvdTHSdWUdxh2RtsT1H;Unknown (xpo8s);unknown;unknown;;auto_classified;tx=5528 fail=0% fpc=0.0
+RTMBGKx9bkBMtFgRsob8S4fEhbK5MBkrVAuFkcrw8bc;DeFi Protocol (RTMBG);unknown;unknown;;auto_classified;high_cu=145832
+CRhtqXk98ATqo1R8gLg7qcpEMuvoPzqD5GNicPPqLMD;Unknown (CRhtq);unknown;unknown;;auto_classified;tx=5461 fail=0% fpc=0.0
+5e8WewiqFEkSHQojtdCHMuuEQ6K7x3QWax5fpNMiH7KX;Unknown (5e8We);unknown;unknown;;auto_classified;tx=3935 fail=0% fpc=0.1
+GFzXiEhiRauw6k59L15zz4UJ9ZANaF5gpPtxEaYCo8jv;Trading Bot (GFzXi);arb_bot;trading;;auto_classified;56% fail
+C984fX81weV2zrfG97Hc6aKHk2YyPr2uZbQdo3GRungW;Unknown (C984f);unknown;unknown;;auto_classified;tx=5225 fail=0% fpc=0.0
+8VWm29HWNAftJJnGpL7rqVcyShbB1TSZmweaMec7V7no;Unknown (8VWm2);unknown;unknown;;auto_classified;tx=5225 fail=8% fpc=0.0
+EMa5knjCt8rrNXvVUiSHLPkrkxHvMNrg2R2HDchRDzDY;Unknown (EMa5k);unknown;unknown;;auto_classified;tx=5058 fail=1% fpc=0.0
+raTEMK3K8ahgwLuWUHEvp7aJXjVmcbNgj8XmQVMgt5q;Rate Program;other;infrastructure;;auto_classified;rate prefix
+raTEkEMFeDsvsELyQ5CMk4dS8Yhh3wyXXRL6QESd7p2;Rate Program;other;infrastructure;;auto_classified;rate prefix
+3w1ggZZ4hbi5sfLKSvz3pgh6S6nMQBSBtuzCyFHgnbKi;Unknown (3w1gg);unknown;unknown;;auto_classified;tx=5071 fail=0% fpc=0.0
+NTTB7GBM1e559QnE2AtppjjuRmA9gHYMuqauLC2DiXn;NTT Bridge;bridge;cross_chain;;auto_classified;NTT prefix
+AUREUSL1HBkDa8Tt1mmvomXbDykepX28LgmwvK3CqvVn;Unknown (AUREU);unknown;unknown;;auto_classified;tx=5064 fail=2% fpc=0.0
+EoV4Bsncqw1MDobAyobTkvu2dFJqP3PLa5jidoF74eSa;Unknown (EoV4B);unknown;unknown;;auto_classified;tx=4990 fail=9% fpc=0.0
+RatEqyzDoJW8bAk2dBp9rTZCYykhLxt4P7CDxodKK1L;Rate Program;other;infrastructure;;auto_classified;rate prefix
+inscokhJarcjaEs59QbQ7hYjrKz25LEPRfCbP8EmdUp;Inscription Protocol;unknown;unknown;;auto_classified;prefix:insco
+DbTjBdpz5Mz4QTEm1EyHkyQQ6gsS3btRAvydoE8bZfAx;Unknown (DbTjB);unknown;unknown;;auto_classified;tx=4826 fail=0% fpc=0.0
+zoRabwLGd5zXaV7Gxacppw8tcceXEiTrSKyNLSaSTUc;Zora Protocol;unknown;unknown;;auto_classified;prefix:zoRabw
+E22mM2hSBAb786m9c9mfdgCopdHVaXqeGF8fuNC7rgFJ;Unknown (E22mM);unknown;unknown;;auto_classified;tx=4685 fail=0% fpc=0.0
+unpXTU2Ndrc7WWNyEhQWe4udTzSibLPi25SXv2xbCHQ;UNP Protocol;unknown;unknown;;auto_classified;prefix:unpXTU
+8r2jms1vAnHhtCWxDNSgiHvQNSzzJvGa9oBRCbBPCBNN;Unknown (8r2jm);unknown;unknown;;auto_classified;tx=2308 fail=0% fpc=0.3
+DERP2sf1Nak1R7s5HVgQD9WcQM1X9CKh5Ru5PNafAsPg;DERP Protocol;unknown;unknown;;auto_classified;prefix:DERP2s
+AButzjf4rTRL7WerjnruW6Vbvab9iFujcJCsm4E3nwc8;Unknown (AButz);unknown;unknown;;auto_classified;tx=4356 fail=0% fpc=0.0
+45DJvdkD7fiTrhsrNxaWd8jAiWJ1G5S98W7n4Wg8gJdW;Trading Bot (45DJv);arb_bot;trading;;auto_classified;34% fail
+AMMJdEiCCa8mdugg6JPF7gFirmmxisTfDJoSNSUi5zDJ;AMM Program;dex;amm;;auto_classified;prefix:AMMJdE
+2LpxztCB9YjLxPwp8XdkYPtEaQBEkB3ejuDbYtHbkEZ8;Unknown (2Lpxz);unknown;unknown;;auto_classified;tx=2201 fail=0% fpc=0.2
+6k9DQREaFRtefjzMt98tKSVcNUnxLDxma7avzu739q4H;Unknown (6k9DQ);unknown;unknown;;auto_classified;tx=4386 fail=0% fpc=0.0
+srtJ3oQoazxhiiFj6CdEowvkTgUxvn6NQNmJ5VrwkD9;Unknown (srtJ3);unknown;unknown;;auto_classified;tx=4381 fail=0% fpc=0.0
+CMAGAKJ67e9hRZgfC5SFTbZH8MgEmtqazKXjmkaJjWTJ;CMA Program;unknown;unknown;;auto_classified;prefix:CMAGAK
+PHYSJkZ4KNpK4Lp5pg89xfab5mSer9NxRfr6YzuRdNQ;DeFi Protocol (PHYSJ);unknown;unknown;;auto_classified;high_cu=157240
+GfyUP9mziko4u381SeLBb4D2ijTH4a9ruzBiA2hQAmwr;Unknown (GfyUP);unknown;unknown;;auto_classified;tx=4104 fail=0% fpc=0.0
+fish3HxLMRkCyRMobeJyDy9ymXojx1Q1G1mbXSzpsvS;Unknown (fish3);unknown;unknown;;auto_classified;tx=3251 fail=0% fpc=0.1
+B1osUCap5eJ2iJnbRqfCQB87orhJM5EqZqPcGMbjJvXz;Trading Bot (B1osU);arb_bot;trading;;auto_classified;56% fail
+DCA265Vj8a9CEuX1eb1LWRnDT7uK6q1xMipnNyatn23M;DCA Program;cranker;dca;;auto_classified;prefix:DCA265
+2snGap4Sehqid8zhufpTmGZbPxWsD1c6ab7rcMaocoou;MEV Bot (2snGa);arb_bot;mev;;auto_classified;fpc=10.8 fail=10%
+GovER5Lthms3bLBqWub97yVrMmEogzX7xNjdXpPPCVZw;Governance Program;other;governance;;auto_classified;prefix:GovER5
+mnCk3moW6q9UszVev3C9JjtE4YoviXgLwiLCnUy3c4D;Unknown (mnCk3);unknown;unknown;;auto_classified;tx=3932 fail=1% fpc=0.0
+RAkd1EJg45QQHeuXy7JEWBhdNvsd64Z5PbZJWQT96iB;Unknown (RAkd1);unknown;unknown;;auto_classified;tx=3873 fail=0% fpc=0.0
+NttMjdaP1RnzrqFMjspEBaqRv7N2X2JTbVmLMSXGHhK;NTT Bridge;bridge;cross_chain;;auto_classified;NTT prefix
+2BKVtbJPi42KRjGQ6LmNApvHvXo89PW1iwnMgimhQeyP;DeFi Protocol (2BKVt);unknown;unknown;;auto_classified;high_cu=126304
+A95jD3nCCc9AeXhbYEYLeJ1owLG8hErfuLri9W1BRqTf;MEV Bot (A95jD);arb_bot;mev;;auto_classified;fpc=27.2 fail=40%
+CFjLE5589EiPZvPFiSx7QgktBH8ZTkkGJU2dL7qbJU2a;Unknown (CFjLE);unknown;unknown;;auto_classified;tx=581 fail=0% fpc=0.6
+BHMPLPwX2DgxNe9EiyNqMqTfYXtRfaQLpD3USaYnQexp;Unknown (BHMPL);unknown;unknown;;auto_classified;tx=2295 fail=0% fpc=0.1
+HLZs9XgTLYAcb76gXUXuMW5JYugBpvxBSD1m5zarTgS7;Unknown (HLZs9);unknown;unknown;;auto_classified;tx=3599 fail=0% fpc=0.0
+8zPmKwY3Wv9yVoP6xZnzkAUJX5BeqM7aVMDZio4PBDyb;Unknown (8zPmK);unknown;unknown;;auto_classified;tx=9 fail=0% fpc=7.6
+DDZDcYdQFEMwcu2Mwo75yGFjJ1mUQyyXLWzhZLEVFcei;Unknown (DDZDc);unknown;unknown;;auto_classified;tx=3590 fail=3% fpc=0.0
+4TyRczJ6eu2cv34uQQorQhS1m91PcEBMCRonmYZomiUA;Unknown (4TyRc);unknown;unknown;;auto_classified;tx=3492 fail=0% fpc=0.0
+EKLFRXRLJo1tFnTMdShD1y8nMQcArtxchktBQjVHXPSX;Unknown (EKLFR);unknown;unknown;;auto_classified;tx=3475 fail=1% fpc=0.0
+7mSqZcYPUGm99M6sGpNRHjorbB1NPF3ThyTpEjhkKzKF;Unknown (7mSqZ);unknown;unknown;;auto_classified;tx=3443 fail=0% fpc=0.0
+GasB9dNMfXGXysMeTjQnnAnN38RmbrphtH5dkkWnMMvQ;Gas Protocol;other;infrastructure;;auto_classified;prefix:GasB9d
+traderDnaR5w6Tcoi3NFm53i48FTDNbGjBSZwWXDRrg;Trader Bot;arb_bot;trading;;auto_classified;prefix:trader
+BHidyz25KWkNPdTHgeANzMg25MM2KEiNnG4yE5F46XUz;Unknown (BHidy);unknown;unknown;;auto_classified;tx=3428 fail=3% fpc=0.0
+LockrWmn6K5twhz3y9w1dQERbmgSaRkfnTeTKbpofwE;Lock Program;other;vesting;;auto_classified;prefix:LockrW
+32Jr4JnXWvqq9GqPQynkooHsszaucUUvZfNLh2hdX2L5;Unknown (32Jr4);unknown;unknown;;auto_classified;tx=3379 fail=0% fpc=0.0
+DmfUp9sjqVW4uf89X5T1bq1rWw1MzuWjZvZpDpjnW6Ju;Unknown (DmfUp);unknown;unknown;;auto_classified;tx=2548 fail=0% fpc=0.0
+HQ2UUt18uJqKaQFJhgV9zaTdQxUZjNrsKFgoEDquBkcx;DeFi Protocol (HQ2UU);unknown;unknown;;auto_classified;high_cu=122849
+AgdxtGStJsyCZAZvZChtnTtaK774e3Yf2QWdq8gSfLuc;Unknown (Agdxt);unknown;unknown;;auto_classified;tx=3277 fail=0% fpc=0.0
+C4PcYp1KVrU6sXkiYGwc9rAHZXnVTfqsM1Ek5zFw4DEf;Unknown (C4PcY);unknown;unknown;;auto_classified;tx=3262 fail=0% fpc=0.0
+FBLPCK5w3wxpfxsdZfBcRfQCSXcC9x2cmocYHb5K6EZc;Unknown (FBLPC);unknown;unknown;;auto_classified;tx=8 fail=0% fpc=6.6
+D8C8iW6zmoKg5TRr8nQ7h14TMWqQX8FiBdj2ju5MF3wa;DeFi Protocol (D8C8i);unknown;unknown;;auto_classified;high_cu=109647
+23YJWaC8AhEufH8eYdPMAouyWEgJ5MQWyvz3z8akTtR6;Unknown (23YJW);unknown;unknown;;auto_classified;tx=3158 fail=0% fpc=0.0
+HmaXyMUBP1J84LafYVRus1PS498F2FXJNCxtbTrNnkGf;Unknown (HmaXy);unknown;unknown;;auto_classified;tx=3137 fail=0% fpc=0.0
+NtttGjhSzBsofYFWRYkKLV9n4og1nxVoTtBNVbnu8mf;NTT Bridge;bridge;cross_chain;;auto_classified;NTT prefix
+44gjgndDaSHTAXxXuQYMEJJ4VkoE8b97o6P59Hhv8DB4;Unknown (44gjg);unknown;unknown;;auto_classified;tx=2195 fail=1% fpc=0.0
+Arcj82pX7HxYKLR92qvgZUAd7vGS1k4hQvAFcPATFdEQ;Trading Bot (Arcj8);arb_bot;trading;;auto_classified;66% fail
+nttu74CdAmsErx5daJVCQNoDZujswFrskMzonoZSdGk;NTT Bridge;bridge;cross_chain;;auto_classified;NTT prefix
+BSfD6SHZigAfDWSjzD5Q41jw8LmKwtmjskPH9XW1mrRW;Unknown (BSfD6);unknown;unknown;;auto_classified;tx=3052 fail=0% fpc=0.0
+chopmfFa3T1CzZj9WUgq5e18aMvjufSHGfPTvyKkydL;Chop Protocol;unknown;unknown;;auto_classified;prefix:chopmf
+WattJi1TzD85VrBjrSspQUQQau1cZ8kzxZr3i6VNnhg;Watt Protocol;depin;network;;auto_classified;prefix:WattJi
+FLEET1qqzpexyaDpqb2DGsSzE2sDCizewCg9WjrA6DBW;Star Atlas Fleet;gaming;game;;auto_classified;prefix:FLEET1
+nTT36HayeWMJjdK6D4L3E5t4Z6oEyASVDDALFXVTJND;NTT Bridge;bridge;cross_chain;;auto_classified;NTT prefix
+BDHztFsD45xQDfwEg2rGyZjQPaMeDm9Lxg25LBxBeyA1;Unknown (BDHzt);unknown;unknown;;auto_classified;tx=2515 fail=0% fpc=0.0
+rateE3GompDX8X8a6WEqwve7kge6YwCGEhN8krmTFjB;Rate Program;other;infrastructure;;auto_classified;rate prefix
+HfxJdaQDzgoeSqX1amL69myyZQqrab5M9wjbotV8i6N2;Unknown (HfxJd);unknown;unknown;;auto_classified;tx=1488 fail=0% fpc=0.9
+optsy31cq14ExqAA8atvvtv7JRHMCtojXja8DjEXa6N;Options Protocol;lending;options;;auto_classified;prefix:optsy3
+EG1BjZMraQcrHoPkR4qXs2T2trCarQH5nfJV7VjUUnkN;Unknown (EG1Bj);unknown;unknown;;auto_classified;tx=2940 fail=0% fpc=0.0
+BMBpXq5RaoRf5pGsQpuwjcozaLF2TuNCmYKKcFJjFiFS;DeFi Protocol (BMBpX);unknown;unknown;;auto_classified;high_cu=131133
+rAte14X4CFgBXqPLEhmcLxkXVRoFthL3fcbBHVuvmxo;Rate Program;other;infrastructure;;auto_classified;rate prefix
+BidUuhFU1wyjgmpTv4YMQrqzersavZLJRnsgpw3i4k88;Unknown (BidUu);unknown;unknown;;auto_classified;tx=2853 fail=1% fpc=0.0
+CREWiq8qbxvo4SKkAFpVnc6t7CRQC4tAAscsNAENXgrJ;Crew Protocol;unknown;unknown;;auto_classified;prefix:CREWiq
+EG67mGGTxMGuPxDLWeccczVecycmpj2SokzpWeBoGVTf;DeFi Protocol (EG67m);unknown;unknown;;auto_classified;high_cu=128545
+EAA5YxYCFjLo8werxQDJDV6TRjbdXNkq89o5qmsyuBcm;Unknown (EAA5Y);unknown;unknown;;auto_classified;tx=158 fail=1% fpc=1.6
+5tLEJ7TDNdCkoHBEQWYkkiaevrAVdhiJzcmTUEcaTu9;Unknown (5tLEJ);unknown;unknown;;auto_classified;tx=7 fail=0% fpc=7.9
+EW9GwxawnPEHA4eFgqd2oq9t55gSG4ReNqPRyG6Ui6PF;Unknown (EW9Gw);unknown;unknown;;auto_classified;tx=2779 fail=0% fpc=0.0
+57GQDhcco4bv4Ngcg7gc6huEYepnGU4PZAGHQCFJmjNW;Unknown (57GQD);unknown;unknown;;auto_classified;tx=2699 fail=0% fpc=0.0
+NBSVPf3v6um9fFvazQhidd7ePCkJ82gh2ATYMo1Dcbp;Unknown (NBSVP);unknown;unknown;;auto_classified;tx=1352 fail=1% fpc=0.1
+foRGEL4EUjeQMd8U2QL5Rx8je75ZFpmtLoWRyyAxxr7;Forge Protocol;unknown;unknown;;auto_classified;prefix:foRGEL
+CRGhjZGv6ttKt8AiqEZd2ZBW7Kp14zXUKjUykoR29LbN;Unknown (CRGhj);unknown;unknown;;auto_classified;tx=1419 fail=0% fpc=0.1
+goonuddtQRrWqqn5nFyczVKaie28f3kDkHWkHtURSLE;GoonFi v1;prop_amm;prop_amm;;auto_classified;prefix:goonu
+prm1azdDGzyqP76s3Hv2nuG3uLnBgR5u2d7pANwmmzC;Premium Protocol;unknown;unknown;;auto_classified;prefix:prm1az
+brcXo6HSsYdF37owe2szAT77yXBqmC2osTwJ2LhZAXz;BRC Protocol;unknown;unknown;;auto_classified;prefix:brcXo6
+eUSXyKoZ6aGejYVbnp3wtWQ1E8zuokLAJPecPxxtgG3;eUSD Protocol;lending;stablecoin;;auto_classified;prefix:eUSXyK
+fragnAis7Bp6FTsMoa6YcH8UffhEw43Ph79qAiK3iF3;Fragment Protocol;unknown;unknown;;auto_classified;prefix:fragnA
+ZUPYzr87cgminBywohtbUxnaiFMwXNy8A5pD9cCcvVU;DeFi Protocol (ZUPYz);unknown;unknown;;auto_classified;high_cu=103180
+Ga71KgdYh4vWoRZrmtFbqNVGWGA3njQPS58vV8z8PSdp;Unknown (Ga71K);unknown;unknown;;auto_classified;tx=2441 fail=0% fpc=0.0
+JBBrJmCunztkrb2vtn2GE1YmbVdjbaRc3x7mUG2Qq5CQ;Unknown (JBBrJ);unknown;unknown;;auto_classified;tx=2430 fail=0% fpc=0.0
+HMq2uadrCJru2bhP1DJrVmjLM7pySS9rP5FGQjg5GULP;Unknown (HMq2u);unknown;unknown;;auto_classified;tx=1256 fail=1% fpc=0.1
+mine9YMaEywEJyysaDLjYngt8pYXxQDsdakUewPEW8S;Mining Program;depin;pow;;auto_classified;prefix:mine9Y
+RAte2gSaXmo5YSbpGHDKpK64J7frAmonHBpi4odtyRV;Rate Program;other;infrastructure;;auto_classified;rate prefix
+8yvD3vvuJdXCaxuVKSc81SNgox3vcXfXgLCJii8WKBvU;DeFi Protocol (8yvD3);unknown;unknown;;auto_classified;high_cu=158275
+pyti8TM4zRVBjmarcgAPmTNNAXYKJv7WVHrkrm6woLN;Pyth Integration;oracle;price_feed;;auto_classified;prefix:pyti8T
+save8RQVPMWNTzU18t3GBvBkN9hT7jsGjiCQ28FpD9H;Save Protocol;lending;lending;;auto_classified;prefix:save8R
+UMBRAkrfUTHuPAjDQXgmpoQjGGyhtqiRqWNrMroEijV;Umbra Protocol;unknown;unknown;;auto_classified;prefix:UMBRA
+CndyV3LdqHUfDLmE5naZjVN8rBZz4tqhdefbAnjHG3JR;Candy Machine;nft;marketplace;;auto_classified;prefix:CndyV3
+LocpQgucEQHbqNABEYvBvwoxCPsSbG91A1QaQhQQqjn;DeFi Protocol (LocpQ);unknown;unknown;;auto_classified;high_cu=138289
+HumaXepHnjaRCpjYTokxY4UtaJcmx41prQ8cxGmFC5fn;Huma Finance;unknown;unknown;;auto_classified;prefix:HumaXe
+mgrfTeJh5VgHt67LQQVZ7U2gPY88En94QMWz64cV2AY;Manager Protocol;other;infrastructure;;auto_classified;prefix:mgrfTe
+BBbD1WSjbHKfyE3TSFWF6vx1JV51c8msKSQy4ess6pXp;Unknown (BBbD1);unknown;unknown;;auto_classified;tx=68 fail=0% fpc=3.6
+JPDGXJky3iRkPmJx3cixg5cxJGGwP9kXBJzMpT5GLir;Unknown (JPDGX);unknown;unknown;;auto_classified;tx=2220 fail=0% fpc=0.0
+4fjiA3BqRSYybXfpMuFzGhq5rSMkUPthGqWQEYKKKXkY;Unknown (4fjiA);unknown;unknown;;auto_classified;tx=1151 fail=0% fpc=0.1
+BkSqG9ni5R47X7QynNTzhQoHve5TCX4qHPQxsmLV2sfV;Unknown (BkSqG);unknown;unknown;;auto_classified;tx=2174 fail=0% fpc=0.0
+EQYRmLmkE7G7a2WQyojwrXg4SeguypCdnbm3ecncizsd;Unknown (EQYRm);unknown;unknown;;auto_classified;tx=1407 fail=0% fpc=0.1
+2M5kinPh6R6ow4287N3SLWLx9mWFKpBq1QfnsGGhQ2no;Unknown (2M5ki);unknown;unknown;;auto_classified;tx=2135 fail=0% fpc=0.0
+9vJvSurs8pwRR4PzPYkTJ76As9srzXQu8zTTHGfAoSRm;Unknown (9vJvS);unknown;unknown;;auto_classified;tx=2117 fail=2% fpc=0.0
+DSw5ibYPfvZH3VxCCwBWFNndu1pGTAkKfb6M1h9zwD8E;Arb Bot (DSw5i);arb_bot;arbitrage;;auto_classified;91% fail rate
+BhdU135mdBb1V7jcKdAZoFueNMLMeAtAbBgUZehqRte7;Unknown (BhdU1);unknown;unknown;;auto_classified;tx=2078 fail=0% fpc=0.0
+nttmCZuaoLZ2TEyuo1qytxUJwW9v5Um7bhUgY9zhS6M;NTT Bridge;bridge;cross_chain;;auto_classified;NTT prefix
+tuktukUrfhXT6ZT77QTU8RQtvgL967uRuVagWF57zVA;TukTuk Program;other;infrastructure;;auto_classified;prefix:tuktuk
+NtTtwqVX4SCNECrZ8ZmEaxAPFcm5r7Szx4tBmYLU17p;NTT Bridge;bridge;cross_chain;;auto_classified;NTT prefix
+NTTLfv5maZDudMfd9gNjn99dcEgRMY3E5johLyE4Pm2;NTT Bridge;bridge;cross_chain;;auto_classified;NTT prefix
+2DkBHDXSGeDtZMrW1SvFV3pJAEr8LYRN2UjJ89LKGg2P;Unknown (2DkBH);unknown;unknown;;auto_classified;tx=204 fail=0% fpc=0.9
+TokExjvjJmhKaRBShsBAsbSvEWMA1AgUNK7ps4SAc2p;Token Extension;other;token;;auto_classified;prefix:TokExj
+iLEPWontSkuaCDeg8psrxB3mVHAA39fWWRtinSJcrtJ;iLEP Protocol;unknown;unknown;;auto_classified;prefix:iLEPWo
+4XKv23WzTb9ZpwLCxfQ3k2ChFmQwrUuuazpDKq3ikVSJ;Unknown (4XKv2);unknown;unknown;;auto_classified;tx=1516 fail=5% fpc=0.0
+42C9thies2WottySPmi2k93Nq2eP7TUtPZxHVAhicxMP;Trading Bot (42C9t);arb_bot;trading;;auto_classified;32% fail
+migK824DsBMp2eZXdhSBAWFS6PbvA6UN8DV15HfmstR;Migration Program;other;infrastructure;;auto_classified;prefix:migK82
+CZcvoryaQNrtZ3qb3gC1h9opcYpzEP1D9Mu1RVwFQeBu;Arb Bot (CZcvo);arb_bot;arbitrage;;auto_classified;72% fail rate
+DHFkF589sftXMvirmVGoMPk9rjzvUEiRTJvdT7yYXdmu;Unknown (DHFkF);unknown;unknown;;auto_classified;tx=1908 fail=0% fpc=0.0
+GpQUqzphxhR5vpyihR27X45iSGeSKruzd8BHj2WU4fYx;Unknown (GpQUq);unknown;unknown;;auto_classified;tx=1907 fail=2% fpc=0.0
+SRSLY1fq9TJqCk1gNSE7VZL2bztvTn9wm4VR8u8jMKT;Seriously Protocol;unknown;unknown;;auto_classified;prefix:SRSLY1
+CM9y2DreJSMqzoRRrLkWEZzTB9ve5D4gQHcPPxrw8mxg;Unknown (CM9y2);unknown;unknown;;auto_classified;tx=1866 fail=0% fpc=0.0
+oxp5daG6BinG1AL2W83RQmmN8tcXJqrqy3bYprLMRV8;OXP Protocol;unknown;unknown;;auto_classified;prefix:oxp5da
+RUsHe5Kt19Koe2stiQuTRS4wkev5QjY5AyatokniGeY;Unknown (RUsHe);unknown;unknown;;auto_classified;tx=1822 fail=1% fpc=0.0
+3JewDFh1NBryPrfcxKpepHks4cUyQPZWsf3DoK1r93ou;DeFi Protocol (3JewD);unknown;unknown;;auto_classified;high_cu=102704
+axjx66xJAyWxVTu73uCjqzSsAopBbqEbyetD5SUFTex;AXJ Protocol;unknown;unknown;;auto_classified;prefix:axjx66
+AUMinudJ3Qnq75vEev6Q39HpbBhAum4raVWct3s4QcZD;AUM Protocol;unknown;unknown;;auto_classified;prefix:AUMinu
+3am45Ut1oBZZU9qKuodfe4Ck1HB4wkAp7bDkonBhbeAe;Unknown (3am45);unknown;unknown;;auto_classified;tx=124 fail=22% fpc=1.2
+48EWpApsQihHzvnq8hRrhn51PJWB1r41HmEyfxLWoNNC;DeFi Protocol (48EWp);unknown;unknown;;auto_classified;high_cu=110458
+Bscr7gaUhPMt4j8ugbsQyk4R8mVLMJS7q2U9AsnXLgjb;Unknown (Bscr7);unknown;unknown;;auto_classified;tx=1776 fail=0% fpc=0.0
+tbd3QdqF7Es36ifxUsW4uhf5fVkba94oKaGYXLZckT6;TBD Protocol;unknown;unknown;;auto_classified;prefix:tbd3Qd
+pjMUjMjHTHot5bYrBu9qd4cRaNKdK1eTR8iVYouQzDo;Unknown (pjMUj);unknown;unknown;;auto_classified;tx=1744 fail=0% fpc=0.0
+GDExVWfNUUhZ7obMJPmNFzqfaST3Zfs7W95iAHVqMLLi;Unknown (GDExV);unknown;unknown;;auto_classified;tx=59 fail=3% fpc=1.4
+Nqd6XqA8LbsCuG8MLWWuP865NV6jR1MbXeKxD4HLKDJ;Unknown (Nqd6X);unknown;unknown;;auto_classified;tx=1703 fail=0% fpc=0.0
+3i5JeuZuUxeKtVysUnwQNGerJP2bSMX9fTFfS4Nxe3Br;Unknown (3i5Je);unknown;unknown;;auto_classified;tx=173 fail=24% fpc=0.8
+SSSnRENPEFnbQKfk7qFjiFyg4vku5CjLsxeEs9jWaTe;SSS Protocol;unknown;unknown;;auto_classified;prefix:SSSnRE
+268xoH5VPMgtcuaBgXimyRHebsubszqQzPUrU5duJLL8;Arb Bot (268xo);arb_bot;arbitrage;;auto_classified;96% fail rate

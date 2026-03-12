@@ -48,7 +48,14 @@ Do NOT add external fetches. These are the only data sources:
 
 6. **Slider pattern** — existing sliders use a consistent event listener pattern. Match it exactly when adding new sliders.
 
-7. **After modifying** — always test locally before pushing:
+7. **UX/UI skill** — invoke the `oiloil-ui-ux-guide` skill BEFORE and AFTER any visual or layout change. Do not wait to be asked. Enforce these rules automatically:
+   - Slider value must be visually grouped with its label — internal spacing < spacing between blocks
+   - Section titles: more space ABOVE than BELOW — they belong to what follows
+   - Side-by-side elements: enough gap so values cannot be confused between them
+   - Minimum 12px for all hint/secondary text
+   - Sticky panels must stay sticky for the full scrollable height
+
+8. **After modifying** — always test locally before pushing:
    ```bash
    python -m http.server 8765
    # → http://localhost:8765/raiku_revenue_simulator.html

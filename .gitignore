@@ -39,3 +39,4 @@ output/
 venv/
 .venv/
 env/
+.firecrawl/

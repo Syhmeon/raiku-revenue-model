@@ -533,3 +533,4 @@ Changes made:
 - `config.py`: renamed waterfall constants
 - CSV output columns: `protocol_revenue_usd` → `treasury_usd` (+ `protocol_pool_usd`, `jit_rebate_usd`, `aot_rebate_usd`, `validator_bonus_usd`)
 
+

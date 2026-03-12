@@ -77,6 +77,29 @@
 
 ---
 
+## Program Classification
+
+**Mistake**: Prefix-inferred names like "Forge Protocol" or "Fragment Protocol" assumed to be real without verification.
+**Rule**: Program names derived from address prefixes are **NOT real names**. Always verify on Solscan before keeping. If unverifiable, use pattern `"Trading Bot (prefix)"` or `"Unknown (prefix)"`.
+
+**Mistake**: Leaving `raiku_product` empty for auto-classified programs.
+**Rule**: Every program in `program_categories.csv` MUST have a `raiku_product` value. For `unknown` category with high CU: use `potential`. For known categories: derive from `TAXONOMY[category]["raiku_product"]`.
+
+**Mistake**: Trying to write to a file open in VS Code on Windows.
+**Rule**: VS Code locks files with exclusive OS-level locks on Windows. Cannot `cp`, `mv`, or `open(..., 'w')`. Must close the VS Code tab first.
+
+---
+
+## External APIs — Identification Sources
+
+**SolanaFM API**: Persistently returns 502 Bad Gateway (as of 2026-03-11). Not reliable.
+**Solscan API (api.solscan.io)**: DNS resolution fails from this Windows VM. Use Firecrawl scraping of `solscan.io/account/{address}` instead.
+**Dune solana.labels**: Requires query execution credits. When out of credits, cannot look up program names.
+**OtterSec verify.osec.io**: Only covers ~200 verified programs. Most are already known (Jupiter, Raydium, etc.).
+**SolWatch (lead_pipeline_sheet.xlsx)**: 20630 rows but only matches ~1 unknown program (Pyth Receiver). Low hit rate for unknowns.
+
+---
+
 ## Git / GitHub
 
 **Rule**: Always verify `data/processed/` is in `.gitignore` before pushing (large generated files).

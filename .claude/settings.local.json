@@ -1,15 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python 01_extract/extract_dune_programs.py --create-queries)",
-      "Bash(python 01_extract/extract_dune_programs.py --print-sql)",
+      "Bash(*)",
+      "Read(*)",
+      "Write(*)",
       "mcp__dune__*",
-      "Bash(echo $DUNE_API_KEY)",
-      "Bash(claude mcp:*)",
-      "Bash(echo $HOME)",
-      "Bash(cd*)",
-      "Bash(gh repo:*)",
-      "Read(//c/Users/Utilisateur/Dev-RAIKU/**)"
+      "mcp__firecrawl__*"
     ]
   }
 }
