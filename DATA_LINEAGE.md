@@ -1,7 +1,8 @@
 # RAIKU Revenue Model — Data Lineage & Source-of-Truth Reference
 
-**Last updated:** 2026-03-10
+**Last updated:** 2026-03-12
 **Purpose:** Definitive map of every data file — who produces it, who consumes it, and which files are the authoritative sources for each data domain.
+**Canonical program-fee batch window (current):** `[2026-02-04, 2026-03-05)` (end date exclusive)
 
 ---
 
@@ -50,12 +51,14 @@ Every file here is produced by exactly one extraction script and is re-extractab
 | 6 | `jito_mev_rewards.csv` | `extract_jito_mev.py` | `build_database.py` | Jito Foundation MEV tips (541 epochs 390+, cross-check) |
 | 7 | `solana_compass_epochs.csv` | `extract_solana_compass.py` | `build_database.py` | Per-validator fees/CU (128 epochs 800+, cross-check) |
 | 8 | `trillium_intraday_peaks.csv` | `extract_intraday.py` | `build_database.py` | Intra-epoch volatility peak data |
-| 9 | `dune_program_fees_aggregate.csv` | `extract_dune_programs.py` | `build_program_database.py` | Top 500 programs aggregate (30-day, feeds program DB) |
-| 10 | `dune_fee_per_cu_by_program.csv` | `extract_dune_programs.py` | `build_program_database.py` (fallback), `aot_revenue.py` | Per-program fee/CU (7-day snapshot, 50 programs) |
-| 11 | `dune_program_conditions.csv` | `extract_program_conditions.py` (or local cross-ref) | `build_program_conditions.py` | Program × market condition breakdown (148 rows) |
-| 12 | `dune_program_fees_v2.csv` | Dune MCP query (manual extraction) | **No Python reader** — manually embedded as D.p in HTML | Source artifact for simulator D.p data. See note below. |
-| 13 | `dune_daily_program_fees_30d.csv` | `download_dune_daily_C.py` (merged from C1-C6) | `build_daily_temporal.py`, conditions pipeline cross-ref | Merged 30-day daily per-program fees (Pipeline B input) |
-| 14 | `lead_pipeline_sheet.xlsx` | External (SolWatch export) | **No Python reader** | Reference-only — 1897 programs, used for manual classification |
+| 9 | `dune_program_fees_v3.csv` | Dune query 6817783 (manual export/import) | `build_program_database.py` | **Canonical base dataset** for program DB merge (shared fee/CU columns), batch window `[2026-02-04, 2026-03-05)` |
+| 10 | `dune_jito_tips_qc_20260204_20260305_excl.csv` | Dune query 6818065 (manual export/import) | `build_program_database.py` | **Canonical Jito dataset** for program DB merge (`jito_tx_count`, `jito_tips_sol`), same batch window |
+| 11 | `dune_program_fees_aggregate.csv` | `extract_dune_programs.py` | Legacy only | Legacy aggregate source (superseded for current canonical batch) |
+| 12 | `dune_fee_per_cu_by_program.csv` | `extract_dune_programs.py` | `aot_revenue.py` | Per-program fee/CU (7-day snapshot, 50 programs) |
+| 13 | `dune_program_conditions.csv` | `extract_program_conditions.py` (or local cross-ref) | `build_program_conditions.py` | Program × market condition breakdown (148 rows) |
+| 14 | `dune_program_fees_v2.csv` | Dune MCP query (manual extraction) | **No Python reader** — manually embedded as D.p in HTML | Source artifact for simulator D.p data. See note below. |
+| 15 | `dune_daily_program_fees_30d.csv` | `download_dune_daily_C.py` (merged from C1-C6) | `build_daily_temporal.py`, conditions pipeline cross-ref | Merged 30-day daily per-program fees (Pipeline B input) |
+| 16 | `lead_pipeline_sheet.xlsx` | External (SolWatch export) | **No Python reader** | Reference-only — 1897 programs, used for manual classification |
 
 #### Intermediate files (produced AND consumed by the same pipeline):
 
@@ -80,7 +83,7 @@ These are the files produced by the transform and model layers. They are **regen
 |---|------|----------|-------------|----------------|
 | 1 | `solana_epoch_database.csv` | `build_database.py` | `jit_revenue.py`, `aot_revenue.py`, `sanity_check.py` | **SOURCE-OF-TRUTH: Epoch data** (786 rows × 43 cols) |
 | 2 | `program_conditions.csv` | `build_program_conditions.py` | `build_program_database.py` | **SOURCE-OF-TRUTH: Conditions** (55 programs × 27 cols) |
-| 3 | `program_database.csv` | `build_program_database.py` | Reference only (not read by models) | **SOURCE-OF-TRUTH: Programs** (500 programs × 23 cols) |
+| 3 | `program_database.csv` | `build_program_database.py` | Reference only (not read by models) | **SOURCE-OF-TRUTH: Programs** (466 programs × 37 cols, includes Jito-inclusive derived metrics) |
 | 4 | `daily_temporal_payload.js` | `build_daily_temporal.py` | `inject_daily_data.py` → HTML | **Intermediate** — JS snippet injected into simulator |
 | 5 | `daily_category_aggregates.csv` | `build_daily_temporal.py` | **No reader** — debug copy of D.daily | **Debug artifact** — CSV mirror of what becomes D.daily. Useful for inspection but not consumed by any script. |
 | 6 | `jit_revenue_scenarios.csv` | `jit_revenue.py` | `sanity_check.py`, `sheets_export.py` | **MODEL OUTPUT** — JIT revenue scenarios |
@@ -120,13 +123,18 @@ program_categories.csv ──────────┤──► build_program_
 ### Chain C: Program Database
 
 ```
-dune_program_fees_aggregate.csv ─┐
-dune_fee_per_cu_by_program.csv ──┤──► build_program_database.py ──► program_database.csv
-program_categories.csv ──────────┤                                   (500 programs × 23 cols)
-program_conditions.csv ──────────┘                                   AUTHORITATIVE for programs
+dune_program_fees_v3.csv ───────────────────────────────┐
+dune_jito_tips_qc_20260204_20260305_excl.csv ──────────┤──► build_program_database.py ──► program_database.csv
+program_categories.csv ─────────────────────────────────┤                                   (466 programs × 37 cols)
+program_conditions.csv ─────────────────────────────────┘                                   AUTHORITATIVE for programs
 ```
 
-**What `build_program_database.py` does:** Merges the 30-day aggregate Dune data with 7-day fee/CU data, enriches with category names from mapping, and adds congestion sensitivity from conditions. Outputs one row per program.
+**What `build_program_database.py` does:** Merges canonical Query 6817783 and Query 6818065 program-level exports by `program_id` for the same fixed batch window (`[2026-02-04, 2026-03-05)`). Query 6817783 is canonical for shared fee/CU columns; Query 6818065 contributes Jito-specific fields (`jito_tx_count`, `jito_tips_sol`), then derived Jito-inclusive metrics are computed (for example: `total_fees_incl_jito`, `non_base_fees_incl_jito`, `total_fees_per_cu_incl_jito`, `avg_jito_fee_per_tx`).
+
+**Per-CU metric semantics (important):**
+- `avg_priority_fee_per_cu_lamports` is a transaction-level average metric provided by Query 6817783 output logic.
+- `non_base_fees_per_cu_incl_jito` and `total_fees_per_cu_incl_jito` are aggregate period ratios computed from totals (`sum fees / sum total_cu`) and expressed in **lamports/CU**.
+- These definitions are analytically different, so they are **not expected to be numerically equal**.
 
 ### Chain D: Simulator Temporal Data
 
@@ -172,7 +180,7 @@ trillium_epoch_data.csv ────┘
 | Data Domain | Source-of-Truth File | Location | Format | What it contains |
 |-------------|---------------------|----------|--------|-----------------|
 | **Epoch-level Solana metrics** | `solana_epoch_database.csv` | `data/processed/` | 786 rows × 43 cols, `;`-delimited | One row per epoch (150-935). Key columns: `mev_jito_tips_sol`, `priority_fees_sol`, `validator_count`, `active_stake_sol`, `sol_price_usd`, `avg_cu_per_block` |
-| **Per-program economics** | `program_database.csv` | `data/processed/` | 500 rows × 23 cols, `;`-delimited | One row per program. Fees, CU, tx count, category, congestion sensitivity |
+| **Per-program economics** | `program_database.csv` | `data/processed/` | 466 rows × 37 cols, `;`-delimited | One row per program. Canonical fee/CU columns + Jito merge + Jito-inclusive derived metrics for batch window `[2026-02-04, 2026-03-05)` |
 | **Program × market condition** | `program_conditions.csv` | `data/processed/` | 55 rows × 27 cols, `;`-delimited | Fee/CU under normal/elevated/extreme conditions, fee multipliers |
 | **Daily per-program (temporal)** | `dune_daily_program_fees_30d.csv` | `data/raw/` | ~1400 rows, `;`-delimited | Day × program granularity. 30-day window (Feb 4 – Mar 5, 2026) |
 | **Program classification** | `program_categories.csv` | `data/mapping/` | 228 rows, `;`-delimited | program_id → name, raiku_category, raiku_product |
