@@ -100,6 +100,25 @@
 
 ---
 
+## Dune Query Patterns
+
+**Mistake**: Using `SUM(fee)` for both `total_fees_sol` and `priority_fees_sol` in `SQL_AGGREGATE` (extract_dune_programs.py lines 57-58).
+**Rule**: `fee` in `solana.transactions` = base + priority combined. Must derive: `base = required_signatures * 5000`, `priority = fee - required_signatures * 5000`. The `dune_program_fees_aggregate.csv` column `priority_fees_sol` is actually total fees — a known data quality bug.
+
+**Mistake**: Using `cardinality(signatures)` for signature count.
+**Rule**: Use `required_signatures` (integer) — it's a native column, cleaner and more reliable.
+
+**Mistake**: Using `amount` as column name in `system_program_solana.system_program_call_transfer`.
+**Rule**: The column is `lamports` (uint256), not `amount`. Also, table name is lowercase `transfer` (Trino is case-insensitive, but document correctly).
+
+**Dune accounts**: Two accounts exist. Compte A (@syhmeon) = 0 community credits, MCP-authenticated. Compte B (@syh) = has credits, API key in `.env`. MCP `createDuneQuery` uses @syhmeon; must set query to public (`is_private: false`) so Compte B can execute it via REST API.
+
+**Dune credits**: Community plan = 2500 credits/month, resets ~6th of month. @syhmeon exhausted. @syh (Compte B) is the active execution account.
+
+**Jito JOIN feasibility**: JOIN with `system_program_call_transfer` works on 48h windows (proven by @ilemi query 4314734). 30d = guaranteed timeout. If 48h times out, try 24h.
+
+---
+
 ## Git / GitHub
 
 **Rule**: Always verify `data/processed/` is in `.gitignore` before pushing (large generated files).

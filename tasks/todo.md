@@ -16,7 +16,6 @@
 
 ## In Progress
 <!-- Fill at the start of each session -->
-- [ ] Copy `program_categories_new.csv` → `program_categories.csv` (blocked: VS Code file lock)
 - [ ] Update downstream `BIZ_CATEGORIES` in `build_daily_temporal.py` and simulator HTML (deferred task)
 
 ---
@@ -42,6 +41,10 @@
 
 ## Recently Completed
 
+- [x] Dune Q1 (program fees v3) — 461 programs, proper base/priority split, saved to dune_program_fees_v3.csv ✅ (2026-03-12)
+- [x] Dune Q2 (Jito tips QC 48h) — 343 programs, 42 with Jito txs, saved to dune_jito_tips_qc_48h.csv ✅ (2026-03-12)
+- [x] Transform pipeline rerun — program_database.csv (461×23) + program_conditions.csv (55×27) rebuilt ✅ (2026-03-12)
+- [x] Program categories reclassified + copied to program_categories.csv ✅ (2026-03-12)
 - [x] Program taxonomy reclassification — 616 programs, 15 RAIKU categories, zero empty raiku_product ✅ (2026-03-11)
 - [x] Program investigation — 6/80 unknown programs identified via Solscan/GitHub/web research ✅ (2026-03-11)
 - [x] classify_programs.py — full rewrite with TAXONOMY dict, MANUAL_OVERRIDES (22 entries), Task 1+2 logic ✅ (2026-03-11)
@@ -66,6 +69,17 @@
 
 ## Session Notes
 <!-- Add key decisions made during the session -->
+
+### 2026-03-12 — Dune Extraction + Transform Pipeline Complete
+- **Session 1**: Built SQL queries, explored Dune schema, found base/priority bug in old aggregate
+- **Session 2**: Switched to Compte B (@syh) API key (2260 credits available)
+- Q1 executed (query 6817783): 461 programs × 14 columns, proper base/priority split → `dune_program_fees_v3.csv`
+- Q2 created via MCP (query 6818146, made public), executed via Compte B REST API
+- Q2 results: 343 programs, 42 with Jito txs, 1854 SOL tips in 48h → `dune_jito_tips_qc_48h.csv`
+- Updated `build_program_database.py` to read v3 file (path + `avg_cu_per_tx` column name)
+- Rebuilt: `program_database.csv` (461×23, 226 classified) + `program_conditions.csv` (55×27)
+- Cleaned up temp `data/q2_clean.sql`
+- **NEXT**: Update BIZ_CATEGORIES downstream, integrate Jito QC data into simulator/model
 
 ### 2026-03-11 — Program Taxonomy Reclassification + Investigation
 - Reclassified 314 existing programs from 20 ad-hoc categories → 15 RAIKU taxonomy categories

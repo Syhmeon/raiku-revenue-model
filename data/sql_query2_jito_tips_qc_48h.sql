@@ -1,8 +1,8 @@
 -- RAIKU Query 2: Jito tips QC per program (48h window)
 -- Uses system_program_solana.system_program_call_transfer (decoded table)
 -- JOIN proven feasible on 48h window by @ilemi query 4314734
--- Date window: 2026-03-10 to 2026-03-12 (48h)
--- If timeout: reduce to 24h (2026-03-11 to 2026-03-12)
+-- Parameters: {{start_date}} {{end_date}} (format: YYYY-MM-DD)
+-- If timeout: reduce to 10 days to cover the all period in 3 times 2026-02-04 to 2026-03-05
 -- ============================================================
 
 WITH jito_wallets AS (
@@ -23,8 +23,8 @@ jito_amounts AS (
     SUM(CAST(lamports AS double)) AS jito_tip_lamports
   FROM system_program_solana.system_program_call_transfer t
   WHERE t.account_to IN (SELECT wallet FROM jito_wallets)
-    AND t.call_block_date >= DATE '2026-03-10'
-    AND t.call_block_date < DATE '2026-03-12'
+    AND call_block_date >= DATE '{{start_date}}'
+    AND call_block_date < DATE '{{end_date}}'
   GROUP BY call_tx_id
 ),
 tx_data AS (
@@ -37,8 +37,8 @@ tx_data AS (
     tx.required_signatures,
     GREATEST(tx.fee - CAST(tx.required_signatures AS bigint) * 5000, 0) AS priority_fee_lamports
   FROM solana.transactions tx
-  WHERE tx.block_date >= DATE '2026-03-10'
-    AND tx.block_date < DATE '2026-03-12'
+  WHERE tx.block_date >= DATE '{{start_date}}'
+    AND tx.block_date < DATE '{{end_date}}'
     AND tx.compute_units_consumed > 0
     AND tx.fee > 0
     AND tx.instructions[1].executing_account IN (

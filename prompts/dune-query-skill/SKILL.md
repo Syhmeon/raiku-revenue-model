@@ -83,18 +83,24 @@ Key points:
 - **Use fixed dates** (`DATE '2026-02-04'`) not `CURRENT_DATE - INTERVAL` for reproducibility
 - **`instructions[1].executing_account`** = first instruction's program (program attribution)
 - **Base fee = 5000 lamports per tx** (simplified; real = 5000 × num_signatures, but 99%+ of txs have 1 signature)
-- **Priority fee = fee - 5000** (the remainder after base)
+- **Priority fee = fee - required_signatures * 5000** (more accurate than `cardinality(signatures)`)
+- **`required_signatures`** (integer) is available natively — no need for `cardinality(signatures)`
+- **`compute_units_consumed`** is the correct column name (not `compute_units`)
 
 ### Patterns that TIMEOUT on free tier (avoid)
 
 - JOINing `solana.transactions` with `solana.instruction_calls` (too many rows)
-- JOINing with `system_program_solana.system_program_call_Transfer` (Jito tip detection)
+- JOINing with `system_program_solana.system_program_call_transfer` on > 48h windows
 - Any query touching > 30 days of `solana.transactions` without program filtering
 - Queries returning > 1000 rows (Dune free tier limit)
 
-### Consequence: No per-program Jito tips
+### Jito tips per program — 48h window feasible
 
-Jito tips are off-chain transfers to 8 known wallets. Detecting them requires joining with the transfer table, which always timeouts. Per-program Jito tip data is NOT available on Dune free tier. Global Jito tips come from Trillium API instead.
+Per @ilemi query 4314734, JOINing `system_program_solana.system_program_call_transfer` with `solana.transactions` works on 48h windows. The decoded table column is `lamports` (not `amount`), and `account_to` for recipient. Table name is lowercase (`system_program_call_transfer`). See `data/sql_query2_jito_tips_qc_48h.sql` for the tested pattern. If timeout on 48h, reduce to 24h.
+
+### Credit budget
+
+Community plan: 2500 credits/month. Billing period resets ~6th of each month. One 30d single-table scan with 531-program IN clause costs ~200-500 credits. The Jito JOIN query (48h) costs ~300-800 credits. Budget both queries before executing.
 
 ## Dune MCP Tools (for Claude Code prompts)
 

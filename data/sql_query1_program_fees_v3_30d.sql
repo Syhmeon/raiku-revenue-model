@@ -1,7 +1,6 @@
--- RAIKU Query 1 v3: Fee breakdown + CU per program (30 days)
+-- Query 1 v3: Fee breakdown + CU per program (30 days)
 -- Fixes: proper base/priority split, adds blocks_touched, avg_cu_per_block
--- Single-table scan (no Jito JOIN) — should run in < 5 min on free tier
--- Date window: 2026-02-10 to 2026-03-12 (30 days)
+-- Date window: 2026-02-04 to 2026-03-05 (30 days)
 -- ============================================================
 
 WITH tx_with_program AS (
@@ -15,8 +14,8 @@ WITH tx_with_program AS (
     instructions[1].executing_account AS program_id,
     success
   FROM solana.transactions
-  WHERE block_date >= DATE '2026-02-10'
-    AND block_date < DATE '2026-03-12'
+  WHERE block_date >= DATE '2026-02-04'
+    AND block_date < DATE '2026-03-05'
     AND compute_units_consumed > 0
     AND fee > 0
     AND instructions[1].executing_account IN (

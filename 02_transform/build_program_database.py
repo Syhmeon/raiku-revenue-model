@@ -30,7 +30,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from config import DATA_RAW, DATA_PROCESSED, DATA_MAPPING, CSV_DELIMITER, CSV_ENCODING
 
 # ── Input files ────────────────────────────────────────────
-DUNE_AGGREGATE_FILE = DATA_RAW / "dune_program_fees_aggregate.csv"
+DUNE_AGGREGATE_FILE = DATA_RAW / "dune_program_fees_v3.csv"
 DUNE_7DAY_FILE = DATA_RAW / "dune_fee_per_cu_by_program.csv"
 MAPPING_FILE = DATA_MAPPING / "program_categories.csv"
 CONDITIONS_FILE = DATA_PROCESSED / "program_conditions.csv"
@@ -153,7 +153,7 @@ def build_from_30d(dune_rows, mapping):
             "base_plus_priority_fees_sol": safe_float(r.get("total_fees_sol")),
             "priority_fees_sol": safe_float(r.get("priority_fees_sol")),
             "total_cu": safe_float(r.get("total_cu")),
-            "avg_cu_per_tx": safe_float(r.get("avg_cu_consumed")),
+            "avg_cu_per_tx": safe_float(r.get("avg_cu_per_tx", r.get("avg_cu_consumed"))),
             "avg_cu_per_block": safe_float(r.get("avg_cu_per_block")),
             "blocks_touched": safe_float(r.get("blocks_touched")),
             "median_priority_fee_per_cu_lamports": safe_float(r.get("median_priority_fee_per_cu_lamports",
