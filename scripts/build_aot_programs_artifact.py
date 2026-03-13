@@ -42,6 +42,10 @@ CAT_REQUIRED = {
 }
 
 HIGH_TIER_SEGMENTS = {"prop_amm", "orderbook"}
+CORE_PRODUCT_SCOPES = {"aot", "both"}
+BENCHMARK_PRODUCT_SCOPE = "jit"
+BENCHMARK_CATEGORY = "arb_bot"
+EXCLUDED_CATEGORIES = {"other", "unknown"}
 
 
 def read_csv_semicolon(path: Path) -> list[dict]:
@@ -81,6 +85,8 @@ def derive_segment_key(raiku_category: str, subcategory: str) -> str:
     cat = (raiku_category or "").strip().lower()
     sub = (subcategory or "").strip().lower()
 
+    if cat == BENCHMARK_CATEGORY:
+        return BENCHMARK_CATEGORY
     if cat == "prop_amm":
         return "prop_amm"
     if cat == "dex":
@@ -89,7 +95,7 @@ def derive_segment_key(raiku_category: str, subcategory: str) -> str:
         if sub == "aggregator":
             return "aggregator"
         return "amm_pools"
-    if cat in {"lending", "perps", "oracle", "bridge", "cranker", "depin", "payments"}:
+    if cat in {"lending", "perps", "oracle", "bridge", "cranker", "depin", "payments", "nft", "gaming"}:
         return cat
     return "other"
 
@@ -126,6 +132,8 @@ def main() -> None:
 
     programs: list[dict] = []
     batch_windows: set[str] = set()
+    core_rows = 0
+    benchmark_rows = 0
 
     for db in db_rows:
         pid = db["program_id"]
@@ -134,16 +142,30 @@ def main() -> None:
             raise ValueError(f"Missing taxonomy row for program_id: {pid}")
 
         product_scope = (cat["raiku_product"] or "").strip().lower()
-        is_aot_relevant = product_scope in {"aot", "both"}
-        if not is_aot_relevant:
+        raiku_category = (cat["raiku_category"] or "").strip().lower()
+        is_core = product_scope in CORE_PRODUCT_SCOPES
+        is_benchmark = product_scope == BENCHMARK_PRODUCT_SCOPE and raiku_category == BENCHMARK_CATEGORY
+        if not (is_core or is_benchmark):
+            continue
+        if raiku_category in EXCLUDED_CATEGORIES:
             continue
 
         total_cu = to_float(db["total_cu"])
         if total_cu <= 0:
             continue
 
-        segment_key = derive_segment_key(cat["raiku_category"], cat["subcategory"])
+        segment_key = derive_segment_key(raiku_category, cat["subcategory"])
+        if segment_key == "other":
+            # Do not emit rows that collapse into unknown/other taxonomy segments.
+            continue
+
         tier_key = derive_tier_key(segment_key)
+        is_aot_relevant = is_core
+
+        if is_core:
+            core_rows += 1
+        elif is_benchmark:
+            benchmark_rows += 1
 
         programs.append(
             {
@@ -190,6 +212,8 @@ def main() -> None:
 
     print(f"Wrote: {OUT_PATH}")
     print(f"program_count: {len(programs)}")
+    print(f"core_rows (aot|both): {core_rows}")
+    print(f"benchmark_rows (jit+arb_bot): {benchmark_rows}")
     print(f"window_start_date: {start_date}")
     print(f"window_end_date: {end_date}")
 
